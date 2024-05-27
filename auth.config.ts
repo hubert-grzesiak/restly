@@ -6,7 +6,7 @@ import { getUserByEmail } from "@/data/user";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
-export default {
+const AuthConfig = {
   providers: [
     Github({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -15,7 +15,8 @@ export default {
     }),
     Google({
       clientId: process.env.GOGGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       async authorize(credentials) {
@@ -37,3 +38,5 @@ export default {
     }),
   ],
 } satisfies NextAuthConfig;
+
+export default AuthConfig;

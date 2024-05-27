@@ -14,7 +14,7 @@ import {
   generateTwoFactorToken,
 } from "@/lib/tokens";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 export const login = async (
@@ -72,7 +72,7 @@ export const login = async (
         return { error: "Code expired!" };
       }
 
-      await db.twoFactorToken.delete({
+      await prisma.twoFactorToken.delete({
         where: { id: twoFactorToken.id },
       });
 
@@ -81,12 +81,12 @@ export const login = async (
       );
 
       if (existingConfirmation) {
-        await db.twoFactorConfirmation.delete({
+        await prisma.twoFactorConfirmation.delete({
           where: { id: existingConfirmation.id },
         });
       }
 
-      await db.twoFactorConfirmation.create({
+      await prisma.twoFactorConfirmation.create({
         data: {
           userId: existingUser.id,
         },
