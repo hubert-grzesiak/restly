@@ -24,8 +24,8 @@ model User {
   isTwoFactorEnabled      Boolean                @default(false)
   twoFactorConfirmation   TwoFactorConfirmation?
   twoFactorConfirmationId String?                @db.ObjectId
-  createdAt               DateTime               @default(now())
-  updatedAt               DateTime               @updatedAt
+  createdAt               DateTime?               @default(now())
+  updatedAt               DateTime?               @updatedAt
 
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])

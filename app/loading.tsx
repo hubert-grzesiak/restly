@@ -1,6 +1,6 @@
 const Loading = () => {
   return (
-    <div className="w-full h-[100vh] bg-white/70 flex items-center justify-center backdrop-blur-[32px]">
+    <div className="w-full h-[100vh] bg-white/10 flex items-center justify-center backdrop-blur-[32px]">
       <svg
         className="pl"
         viewBox="0 0 160 160"

@@ -105,6 +105,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           border-r 
           border-gray-200 
           dark:border-lightgray
+          z-[5001]
         `,
           isOpen ? "hidden" : "block w-full left-0"
         )}>
