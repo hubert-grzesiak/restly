@@ -39,8 +39,9 @@ const UserList: React.FC<UserListProps> = ({ items }) => {
         border-gray-200
         block w-full left-0
         dark:border-lightgray
-      "
-    >
+        
+        top-[58px]
+      ">
       <div className="px-5">
         <div className="flex-col">
           <div
@@ -50,8 +51,8 @@ const UserList: React.FC<UserListProps> = ({ items }) => {
               text-neutral-800 
               py-4
               dark:text-gray-200
-            "
-          >
+             
+            ">
             People
           </div>
         </div>
