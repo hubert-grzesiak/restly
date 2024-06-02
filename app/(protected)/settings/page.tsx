@@ -11,7 +11,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { SettingsSchema } from "@/schemas";
 import { UserRole } from "@prisma/client";
 
-import { settings } from "@/actions/settings";
+import { settings } from "@/actions/auth/settings";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -168,8 +168,7 @@ const SettingsPage = () => {
                     <Select
                       disabled={isPending}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                      defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a role" />

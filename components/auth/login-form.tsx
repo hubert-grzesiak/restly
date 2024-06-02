@@ -23,7 +23,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 
-import { login } from "@/actions/login";
+import { login } from "@/actions/auth/login";
 
 const LoginForm = () => {
   const [showTwoFactor, setShowTwoFactor] = useState(false);
@@ -51,7 +51,7 @@ const LoginForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      login(values, callbackUrl )
+      login(values, callbackUrl)
         .then((data) => {
           if (data?.error) {
             form.reset();
@@ -76,8 +76,7 @@ const LoginForm = () => {
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
       backButtonHref="/auth/register"
-      showSocial
-    >
+      showSocial>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
@@ -144,8 +143,7 @@ const LoginForm = () => {
                         size="sm"
                         variant="link"
                         asChild
-                        className="px-0 font-normal"
-                      >
+                        className="px-0 font-normal">
                         <Link href="/auth/reset">Forgot password?</Link>
                       </Button>
                       <FormMessage />
