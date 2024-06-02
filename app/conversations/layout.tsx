@@ -8,7 +8,6 @@ export default async function ConversationsLayout({ children }: { children: Reac
   const users = await getUsers();
 
   return (
-    // @ts-expect-error Server Component
     <Sidebar>
       <div className="h-full">
         <ConversationList initialItems={conversations} users={users} />

@@ -21,7 +21,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 
-import { reset } from "@/actions/reset";
+import { reset } from "@/actions/auth/reset";
 
 const ResetForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -52,8 +52,7 @@ const ResetForm = () => {
     <CardWrapper
       headerLabel="Forgot your password?"
       backButtonLabel="Back to login"
-      backButtonHref="/auth/login"
-    >
+      backButtonHref="/auth/login">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
