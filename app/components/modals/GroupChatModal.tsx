@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
-import Button from "../Button";
+import Button from "@/components/Button";
 import Input from "../inputs/Input";
 import Select from "../inputs/Select";
 import Modal from "./Modal";

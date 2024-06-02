@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import NormalNavbar from "./components/navbar/normal-navbar";
 import FloatingNav from "./components/navbar/floating-navbar";
 import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
+import ActiveStatus from "@/components/ActiveStatus";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default async function RootLayout({
           {/* <Navbar /> */}
           <FloatingNav navItems={navItems} />
           <Toaster />
+          <ActiveStatus />
           {children}
         </body>
       </html>
