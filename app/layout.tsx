@@ -3,11 +3,13 @@ import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import NormalNavbar from "./components/navbar/normal-navbar";
 import FloatingNav from "./components/navbar/floating-navbar";
 import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 import ActiveStatus from "@/components/ActiveStatus";
+import { NextUIProvider } from "@nextui-org/react";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -37,16 +39,25 @@ export default async function RootLayout({
         <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
       ),
     },
+    {
+      name: "Become a host",
+      link: "/become-a-host",
+      icon: (
+        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
+      ),
+    },
   ];
   return (
     <SessionProvider session={session}>
       <html lang="en">
         <body className={inter.className}>
           {/* <Navbar /> */}
-          <FloatingNav navItems={navItems} />
-          <Toaster />
-          <ActiveStatus />
-          {children}
+          <NextUIProvider>
+            <FloatingNav navItems={navItems} />
+            <Toaster />
+            <ActiveStatus />
+            {children}
+          </NextUIProvider>
         </body>
       </html>
     </SessionProvider>
