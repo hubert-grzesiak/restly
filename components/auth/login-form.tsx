@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useRouter } from "next/navigation";
 import { LoginSchema } from "@/schemas";
 
 import {
@@ -26,6 +26,8 @@ import { FormSucess } from "@/components/form-sucess";
 import { login } from "@/actions/auth/login";
 
 const LoginForm = () => {
+  const router = useRouter();
+
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -60,6 +62,7 @@ const LoginForm = () => {
 
           if (data?.success) {
             form.reset();
+            router.push(callbackUrl || "/");
             setSuccess(data?.success);
           }
 

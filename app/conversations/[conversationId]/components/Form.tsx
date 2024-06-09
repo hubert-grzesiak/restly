@@ -6,7 +6,7 @@ import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
 
 import { CldUploadButton } from "next-cloudinary";
 
-import useConversation from "../../../hooks/useConversation";
+import useConversation from "../../../../hooks/useConversation";
 import MessageInput from "./MessageInput";
 
 const Form = () => {
@@ -52,16 +52,16 @@ const Form = () => {
         w-full
         dark:bg-dusk
         dark:border-lightgray
-      "
-    >
+      ">
       <CldUploadButton
         options={{ maxFiles: 1 }}
         onUpload={handleUpload}
-        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
-      >
+        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}>
         <HiPhoto size={30} className="text-sky-500" />
       </CldUploadButton>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2 lg:gap-4 w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex items-center gap-2 lg:gap-4 w-full">
         <MessageInput
           id="message"
           register={register}
@@ -78,8 +78,7 @@ const Form = () => {
             cursor-pointer 
             hover:bg-sky-600 
             transition
-          "
-        >
+          ">
           <HiPaperAirplane size={18} className="text-white" />
         </button>
       </form>

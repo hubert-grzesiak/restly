@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import GroupChatModal from "../../components/modals/GroupChatModal";
-import useConversation from "../../hooks/useConversation";
+import useConversation from "../../../hooks/useConversation";
 import { pusherClient, pusherEvents } from "@/lib/pusher";
 import { FullConversationType } from "../../types";
 import ConversationBox from "./ConversationBox";
@@ -88,7 +88,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind(pusherEvents.UPDATE_CONVERSATION, updateHandler);
       pusherClient.unbind(pusherEvents.NEW_CONVERSATION, newHandler);
       pusherClient.unbind(pusherEvents.DELETE_CONVERSATION, removeHandler);
-    }
+    };
   }, [conversationId, pusherKey, router]);
 
   return (

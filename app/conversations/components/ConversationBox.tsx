@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 import Avatar from "@/components/Avatar";
 import AvatarGroup from "@/components/AvatarGroup";
-import useOtherUser from "../../hooks/useOtherUser";
+import useOtherUser from "../../../hooks/useOtherUser";
 import { FullConversationType } from "../../types";
 
 interface ConversationBoxProps {

@@ -1,6 +1,6 @@
-import { getVerificationTokenByEmail } from "@/data/verification-token";
-import { getPasswordResetTokenByEmail } from "@/data/password-token";
-import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
+import { getVerificationTokenByEmail } from "@/lib/data/verification-token";
+import { getPasswordResetTokenByEmail } from "@/lib/data/password-token";
+import { getTwoFactorTokenByEmail } from "@/lib/data/two-factor-token";
 import { db } from "@/lib/db";
 
 import crypto from "crypto";

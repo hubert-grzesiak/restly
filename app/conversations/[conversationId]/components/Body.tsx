@@ -3,7 +3,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
-import useConversation from "@/app/hooks/useConversation";
+import useConversation from "@/hooks/useConversation";
 import { find } from "lodash";
 
 import { pusherClient, pusherEvents } from "@/lib/pusher";

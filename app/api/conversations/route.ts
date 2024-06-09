@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 
 import { db } from "@/lib/db";
 import { pusherEvents, pusherServer } from "@/lib/pusher";

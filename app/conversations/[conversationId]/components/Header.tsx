@@ -4,13 +4,13 @@ import { useMemo, useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 
-import useOtherUser from "@/app/hooks/useOtherUser";
+import useOtherUser from "@/hooks/useOtherUser";
 import { Conversation, User } from "@prisma/client";
 import Link from "next/link";
 
 import Avatar from "@/components/Avatar";
 import AvatarGroup from "@/components/AvatarGroup";
-import useActiveList from "../../../hooks/useActiveList";
+import useActiveList from "../../../../hooks/useActiveList";
 import ChatDrawer from "./ChatDrawer";
 
 interface HeaderProps {

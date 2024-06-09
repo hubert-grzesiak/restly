@@ -12,7 +12,7 @@ import {
 } from "./components/icons";
 import Link from "next/link";
 import placeholderImage from "@/public/images/avatar-placeholder.png";
-import FamilyButtonSection from "./components/ui/FamilyButtonSection";
+import FamilyButtonSection from "../components/FamilyButtonSection";
 
 const font = Poppins({
   subsets: ["latin"],
