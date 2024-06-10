@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import Modal from "../../../components/modals/Modal";
+import Modal from "@/components/modals/Modal";
 
 interface ImageModalProps {
   isOpen?: boolean;

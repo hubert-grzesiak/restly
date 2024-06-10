@@ -9,7 +9,7 @@ import {
   LocateIcon,
   SearchIcon,
   StarIcon,
-} from "./components/icons";
+} from "@/components/icons";
 import Link from "next/link";
 import placeholderImage from "@/public/images/avatar-placeholder.png";
 import FamilyButtonSection from "../components/FamilyButtonSection";

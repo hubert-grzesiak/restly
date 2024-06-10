@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import NormalNavbar from "./components/navbar/normal-navbar";
-import FloatingNav from "./components/navbar/floating-navbar";
+import { Toaster } from "@/components/ui/sonner";
+import NormalNavbar from "@/components/navbar/normal-navbar";
+import FloatingNav from "@/components/navbar/floating-navbar";
 import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 import ActiveStatus from "@/components/ActiveStatus";
 import { NextUIProvider } from "@nextui-org/react";
@@ -45,6 +45,11 @@ export default async function RootLayout({
       icon: (
         <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
       ),
+    },
+    {
+      name: "Dashboard",
+      link: "/dashboard",
+      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
   ];
   return (

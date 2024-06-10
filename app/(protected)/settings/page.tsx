@@ -11,7 +11,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { SettingsSchema } from "@/schemas";
 import { UserRole } from "@prisma/client";
 
-import { settings } from "@/actions/auth/settings";
+import { settings } from "@/lib/actions/auth/settings";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,

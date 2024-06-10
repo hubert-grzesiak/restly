@@ -7,8 +7,8 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { updateFacility } from "@/actions/admin";
+import { Button } from "../../ui/button";
+import { updateFacility } from "@/lib/actions/admin";
 import { useFormState } from "react-dom";
 import { Facilities } from "@prisma/client";
 
@@ -18,13 +18,13 @@ export default function EditFacilityForm({
   facility: Facilities;
 }) {
   const initialState = { message: null, errors: {} };
-  const updateInvoiceWithId = updateFacility.bind(null, facility.id);
-  const [state, dispatch] = useFormState(updateInvoiceWithId, initialState);
+  const updateFacilityWithId = updateFacility.bind(null, facility.id);
+  const [state, dispatch] = useFormState(updateFacilityWithId, initialState);
 
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Invoice Amount */}
+        {/* Facility Amount */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Choose an amount
@@ -67,7 +67,7 @@ export default function EditFacilityForm({
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">
           Cancel
         </Link>
-        <Button type="submit">Edit Invoice</Button>
+        <Button type="submit">Edit Facility</Button>
       </div>
     </form>
   );

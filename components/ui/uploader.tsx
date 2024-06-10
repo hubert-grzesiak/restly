@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
+import style from "antd/es/affix/style";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -48,7 +49,22 @@ const Uploader: React.FC<{ onFilesChange: (files: UploadFile[]) => void }> = ({
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}
-        onChange={handleChange}>
+        onChange={handleChange}
+        itemRender={(originNode, file, currFileList) => {
+          return (
+            <div
+              style={{
+                border: currFileList.indexOf(file) === 0 ? "relative" : "none",
+              }}>
+              {currFileList.indexOf(file) === 0 && (
+                <div className="absolute translate-x-[-8px] translate-y-[-3px]  bg-red-500 z-10 rounded-md flex items-center justify-center px-2 py-[2px] text-[8px] font-semibold text-white -rotate-[20deg]">
+                  Main
+                </div>
+              )}
+              {originNode}
+            </div>
+          );
+        }}>
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
       {previewImage && (

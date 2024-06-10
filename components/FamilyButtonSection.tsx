@@ -5,7 +5,6 @@ import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import useMeasure from "react-use-measure";
 
 import { FamilyButton } from "./FamilyButton";
-import { initial } from "lodash";
 
 export default function FamilyButtonSection() {
   return (

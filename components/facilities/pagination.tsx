@@ -3,7 +3,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
-import { generatePagination } from "@/actions/generatePagination";
+import { generatePagination } from "@/lib/actions/generatePagination";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {

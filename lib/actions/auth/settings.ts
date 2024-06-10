@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { db } from "@/lib/db";
 import { SettingsSchema } from "@/schemas";
-import { getUserByEmail, getUserById } from "@/data/user";
+import { getUserByEmail, getUserById } from "@/lib/data/user";
 import { currentUser } from "@/lib/actualUserInfo";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
@@ -17,7 +17,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     return { error: "Unauthorized!" };
   }
 
-  const dbUser = await getUserById(user.id);
+  const dbUser = await getUserById(user.id!);
 
   if (!dbUser) {
     return { error: "Unauthorized!" };
@@ -40,7 +40,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     const verificationToken = await generateVerificationToken(values.email);
     await sendVerificationEmail(
       verificationToken.email,
-      verificationToken.token,
+      verificationToken.token
     );
 
     return { success: "Verification email sent!" };

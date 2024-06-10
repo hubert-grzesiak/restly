@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "@/actions/auth/logout";
+import { logout } from "@/lib/actions/auth/logout";
 import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 interface LogoutButtonProps {

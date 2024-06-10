@@ -1,37 +1,36 @@
-import Form from '@/app/ui/invoices/edit-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import Breadcrumbs from "@/components/facilities/breadcrumbs";
+import FacilityForm from "@/components/facilities/forms/create-form";
+
+import { fetchFacilityById } from "@/lib/actions/admin";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Edit Invoice',
+  title: "Edit Facility",
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
-    fetchCustomers(),
-  ]);
 
-  if (!invoice) {
-    notFound();
+  const result = await fetchFacilityById(id);
+
+  if (!result) {
+    return notFound();
   }
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: "Facilities", href: "/dashboard/facilities" },
           {
-            label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            label: "Edit Facility",
+            href: `/dashboard/facilities/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form invoice={invoice} customers={customers} />
+      <FacilityForm type="Edit" facilityDetails={JSON.stringify(result)} />
     </main>
   );
 }

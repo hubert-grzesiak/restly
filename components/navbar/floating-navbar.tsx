@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { MyLogo } from "../icons";
-import FamilyButtonSection from "../ui/FamilyButtonSection";
+import FamilyButtonSection from "@/components/FamilyButtonSection";
 import { LogoutButton } from "@/components/auth/logout-button";
 import LoginButton from "@/components/auth/login-button";
 
@@ -39,10 +39,8 @@ const FloatingNav = ({
   const [shrink, setShrink] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
-    console.log(scrollYProgress.get());
     if (typeof current === "number") {
       let direction = current! - scrollYProgress.getPrevious()!;
-      console.log("Direction", direction);
       if (scrollYProgress.get() < -0.05) {
         setVisible(false);
       } else {
@@ -61,7 +59,6 @@ const FloatingNav = ({
     }
   });
   const user = useCurrentUser();
-  console.log(user);
   return (
     <AnimatePresence mode="wait">
       <div
@@ -97,7 +94,7 @@ const FloatingNav = ({
               <span className="text-lg font-bold">Restly</span>
             </Link>
           )}
-
+          
           <div className={cn("flex space-x-4 ")}>
             {navItems.map((navItem: any, idx: number) => (
               <Link

@@ -1,5 +1,5 @@
-import getConversationById from "@/actions/conversation/getConversationById";
-import getMessages from "@/actions/conversation/getMessages";
+import getConversationById from "@/lib/actions/conversation/getConversationById";
+import getMessages from "@/lib/actions/conversation/getMessages";
 import EmptyState from "@/components/EmptyState";
 import Body from "./components/Body";
 import Form from "./components/Form";

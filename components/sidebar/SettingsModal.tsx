@@ -121,7 +121,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     uploadPreset={
                       process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME
                     }>
-                    <Button disabled={isLoading} secondary type="button">
+                    <Button disabled={isLoading} type="button">
                       Change
                     </Button>
                   </CldUploadButton>
@@ -139,7 +139,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             justify-end 
             gap-x-6
           ">
-          <Button disabled={isLoading} secondary onClick={onClose}>
+          <Button disabled={isLoading} onClick={onClose}>
             Cancel
           </Button>
           <Button disabled={isLoading} type="submit">

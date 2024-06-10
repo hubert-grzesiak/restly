@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 import Avatar from "@/components/Avatar";
-import { FullMessageType } from "../../../types";
+import { FullMessageType } from "@/types";
 import ImageModal from "./ImageModal";
 
 interface MessageBoxProps {

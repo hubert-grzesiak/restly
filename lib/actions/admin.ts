@@ -1,19 +1,21 @@
 "use server";
 
 import { currentRole } from "@/lib/actualUserInfo";
-import { UserRole } from "@prisma/client";
+import { amenities } from "../consts";
+import { Facilities, UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { unstable_noStore as noStore } from 'next/cache';
+import { unstable_noStore as noStore } from "next/cache";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   name: z.string(),
 });
 
-const CreateFacilty = FormSchema.omit({ name: true, date: true });
-const UpdateFacility = FormSchema.omit({ name: true, date: true });
+const CreateFacility = FormSchema;
+const UpdateFacility = FormSchema;
 
 export const admin = async () => {
   const role = await currentRole();
@@ -24,19 +26,22 @@ export const admin = async () => {
 
   return { error: "Forbidden Server Action!" };
 };
-export const getAllFacilities = async () => {
+
+export const getFacilitiesAmount = async () => {
   const role = await currentRole();
 
   if (role === UserRole.ADMIN) {
     try {
       const facilities = await db.facilities.findMany();
-      return { facilities };
-    } catch(error){
-      return { error: "Error fetching all facilities" };
+      console.log(facilities.length);
+      // Assuming you want to paginate the facilities
+      return facilities.length; // Return count instead of facilities directly
+    } catch (error) {
+      return { error: "Error fetching all facilities", count: 0 };
     }
   }
-}
-
+  return { error: "Forbidden Server Action!", count: 0 };
+};
 export type State = {
   errors?: {
     name?: string[];
@@ -44,55 +49,101 @@ export type State = {
   message?: string | null;
 };
 
-export const createFacility = async (prevState: State, formData: FormData) => {
-  const role = await currentRole();
+// export const createFacility = async (params: Facilities) => {
+//   const role = await currentRole();
+//   const { name } = params;
 
-  const validatedFields = CreateFacilty.safeParse({
-    name: formData.get('name'),
+//   const validatedFields = CreateFacility.safeParse({
+//     name: name,
+//   });
+
+//   if (!validatedFields.success) {
+//     // Flatten and return errors if validation fails
+//     return {
+//       errors: validatedFields.error.flatten().fieldErrors,
+//       message: "Missing Fields. Failed to Create Facility.",
+//     };
+//   }
+
+//   // Data has been validated at this point
+//   const { name: validatedName } = validatedFields.data;
+
+//   if (role === UserRole.ADMIN) {
+//     try {
+//       await db.facilities.create({
+//         data: {
+//           name: validatedName,
+//         },
+//       });
+//       revalidatePath("/dashboard/facilities");
+//       return { success: "Facility created" };
+//     } catch (error) {
+//       return { error: "Error creating facility" };
+//     }
+//   }
+//   return { error: "Forbidden Server Power!" };
+// };
+export const createFacility = async (params: Facilities) => {
+  const role = await currentRole();
+  const { name } = params;
+
+  const validatedFields = CreateFacility.safeParse({
+    name: name,
   });
 
-  // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
+    // Flatten and return errors if validation fails
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Facility.',
+      message: "Missing Fields. Failed to Create Facility.",
     };
   }
-  const { name } = validatedFields.data;
+
+  // Data has been validated at this point
+  const { name: validatedName } = validatedFields.data;
 
   if (role === UserRole.ADMIN) {
     try {
+      // Check if a facility with the same name already exists
+      const existingFacility = await db.facilities.findUnique({
+        where: { name: validatedName },
+      });
+
+      if (existingFacility) {
+        return {
+          error: "A facility with this name already exists.",
+        };
+      }
+
+      // Create the new facility
       await db.facilities.create({
         data: {
-          name,
+          name: validatedName,
         },
       });
-      return { success: "Facility deleted" };
-    } catch(error){
-      return { error: "Error deleting facility" };
+      revalidatePath("/dashboard/facilities");
+      return { success: "Facility created" };
+    } catch (error) {
+      return { error: "Error creating facility" };
     }
   }
-}
+  return { error: "Forbidden Server Power!" };
+};
 
-export async function updateFacility(
-  id: string,
-  prevState: State,
-  formData: FormData,
-) {
+export async function editFacility(params: Facilities) {
   const role = await currentRole();
+  const { name, id } = params;
 
   const validatedFields = UpdateFacility.safeParse({
-    name: formData.get('name'),
+    name: name,
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Facility.',
+      message: "Missing Fields. Failed to Update Facility.",
     };
   }
-
-  const { name } = validatedFields.data;
 
   if (role === UserRole.ADMIN) {
     try {
@@ -102,14 +153,13 @@ export async function updateFacility(
           name,
         },
       });
+      revalidatePath("/dashboard/facilities");
       return { success: "Facility updated" };
-    } catch(error){
+    } catch (error) {
       return { error: "Error updating facility" };
     }
   }
-
-  revalidatePath('/dashboard/facilities');
-  redirect('/dashboard/facilities');
+  return { error: "Forbidden Server Action!" };
 }
 
 export const deleteFacility = async (id: string) => {
@@ -120,19 +170,20 @@ export const deleteFacility = async (id: string) => {
       await db.facilities.delete({
         where: { id: String(id) },
       });
+      revalidatePath("/dashboard/facilities");
       return { success: "Facility deleted" };
-    } catch(error){
+    } catch (error) {
       return { error: "Error deleting facility" };
     }
   }
-  revalidatePath('/dashboard/facilities');
-  redirect('/dashboard/facilities');
-}
+  return { error: "Forbidden Server Action!" };
+};
 
 const ITEMS_PER_PAGE = 6;
+
 export async function fetchFilteredFacilities(
   query: string,
-  currentPage: number,
+  currentPage: number
 ) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -140,17 +191,15 @@ export async function fetchFilteredFacilities(
   try {
     const facilities = await db.facilities.findMany({
       where: {
-        OR: [
-          { name: { contains: query } },
-        ],
+        OR: [{ name: { contains: query } }],
       },
       take: ITEMS_PER_PAGE,
       skip: offset,
     });
     return facilities;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch facilities.");
   }
 }
 
@@ -159,9 +208,7 @@ export async function fetchFacilitysPages(query: string) {
   try {
     const count = await db.facilities.count({
       where: {
-        OR: [
-          { name: { contains: query } },
-        ],
+        OR: [{ name: { contains: query } }],
       },
     });
 
@@ -169,8 +216,8 @@ export async function fetchFacilitysPages(query: string) {
 
     return totalPages;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of facilities.");
   }
 }
 
@@ -182,9 +229,22 @@ export async function fetchFacilityById(id: string) {
     });
 
     return facility;
-
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch facility.");
   }
 }
+
+export const seedFacilities = async () => {
+  for (const amenity of amenities) {
+    const facility = { name: amenity } as Facilities;
+    const result = await createFacility(facility);
+
+    if (result.error) {
+      console.error(`Error creating facility: ${amenity}`, result.error);
+    } else {
+      console.log(`Facility created: ${amenity}`);
+    }
+  }
+};
+// seedFacilities().catch(console.error);

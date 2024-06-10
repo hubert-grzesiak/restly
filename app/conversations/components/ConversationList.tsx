@@ -9,10 +9,10 @@ import { find } from "lodash";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import GroupChatModal from "../../components/modals/GroupChatModal";
-import useConversation from "../../../hooks/useConversation";
+import GroupChatModal from "@/components/modals/GroupChatModal";
+import useConversation from "@/hooks/useConversation";
 import { pusherClient, pusherEvents } from "@/lib/pusher";
-import { FullConversationType } from "../../types";
+import { FullConversationType } from "@/types";
 import ConversationBox from "./ConversationBox";
 
 interface ConversationListProps {

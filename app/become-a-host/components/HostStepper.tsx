@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,17 +15,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { FormSchema } from "./HostForm.schema";
-import { Checkbox } from "@nextui-org/react";
-import { countries } from "@/lib/consts";
-import { ComboboxDemo } from "@/components/ui/combobox";
-import { Textarea } from "@/components/ui/textarea";
-import Uploader from "@/components/ui/uploader";
+import { Checkbox, Select, Space } from "antd";
 import axios from "axios";
 import { UploadFile } from "antd";
+import getFacilities from "@/lib/actions/host/getFacilities";
+import { ComboboxDemo } from "@/components/ui/combobox";
+import Uploader from "@/components/ui/uploader";
+import { countries } from "@/lib/consts";
+import { Textarea } from "@/components/ui/textarea";
 
 const HostStepper = () => {
   const [steps, setSteps] = useState(0);
-  const [files, setFiles] = useState<UploadFile[]>([]); // State to store the files
+  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [facilities, setFacilities] = useState([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -61,6 +63,17 @@ const HostStepper = () => {
     },
   });
 
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      const facilitiesData = await getFacilities();
+      if (facilitiesData) {
+        setFacilities(facilitiesData);
+      }
+    };
+    fetchFacilities();
+  }, []);
+
+  console.log(facilities);
   const handleFilesChange = (newFiles: UploadFile[]) => {
     setFiles(newFiles);
   };
@@ -405,19 +418,32 @@ const HostStepper = () => {
           {steps === 3 && (
             <div className="p-8 gap-2 flex flex-col">
               <h2 className="text-lg font-bold">Udogodnienia</h2>
-              <FormField
-                control={form.control}
-                name="udoqodnienie.nazwa"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Facility Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className="flex flex-col">
+                <FormLabel>Facilities</FormLabel>
+                <FormControl>
+                  <Controller
+                    control={form.control}
+                    name="udoqodnienie"
+                    render={({ field }) => (
+                      <Space style={{ width: "100%" }} direction="vertical">
+                        <Select
+                          mode="multiple"
+                          allowClear
+                          filterOption
+                          value={field.value}
+                          optionLabelProp="label"
+                          defaultValue={[]}
+                          onChange={field.onChange}
+                          style={{ width: "100%" }}
+                          placeholder="Please select"
+                          options={facilities}
+                        />
+                      </Space>
+                    )}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
               <div className="w-full flex justify-between flex-row">
                 <Button
                   type="submit"
@@ -439,10 +465,10 @@ const HostStepper = () => {
               <h2 className="text-lg font-bold">Zdjęcia</h2>
               <FormField
                 control={form.control}
-                name="zdjecie.opis"
+                name="zdjecie.czy_glowne"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Zdjęcie główne</FormLabel>
                     <FormControl>
                       <Uploader onFilesChange={handleFilesChange} />
                     </FormControl>
@@ -450,19 +476,7 @@ const HostStepper = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="zdjecie.czy_glowne"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Main Photo</FormLabel>
-                    <FormControl>
-                      <Checkbox {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <div className="w-full flex justify-between flex-row">
                 <Button
                   type="submit"

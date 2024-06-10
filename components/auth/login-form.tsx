@@ -23,7 +23,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 
-import { login } from "@/actions/auth/login";
+import { login } from "@/lib/actions/auth/login";
 
 const LoginForm = () => {
   const router = useRouter();

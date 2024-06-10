@@ -4,7 +4,6 @@ import { pusherServer } from "@/lib/pusher";
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   try {
-    console.log("Request body:", request.body); // Add logging for debugging
 
     const session = await auth(request, response);
 

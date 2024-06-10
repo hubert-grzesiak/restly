@@ -9,7 +9,7 @@ import { Dialog } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
-import Modal from "../../../components/modals/Modal";
+import Modal from "@/components/modals/Modal";
 import useConversation from "../../../../hooks/useConversation";
 
 interface ConfirmModalProps {

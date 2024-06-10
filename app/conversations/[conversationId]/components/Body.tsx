@@ -7,7 +7,7 @@ import useConversation from "@/hooks/useConversation";
 import { find } from "lodash";
 
 import { pusherClient, pusherEvents } from "@/lib/pusher";
-import { FullMessageType } from "../../../types";
+import { FullMessageType } from "@/types";
 import MessageBox from "./MessageBox";
 
 interface BodyProps {
