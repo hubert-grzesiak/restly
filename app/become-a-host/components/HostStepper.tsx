@@ -23,12 +23,13 @@ import { ComboboxDemo } from "@/components/ui/combobox";
 import Uploader from "@/components/ui/uploader";
 import { countries } from "@/lib/consts";
 import { Textarea } from "@/components/ui/textarea";
+import createObject from "@/lib/actions/host/createObject";
 
 const HostStepper = () => {
   const [steps, setSteps] = useState(0);
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilities, setFacilities] = useState([]);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -54,7 +55,7 @@ const HostStepper = () => {
         data_do: "",
         godzina_zameldowania: "",
         godzina_wymeldowania: "",
-        cena_za_dobe: 0,
+        ceny: [],
       },
       zdjecie: {
         opis: "",
@@ -100,6 +101,8 @@ const HostStepper = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSubmitting(true);
+
     try {
       const uploadedUrls = await uploadFilesToCloudinary();
       // Add the uploaded URLs to the form data
@@ -121,14 +124,20 @@ const HostStepper = () => {
           </pre>
         ),
       });
+      await createObject({
+        ...formData,
+      });
+      toast({ title: "Obiect created successfully" });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to upload files. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
+  const currentMonth = new Date().getMonth();
   return (
     <div className="bg-white w-full max-w-[500px] rounded-xl shadow-xl">
       <Form {...form}>
@@ -224,7 +233,6 @@ const HostStepper = () => {
               />
               <div className="w-full flex justify-end flex-row">
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps + 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
@@ -317,13 +325,11 @@ const HostStepper = () => {
               />
               <div className="w-full flex justify-between flex-row">
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps - 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Prev step
                 </Button>
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps + 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
@@ -334,32 +340,7 @@ const HostStepper = () => {
           {steps === 2 && (
             <div className="shadow-lg rounded-xl p-8">
               <h2 className="text-lg font-bold">Kalendarz</h2>
-              <FormField
-                control={form.control}
-                name="kalendarz.data_od"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="kalendarz.data_do"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name="kalendarz.godzina_zameldowania"
@@ -388,12 +369,59 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="kalendarz.cena_za_dobe"
+                name="kalendarz.ceny"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price per Day</FormLabel>
+                    <FormLabel>Ceny za miesiąc</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <div className="flex flex-col gap-4">
+                        {[...Array(12).keys()]
+                          .filter((month) => month >= currentMonth)
+                          .map((month) => (
+                            <div key={month} className="flex flex-col gap-4">
+                              <span>
+                                {new Date(0, month).toLocaleString("default", {
+                                  month: "long",
+                                })}
+                              </span>
+                              <Input
+                                type="number"
+                                placeholder={`Cena za ${new Date(
+                                  0,
+                                  month
+                                ).toLocaleString("default", {
+                                  month: "long",
+                                })}`}
+                                value={
+                                  Array.isArray(field.value)
+                                    ? field.value.find(
+                                        (c) => c.miesiac === month + 1
+                                      )?.cena_za_dobe || ""
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  const updatedCeny = Array.isArray(field.value)
+                                    ? [...field.value]
+                                    : [];
+                                  const index = updatedCeny.findIndex(
+                                    (c) => c.miesiac === month + 1
+                                  );
+                                  if (index !== -1) {
+                                    updatedCeny[index].cena_za_dobe =
+                                      parseFloat(e.target.value);
+                                  } else {
+                                    updatedCeny.push({
+                                      rok: new Date().getFullYear(),
+                                      miesiac: month + 1,
+                                      cena_za_dobe: parseFloat(e.target.value),
+                                    });
+                                  }
+                                  field.onChange(updatedCeny);
+                                }}
+                              />
+                            </div>
+                          ))}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -401,13 +429,11 @@ const HostStepper = () => {
               />
               <div className="w-full flex justify-between flex-row">
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps - 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Prev step
                 </Button>
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps + 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
@@ -415,6 +441,7 @@ const HostStepper = () => {
               </div>
             </div>
           )}
+
           {steps === 3 && (
             <div className="p-8 gap-2 flex flex-col">
               <h2 className="text-lg font-bold">Udogodnienia</h2>
@@ -423,7 +450,7 @@ const HostStepper = () => {
                 <FormControl>
                   <Controller
                     control={form.control}
-                    name="udoqodnienie"
+                    name="udogodnienie"
                     render={({ field }) => (
                       <Space style={{ width: "100%" }} direction="vertical">
                         <Select
@@ -446,13 +473,12 @@ const HostStepper = () => {
               </FormItem>
               <div className="w-full flex justify-between flex-row">
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps - 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Prev step
                 </Button>
                 <Button
-                  type="submit"
+                
                   onClick={() => setSteps(steps + 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
@@ -468,7 +494,6 @@ const HostStepper = () => {
                 name="zdjecie.czy_glowne"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zdjęcie główne</FormLabel>
                     <FormControl>
                       <Uploader onFilesChange={handleFilesChange} />
                     </FormControl>
@@ -479,15 +504,16 @@ const HostStepper = () => {
 
               <div className="w-full flex justify-between flex-row">
                 <Button
-                  type="submit"
                   onClick={() => setSteps(steps - 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Prev step
                 </Button>
                 <Button
                   type="submit"
-                  className="mt-4 text-center max-w-[320px]">
-                  Submit
+                  disabled={isSubmitting}
+                  className="mt-4 text-center max-w-[320px] outline-green-500 border-green-500 text-green-700"
+                  variant={"outline"}>
+                  {isSubmitting ? "Submitting..." : "Submit"}
                 </Button>
               </div>
             </div>

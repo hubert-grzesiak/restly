@@ -126,3 +126,33 @@ model Facilities {
   id   String  @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
 }
+
+model Price {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  obiektId  String   @db.ObjectId
+  year      Int
+  month     Int
+  dailyRate Float
+
+  obiekt Obiekt @relation(fields: [obiektId], references: [id], onDelete: Cascade)
+}
+
+model Obiekt {
+  id                      String                 @id @default(auto()) @map("_id") @db.ObjectId
+  kraj                    String
+  miejscowosc             String
+  ulica                   String
+  nazwa                   String
+  opis                    String
+  liczba_sypialni         Int
+  kod_pocztowy            String
+  numer_domu              String
+  numer_mieszkania        String
+  minimalny_czas_pobytu   Int
+  maksymalny_czas_pobytu  Int
+  maksymalna_ilosc_osob   Int
+  createdAt               DateTime?              @default(now())
+  updatedAt               DateTime?              @updatedAt
+
+  prices   Price[]
+}
