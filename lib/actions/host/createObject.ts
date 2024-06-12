@@ -1,43 +1,62 @@
-import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
+"use server";
 import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
-import { z } from "zod";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 
-const createObject = async (rawData: unknown) => {
+const createObject = async (rawData) => {
   try {
-    const data = FormSchema.parse(rawData); // Validate data with Zod
+    const data = rawData;
+
     const session = await auth();
 
     if (!session?.user?.email) {
       throw new Error("User not authenticated");
     }
 
-    const newObiekt = await db.obiekt.create({
+    const newObject = await db.object.create({
       data: {
-        kraj: data.obiekt.kraj,
-        miejscowosc: data.obiekt.miejscowosc,
-        ulica: data.obiekt.ulica,
-        nazwa: data.obiekt.nazwa,
-        opis: data.obiekt.opis,
-        liczba_sypialni: data.obiekt.liczba_sypialni,
-        kod_pocztowy: data.obiekt.kod_pocztowy,
-        numer_domu: data.obiekt.numer_domu,
-        numer_mieszkania: data.obiekt.numer_mieszkania,
-        minimalny_czas_pobytu: data.obiekt.minimalny_czas_pobytu,
-        maksymalny_czas_pobytu: data.obiekt.maksymalny_czas_pobytu,
-        maksymalna_ilosc_osob: data.obiekt.maksymalna_ilosc_osob,
+        country: data.object.country,
+        city: data.object.city,
+        street: data.object.street,
+        name: data.object.name,
+        description: data.object.description,
+        numberOfBedrooms: data.object.numberOfBedrooms,
+        postalCode: data.object.postalCode,
+        houseNumber: data.object.houseNumber,
+        apartmentNumber: data.object.apartmentNumber,
+        minimumStay: data.object.minimumStay,
+        maximumStay: data.object.maximumStay,
+        maxPeople: data.object.maxPeople,
         prices: {
-          create: data.kalendarz.ceny.map((cena) => ({
-            year: cena.rok,
-            month: cena.miesiac,
-            dailyRate: cena.cena_za_dobe,
+          create: data.calendar.prices.map((price) => ({
+            year: price.year,
+            month: price.month,
+            dailyRate: price.dailyRate,
           })),
+        },
+        facilities: {
+          create: data.facility.map((facility) => ({
+            name: facility.name,
+          })),
+        },
+        images: {
+          create: {
+            description: data.image.description,
+            isMain: data.image.isMain,
+            urls: data.image.urls,
+          },
+        },
+        calendar: {
+          create: {
+            checkInTime: data.calendar.checkInTime,
+            checkOutTime: data.calendar.checkOutTime,
+          },
         },
       },
     });
 
-    return newObiekt;
-  } catch (error: any) {
+    return newObject;
+  } catch (error) {
     console.error("Error creating object:", error);
     return null;
   }

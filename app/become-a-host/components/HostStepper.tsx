@@ -27,39 +27,35 @@ import createObject from "@/lib/actions/host/createObject";
 
 const HostStepper = () => {
   const [steps, setSteps] = useState(0);
-  const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilities, setFacilities] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm({
     defaultValues: {
-      obiekt: {
-        kraj: "",
-        miejscowosc: "",
-        ulica: "",
-        nazwa: "",
-        opis: "",
-        liczba_sypialni: 0,
-        kod_pocztowy: "",
-        numer_domu: "",
-        numer_mieszkania: "",
-        minimalny_czas_pobytu: 0,
-        maksymalny_czas_pobytu: 0,
-        maksymalna_ilosc_osob: 1,
+      object: {
+        country: "",
+        city: "",
+        street: "",
+        name: "",
+        description: "",
+        numberOfBedrooms: 0,
+        postalCode: "",
+        houseNumber: "",
+        apartmentNumber: "",
+        minimumStay: 0,
+        maximumStay: 0,
+        maxPeople: 0,
       },
-      udoqodnienie: {
-        nazwa: "",
+      facility: [],
+      calendar: {
+        endDate: "",
+        checkInTime: "",
+        checkOutTime: "",
+        prices: [],
       },
-      kalendarz: {
-        data_od: "",
-        data_do: "",
-        godzina_zameldowania: "",
-        godzina_wymeldowania: "",
-        ceny: [],
-      },
-      zdjecie: {
-        opis: "",
-        czy_glowne: false,
+      image: {
+        description: "",
+        isMain: false,
+        urls: [],
       },
     },
   });
@@ -74,14 +70,9 @@ const HostStepper = () => {
     fetchFacilities();
   }, []);
 
-  console.log(facilities);
-  const handleFilesChange = (newFiles: UploadFile[]) => {
-    setFiles(newFiles);
-  };
-
-  const uploadFilesToCloudinary = async () => {
+  const handleFilesChange = async (newFiles: UploadFile[]) => {
     const uploadedUrls: string[] = [];
-    for (const file of files) {
+    for (const file of newFiles) {
       const formData = new FormData();
       formData.append("file", file.originFileObj as Blob);
       formData.append("upload_preset", "restly"); // Replace with your upload preset
@@ -97,22 +88,20 @@ const HostStepper = () => {
         throw error;
       }
     }
-    return uploadedUrls;
+    // Set the uploaded URLs in the form state
+    form.setValue("image.urls", uploadedUrls);
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSubmitting(true);
 
     try {
-      const uploadedUrls = await uploadFilesToCloudinary();
-      // Add the uploaded URLs to the form data
-      const formData = {
-        ...data,
-        zdjecie: {
-          ...data.zdjecie,
-          urls: uploadedUrls,
-        },
-      };
+      const formData = { ...data };
+
+      // Check if all facilities have names
+      if (formData.facility.some((facility) => !facility.name)) {
+        throw new Error("All facilities must have names.");
+      }
 
       toast({
         title: "You submitted the following values:",
@@ -124,34 +113,41 @@ const HostStepper = () => {
           </pre>
         ),
       });
-      await createObject({
-        ...formData,
-      });
-      toast({ title: "Obiect created successfully" });
+      console.log("FormData: ", formData);
+      await createObject(formData);
+      toast({ title: "Object created successfully" });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to upload files. Please try again.",
+        description:
+          error.message || "Failed to upload files. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   const currentMonth = new Date().getMonth();
+
   return (
     <div className="bg-white w-full max-w-[500px] rounded-xl shadow-xl">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          action="#"
+          method="post"
+          onSubmitCapture={(e) => e.preventDefault()} // Prevent default form submission
+        >
           {steps === 0 && (
             <div className="p-8 gap-2 flex flex-col">
-              <h2 className="text-lg font-bold">Lokalizacja</h2>
+              <h2 className="text-lg font-bold">Location</h2>
 
               <FormItem className="flex flex-col">
                 <FormLabel>Country</FormLabel>
                 <FormControl>
                   <Controller
                     control={form.control}
-                    name="obiekt.kraj"
+                    name="object.country"
                     render={({ field }) => (
                       <ComboboxDemo
                         items={countries}
@@ -168,7 +164,7 @@ const HostStepper = () => {
               </FormItem>
               <FormField
                 control={form.control}
-                name="obiekt.miejscowosc"
+                name="object.city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>City</FormLabel>
@@ -181,7 +177,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.ulica"
+                name="object.street"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Street</FormLabel>
@@ -194,7 +190,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.kod_pocztowy"
+                name="object.postalCode"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Postal Code</FormLabel>
@@ -207,7 +203,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.numer_domu"
+                name="object.houseNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>House Number</FormLabel>
@@ -220,7 +216,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.numer_mieszkania"
+                name="object.apartmentNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Apartment Number</FormLabel>
@@ -233,7 +229,19 @@ const HostStepper = () => {
               />
               <div className="w-full flex justify-end flex-row">
                 <Button
-                  onClick={() => setSteps(steps + 1)}
+                  onClick={async () => {
+                    const isValid = await form.trigger([
+                      "object.country",
+                      "object.city",
+                      "object.street",
+                      "object.postalCode",
+                      "object.houseNumber",
+                      "object.apartmentNumber",
+                    ]);
+                    if (isValid) {
+                      setSteps(steps + 1);
+                    }
+                  }}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
                 </Button>
@@ -242,11 +250,11 @@ const HostStepper = () => {
           )}
           {steps === 1 && (
             <div className="p-8 gap-2 flex flex-col">
-              <h2 className="text-lg font-bold">Szczegóły</h2>
+              <h2 className="text-lg font-bold">Details</h2>
 
               <FormField
                 control={form.control}
-                name="obiekt.nazwa"
+                name="object.name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -259,7 +267,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.opis"
+                name="object.description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
@@ -272,7 +280,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.liczba_sypialni"
+                name="object.numberOfBedrooms"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Number of Bedrooms</FormLabel>
@@ -283,10 +291,9 @@ const HostStepper = () => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
-                name="obiekt.minimalny_czas_pobytu"
+                name="object.minimumStay"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Minimum Stay Duration</FormLabel>
@@ -299,7 +306,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.maksymalny_czas_pobytu"
+                name="object.maximumStay"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Maximum Stay Duration</FormLabel>
@@ -312,7 +319,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="obiekt.maksymalna_ilosc_osob"
+                name="object.maxPeople"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Maximum Number of People</FormLabel>
@@ -330,7 +337,19 @@ const HostStepper = () => {
                   Prev step
                 </Button>
                 <Button
-                  onClick={() => setSteps(steps + 1)}
+                  onClick={async () => {
+                    const isValid = await form.trigger([
+                      "object.name",
+                      "object.description",
+                      "object.numberOfBedrooms",
+                      "object.minimumStay",
+                      "object.maximumStay",
+                      "object.maxPeople",
+                    ]);
+                    if (isValid) {
+                      setSteps(steps + 1);
+                    }
+                  }}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
                 </Button>
@@ -339,11 +358,11 @@ const HostStepper = () => {
           )}
           {steps === 2 && (
             <div className="shadow-lg rounded-xl p-8">
-              <h2 className="text-lg font-bold">Kalendarz</h2>
+              <h2 className="text-lg font-bold">Calendar</h2>
 
               <FormField
                 control={form.control}
-                name="kalendarz.godzina_zameldowania"
+                name="calendar.checkInTime"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Check-in Time</FormLabel>
@@ -356,7 +375,7 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="kalendarz.godzina_wymeldowania"
+                name="calendar.checkOutTime"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Check-out Time</FormLabel>
@@ -369,10 +388,10 @@ const HostStepper = () => {
               />
               <FormField
                 control={form.control}
-                name="kalendarz.ceny"
+                name="calendar.prices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ceny za miesiąc</FormLabel>
+                    <FormLabel>Prices by Month</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-4">
                         {[...Array(12).keys()]
@@ -386,7 +405,7 @@ const HostStepper = () => {
                               </span>
                               <Input
                                 type="number"
-                                placeholder={`Cena za ${new Date(
+                                placeholder={`Price for ${new Date(
                                   0,
                                   month
                                 ).toLocaleString("default", {
@@ -395,28 +414,31 @@ const HostStepper = () => {
                                 value={
                                   Array.isArray(field.value)
                                     ? field.value.find(
-                                        (c) => c.miesiac === month + 1
-                                      )?.cena_za_dobe || ""
+                                        (c) => c.month === month + 1
+                                      )?.dailyRate || ""
                                     : ""
                                 }
                                 onChange={(e) => {
-                                  const updatedCeny = Array.isArray(field.value)
+                                  const updatedPrices = Array.isArray(
+                                    field.value
+                                  )
                                     ? [...field.value]
                                     : [];
-                                  const index = updatedCeny.findIndex(
-                                    (c) => c.miesiac === month + 1
+                                  const index = updatedPrices.findIndex(
+                                    (c) => c.month === month + 1
                                   );
                                   if (index !== -1) {
-                                    updatedCeny[index].cena_za_dobe =
-                                      parseFloat(e.target.value);
+                                    updatedPrices[index].dailyRate = parseFloat(
+                                      e.target.value
+                                    );
                                   } else {
-                                    updatedCeny.push({
-                                      rok: new Date().getFullYear(),
-                                      miesiac: month + 1,
-                                      cena_za_dobe: parseFloat(e.target.value),
+                                    updatedPrices.push({
+                                      year: new Date().getFullYear(),
+                                      month: month + 1,
+                                      dailyRate: parseFloat(e.target.value),
                                     });
                                   }
-                                  field.onChange(updatedCeny);
+                                  field.onChange(updatedPrices);
                                 }}
                               />
                             </div>
@@ -434,7 +456,16 @@ const HostStepper = () => {
                   Prev step
                 </Button>
                 <Button
-                  onClick={() => setSteps(steps + 1)}
+                  onClick={async () => {
+                    const isValid = await form.trigger([
+                      "calendar.checkInTime",
+                      "calendar.checkOutTime",
+                      "calendar.prices",
+                    ]);
+                    if (isValid) {
+                      setSteps(steps + 1);
+                    }
+                  }}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
                 </Button>
@@ -444,13 +475,13 @@ const HostStepper = () => {
 
           {steps === 3 && (
             <div className="p-8 gap-2 flex flex-col">
-              <h2 className="text-lg font-bold">Udogodnienia</h2>
+              <h2 className="text-lg font-bold">Facilities</h2>
               <FormItem className="flex flex-col">
                 <FormLabel>Facilities</FormLabel>
                 <FormControl>
                   <Controller
                     control={form.control}
-                    name="udogodnienie"
+                    name="facility"
                     render={({ field }) => (
                       <Space style={{ width: "100%" }} direction="vertical">
                         <Select
@@ -463,7 +494,10 @@ const HostStepper = () => {
                           onChange={field.onChange}
                           style={{ width: "100%" }}
                           placeholder="Please select"
-                          options={facilities}
+                          options={facilities.map((facility) => ({
+                            label: facility.name,
+                            value: facility.id,
+                          }))}
                         />
                       </Space>
                     )}
@@ -478,7 +512,6 @@ const HostStepper = () => {
                   Prev step
                 </Button>
                 <Button
-                
                   onClick={() => setSteps(steps + 1)}
                   className="mt-4 text-center max-w-[320px]">
                   Next step
@@ -488,10 +521,10 @@ const HostStepper = () => {
           )}
           {steps === 4 && (
             <div className="p-8 gap-2 flex flex-col">
-              <h2 className="text-lg font-bold">Zdjęcia</h2>
+              <h2 className="text-lg font-bold">Images</h2>
               <FormField
                 control={form.control}
-                name="zdjecie.czy_glowne"
+                name="image.urls"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -501,7 +534,33 @@ const HostStepper = () => {
                   </FormItem>
                 )}
               />
-
+              <FormField
+                control={form.control}
+                name="image.isMain"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox checked={field.value} onChange={field.onChange}>
+                        Is Main Image
+                      </Checkbox>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image.description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image Description</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="w-full flex justify-between flex-row">
                 <Button
                   onClick={() => setSteps(steps - 1)}
