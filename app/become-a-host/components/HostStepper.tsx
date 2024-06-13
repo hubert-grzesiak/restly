@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { FormSchema } from "./HostForm.schema";
 import { Checkbox, Select, Space } from "antd";
 import axios from "axios";
@@ -27,9 +27,12 @@ import createObject from "@/lib/actions/host/createObject";
 
 const HostStepper = () => {
   const [steps, setSteps] = useState(0);
-  const [facilities, setFacilities] = useState([]);
+  const [facilities, setFacilities] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm({
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
         country: "",
@@ -37,17 +40,16 @@ const HostStepper = () => {
         street: "",
         name: "",
         description: "",
-        numberOfBedrooms: 0,
+        numberOfBedrooms: "",
         postalCode: "",
         houseNumber: "",
         apartmentNumber: "",
-        minimumStay: 0,
-        maximumStay: 0,
-        maxPeople: 0,
+        minimumStay: "",
+        maximumStay: "",
+        maxPeople: "",
       },
       facility: [],
       calendar: {
-        endDate: "",
         checkInTime: "",
         checkOutTime: "",
         prices: [],
@@ -75,11 +77,11 @@ const HostStepper = () => {
     for (const file of newFiles) {
       const formData = new FormData();
       formData.append("file", file.originFileObj as Blob);
-      formData.append("upload_preset", "restly"); // Replace with your upload preset
+      formData.append("upload_preset", "restly");
 
       try {
         const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/dev6yhoh3/image/upload", // Replace with your Cloudinary URL
+          "https://api.cloudinary.com/v1_1/dev6yhoh3/image/upload",
           formData
         );
         uploadedUrls.push(response.data.secure_url);
@@ -88,40 +90,31 @@ const HostStepper = () => {
         throw error;
       }
     }
-    // Set the uploaded URLs in the form state
     form.setValue("image.urls", uploadedUrls);
   };
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsSubmitting(true);
-
+    console.log(data);
     try {
       const formData = { ...data };
 
-      // Check if all facilities have names
+      formData.facility = formData.facility.map((facility) => ({
+        name: facility.name,
+      }));
+
       if (formData.facility.some((facility) => !facility.name)) {
         throw new Error("All facilities must have names.");
       }
 
-      toast({
-        title: "You submitted the following values:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">
-              {JSON.stringify(formData, null, 2)}
-            </code>
-          </pre>
-        ),
-      });
+      toast.success(JSON.stringify(formData, null, 2));
       console.log("FormData: ", formData);
-      await createObject(formData);
-      toast({ title: "Object created successfully" });
+      // await createObject(formData);
+      toast.success("Object created successfully");
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error.message || "Failed to upload files. Please try again.",
-      });
+      toast.error(
+        (error as Error).message || "Failed to upload files. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -132,12 +125,7 @@ const HostStepper = () => {
   return (
     <div className="bg-white w-full max-w-[500px] rounded-xl shadow-xl">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          action="#"
-          method="post"
-          onSubmitCapture={(e) => e.preventDefault()} // Prevent default form submission
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           {steps === 0 && (
             <div className="p-8 gap-2 flex flex-col">
               <h2 className="text-lg font-bold">Location</h2>
@@ -482,25 +470,22 @@ const HostStepper = () => {
                   <Controller
                     control={form.control}
                     name="facility"
-                    render={({ field }) => (
-                      <Space style={{ width: "100%" }} direction="vertical">
-                        <Select
-                          mode="multiple"
-                          allowClear
-                          filterOption
-                          value={field.value}
-                          optionLabelProp="label"
-                          defaultValue={[]}
-                          onChange={field.onChange}
-                          style={{ width: "100%" }}
-                          placeholder="Please select"
-                          options={facilities.map((facility) => ({
-                            label: facility.name,
-                            value: facility.id,
-                          }))}
-                        />
-                      </Space>
-                    )}
+                    render={({ field }) => {
+                      return (
+                        <Space style={{ width: "100%" }} direction="vertical">
+                          <Select
+                            mode="multiple"
+                            allowClear
+                            filterOption
+                            value={field.value}
+                            onChange={field.onChange}
+                            style={{ width: "100%" }}
+                            placeholder="Please select"
+                            options={facilities}
+                          />
+                        </Space>
+                      );
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

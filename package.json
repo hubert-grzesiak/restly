@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "commit": "node commit.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.0.12",

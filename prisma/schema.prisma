@@ -123,15 +123,15 @@ model Message {
 }
 
 model Facilities {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String  @unique
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
 }
 
 model Facility {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String  @unique
-  objectId String  @db.ObjectId
-  object   Object  @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String @unique
+  objectId String @db.ObjectId
+  object   Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }
 
 model Image {
@@ -144,43 +144,43 @@ model Image {
 }
 
 model Calendar {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
- 
-  checkInTime   String
-  checkOutTime  String
-  objectId      String   @db.ObjectId
-  object        Object   @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  checkInTime  String
+  checkOutTime String
+  objectId     String @db.ObjectId
+  object       Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }
 
 model Price {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  objectId  String   @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  objectId  String @db.ObjectId
   year      Int
   month     Int
   dailyRate Float
 
-  object    Object   @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }
 
 model Object {
-  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
-  country               String
-  city                  String
-  street                String
-  name                  String
-  description           String
-  numberOfBedrooms      String
-  postalCode            String
-  houseNumber           String
-  apartmentNumber       String
-  minimumStay           String
-  maximumStay           String
-  maxPeople             String
-  createdAt             DateTime? @default(now())
-  updatedAt             DateTime? @updatedAt
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  country          String
+  city             String
+  street           String
+  name             String
+  description      String
+  numberOfBedrooms String
+  postalCode       String
+  houseNumber      String
+  apartmentNumber  String
+  minimumStay      String
+  maximumStay      String
+  maxPeople        String
+  createdAt        DateTime? @default(now())
+  updatedAt        DateTime? @updatedAt
 
-  prices      Price[]
-  facilities  Facility[]
-  images      Image[]
-  calendar    Calendar[]
+  prices   Price[]
+  facility Facility[]
+  images   Image[]
+  calendar Calendar[]
 }

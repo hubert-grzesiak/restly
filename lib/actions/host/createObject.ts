@@ -1,11 +1,11 @@
 "use server";
-import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
 
-const createObject = async (rawData) => {
+const createObject = async (rawData: any) => {
   try {
-    const data = rawData;
+    const data = FormSchema.parse(rawData);
 
     const session = await auth();
 
@@ -28,13 +28,13 @@ const createObject = async (rawData) => {
         maximumStay: data.object.maximumStay,
         maxPeople: data.object.maxPeople,
         prices: {
-          create: data.calendar.prices.map((price) => ({
+          create: data.calendar.prices.map((price: { year: any; month: any; dailyRate: any; }) => ({
             year: price.year,
             month: price.month,
             dailyRate: price.dailyRate,
           })),
         },
-        facilities: {
+        facility: {
           create: data.facility.map((facility) => ({
             name: facility.name,
           })),
