@@ -122,6 +122,8 @@ const HostStepper = () => {
 
   const currentMonth = new Date().getMonth();
 
+  const [facilityValue, setFacilityValue] = useState<string[]>([]);
+
   return (
     <div className="bg-white w-full max-w-[500px] rounded-xl shadow-xl">
       <Form {...form}>
@@ -464,32 +466,31 @@ const HostStepper = () => {
           {steps === 3 && (
             <div className="p-8 gap-2 flex flex-col">
               <h2 className="text-lg font-bold">Facilities</h2>
-              <FormItem className="flex flex-col">
-                <FormLabel>Facilities</FormLabel>
-                <FormControl>
-                  <Controller
-                    control={form.control}
-                    name="facility"
-                    render={({ field }) => {
-                      return (
-                        <Space style={{ width: "100%" }} direction="vertical">
-                          <Select
-                            mode="multiple"
-                            allowClear
-                            filterOption
-                            value={field.value}
-                            onChange={field.onChange}
-                            style={{ width: "100%" }}
-                            placeholder="Please select"
-                            options={facilities}
-                          />
-                        </Space>
-                      );
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+              <FormField
+                control={form.control}
+                name="facility"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel />
+                    <FormControl>
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        value={facilityValue}
+                        onChange={(value) => {
+                          setFacilityValue(value);
+                          field.onChange(value.map((name) => ({ name })));
+                        }}
+                        filterOption
+                        style={{ width: "100%" }}
+                        placeholder="Please select"
+                        options={facilities}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="w-full flex justify-between flex-row">
                 <Button
                   onClick={() => setSteps(steps - 1)}
