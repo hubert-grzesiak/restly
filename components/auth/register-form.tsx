@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
-import { register } from "@/actions/auth/register";
+import { register } from "@/lib/actions/auth/register";
 
 const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");

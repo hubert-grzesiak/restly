@@ -22,7 +22,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 
-import { newPassword } from "@/actions/auth/new-password";
+import { newPassword } from "@/lib/actions/auth/new-password";
 
 const NewPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");

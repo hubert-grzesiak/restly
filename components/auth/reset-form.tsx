@@ -21,7 +21,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 
-import { reset } from "@/actions/auth/reset";
+import { reset } from "@/lib/actions/auth/reset";
 
 const ResetForm = () => {
   const [error, setError] = useState<string | undefined>("");
