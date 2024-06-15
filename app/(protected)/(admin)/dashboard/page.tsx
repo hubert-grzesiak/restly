@@ -21,8 +21,13 @@ const page = () => {
             </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/settings">
+            <Link className="hover:underline" href="/profile/settings">
               Settings
+            </Link>
+          </li>
+          <li>
+            <Link className="hover:underline" href="/profile/properties">
+              Your properties
             </Link>
           </li>
         </ul>

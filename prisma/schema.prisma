@@ -35,6 +35,7 @@ model User {
 
   accounts Account[]
   messages Message[]
+  Favorite Favorite[]
 }
 
 model Account {
@@ -129,7 +130,7 @@ model Facilities {
 
 model Facility {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String @unique
+  name     String
   objectId String @db.ObjectId
   object   Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }
@@ -141,15 +142,6 @@ model Image {
   urls        String[]
   objectId    String   @db.ObjectId
   object      Object   @relation(fields: [objectId], references: [id], onDelete: Cascade)
-}
-
-model Calendar {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  checkInTime  String
-  checkOutTime String
-  objectId     String @db.ObjectId
-  object       Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }
 
 model Price {
@@ -176,11 +168,26 @@ model Object {
   minimumStay      String
   maximumStay      String
   maxPeople        String
+  ownerId          String
+  checkInTime      String?
+  checkOutTime     String?
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
 
   prices   Price[]
   facility Facility[]
   images   Image[]
-  calendar Calendar[]
+  Favorite Favorite[]
+}
+
+model Favorite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  objectId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, objectId])
 }

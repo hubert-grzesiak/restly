@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUser from "@/lib/actions/getCurrentUser";
 import { db } from "@/lib/db";
 import { pusherEvents, pusherServer } from "@/lib/pusher";
 

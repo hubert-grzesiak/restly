@@ -101,7 +101,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
       <aside
         className={clsx(
           `
-          fixed 
+          pt-[74px]
+          absolute 
           inset-y-0 
           pb-20
           lg:pb-0
@@ -110,7 +111,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           lg:block
           overflow-y-auto 
           border-r 
-          border-gray-200 
+          border-gr ay-200 
           dark:border-lightgray
           z-[5001]
         `,

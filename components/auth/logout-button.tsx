@@ -1,7 +1,6 @@
 "use client";
 
 import { logout } from "@/lib/actions/auth/logout";
-import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 interface LogoutButtonProps {
   children?: React.ReactNode;

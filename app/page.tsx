@@ -1,5 +1,4 @@
 import { Poppins } from "next/font/google";
-
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -12,13 +11,17 @@ import {
 } from "@/components/icons";
 import Link from "next/link";
 import placeholderImage from "@/public/images/avatar-placeholder.png";
-import FamilyButtonSection from "../components/FamilyButtonSection";
+import FamilyButtonSection from "@/components/FamilyButtonSection";
+import getAllProperties from "@/lib/actions/properties/getAllProperties";
 
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],
 });
-export default function Home() {
+
+export default async function Home() {
+  const properties = await getAllProperties();
+
   return (
     <>
       <main className="flex-1">
@@ -167,162 +170,53 @@ export default function Home() {
               Featured Rentals
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
-                <Link className="block" href="#">
-                  <Image
-                    alt="Woods"
-                    className="h-[200px] w-full object-cover"
-                    height={200}
-                    src="/images/featured/woods.jpg"
-                    style={{
-                      aspectRatio: "300/200",
-                      objectFit: "cover",
-                    }}
-                    width={300}
-                  />
-                </Link>
-                <div className="p-4">
-                  <h3 className="mb-2 text-lg font-bold tracking-tight">
-                    Cozy Cabin in the Woods
-                  </h3>
-                  <div className="mb-2 flex items-center gap-2">
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                    <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      (45)
-                    </span>
-                  </div>
-                  <p className="mb-4 text-gray-500 dark:text-gray-400">
-                    Escape to this cozy cabin nestled in the heart of the woods.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">$150</span>
-                    <Button size="sm" variant="default">
-                      Book Now
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
-                <Link className="block" href="#">
-                  <Image
-                    alt="Rental"
-                    className="h-[200px] w-full object-cover"
-                    height={200}
-                    src={placeholderImage}
-                    style={{
-                      aspectRatio: "300/200",
-                      objectFit: "cover",
-                    }}
-                    width={300}
-                  />
-                </Link>
-                <div className="p-4">
-                  <h3 className="mb-2 text-lg font-bold tracking-tight">
-                    Beachfront Villa in Bali
-                  </h3>
-                  <div className="mb-2 flex items-center gap-2">
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      (78)
-                    </span>
-                  </div>
-                  <p className="mb-4 text-gray-500 dark:text-gray-400">
-                    Enjoy the stunning ocean views from this luxurious villa.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">$350</span>
-                    <Button size="sm" variant="default">
-                      Book Now
-                    </Button>
+              {properties.map((property) => (
+                <div
+                  key={property.id}
+                  className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
+                  <Link className="block" href="#">
+                    <Image
+                      alt={property.name}
+                      className="h-[200px] w-full object-cover"
+                      height={200}
+                      src={property.urls[0] || "/placeholder.svg"}
+                      style={{
+                        aspectRatio: "300/200",
+                        objectFit: "cover",
+                      }}
+                      width={300}
+                    />
+                  </Link>
+                  <div className="p-4">
+                    <h3 className="mb-2 text-lg font-bold tracking-tight">
+                      {property.name}
+                    </h3>
+                    <div className="mb-2 flex items-center gap-2">
+                      <StarIcon className="h-5 w-5 fill-primary" />
+                      <StarIcon className="h-5 w-5 fill-primary" />
+                      <StarIcon className="h-5 w-5 fill-primary" />
+                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
+                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        ({property.reviewsCount || 0})
+                      </span>
+                    </div>
+                    <p className="mb-4 text-gray-500 dark:text-gray-400">
+                      {property.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold">
+                        ${property.pricePerNight ?? 0}
+                      </span>
+                      <Button size="sm" variant="default">
+                        <Link href={`/profile/properties/${property.id}`}>
+                          Book Now
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
-                <Link className="block" href="#">
-                  <Image
-                    alt="Rental"
-                    className="h-[200px] w-full object-cover"
-                    height={200}
-                    src={placeholderImage}
-                    style={{
-                      aspectRatio: "300/200",
-                      objectFit: "cover",
-                    }}
-                    width={300}
-                  />
-                </Link>
-                <div className="p-4">
-                  <h3 className="mb-2 text-lg font-bold tracking-tight">
-                    Treehouse Retreat in the Mountains
-                  </h3>
-                  <div className="mb-2 flex items-center gap-2">
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      (92)
-                    </span>
-                  </div>
-                  <p className="mb-4 text-gray-500 dark:text-gray-400">
-                    Escape to this unique treehouse nestled in the mountains.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">$200</span>
-                    <Button size="sm" variant="default">
-                      Book Now
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
-                <Link className="block" href="#">
-                  <Image
-                    alt="Rental"
-                    className="h-[200px] w-full object-cover"
-                    height={200}
-                    src="/images/featured/new-york-penthouse.jpg"
-                    style={{
-                      aspectRatio: "300/200",
-                      objectFit: "cover",
-                    }}
-                    width={300}
-                  />
-                </Link>
-                <div className="p-4">
-                  <h3 className="mb-2 text-lg font-bold tracking-tight">
-                    Luxury Penthouse in New York
-                  </h3>
-                  <div className="mb-2 flex items-center gap-2">
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-primary" />
-                    <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      (68)
-                    </span>
-                  </div>
-                  <p className="mb-4 text-gray-500 dark:text-gray-400">
-                    Experience the height of luxury in this stunning penthouse.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">$500</span>
-                    <Button size="sm" variant="default">
-                      Book Now
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>

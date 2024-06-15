@@ -41,10 +41,15 @@ const Congratulation = () => {
               You have successfully become a host.
             </p>
             <Link
-              href={"/dashboard"}
+              href={"/profile/properties"}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-              Go to Dashboard
+              Go to Your Properties
             </Link>
+            <button
+              className="font-bold cursor-pointer hover:text-gray-700"
+              onClick={() => window.location.reload()}>
+              Make another property
+            </button>
           </div>
         </div>
       </div>

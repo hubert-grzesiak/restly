@@ -2,6 +2,7 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
+import { revalidatePath } from "next/cache";
 
 const createObject = async (rawData: any) => {
   try {
@@ -27,6 +28,9 @@ const createObject = async (rawData: any) => {
         minimumStay: data.object.minimumStay,
         maximumStay: data.object.maximumStay,
         maxPeople: data.object.maxPeople,
+        checkInTime: data.calendar.checkInTime,
+        checkOutTime: data.calendar.checkOutTime,
+        ownerId: session?.user?.id ?? '',
         prices: {
           create: data.calendar.prices.map((price: { year: any; month: any; dailyRate: any; }) => ({
             year: price.year,
@@ -46,15 +50,9 @@ const createObject = async (rawData: any) => {
             urls: data.image.urls,
           },
         },
-        calendar: {
-          create: {
-            checkInTime: data.calendar.checkInTime,
-            checkOutTime: data.calendar.checkOutTime,
-          },
-        },
+       
       },
     });
-
     return newObject;
   } catch (error) {
     console.error("Error creating object:", error);

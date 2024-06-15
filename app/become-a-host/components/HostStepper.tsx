@@ -34,6 +34,8 @@ const HostStepper = () => {
     { value: string; label: string }[]
   >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); // Nowy stan
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -76,6 +78,7 @@ const HostStepper = () => {
   }, []);
 
   const handleFilesChange = async (newFiles: UploadFile[]) => {
+    setIsUploading(true); // Ustawianie stanu na true przed rozpoczęciem przesyłania
     const uploadedUrls: string[] = [];
     for (const file of newFiles) {
       const formData = new FormData();
@@ -94,6 +97,7 @@ const HostStepper = () => {
       }
     }
     form.setValue("image.urls", uploadedUrls);
+    setIsUploading(false); // Ustawianie stanu na false po zakończeniu przesyłania
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
@@ -112,8 +116,9 @@ const HostStepper = () => {
 
       toast.success(JSON.stringify(formData, null, 2));
       console.log("FormData: ", formData);
-      // await createObject(formData);
+      await createObject(formData);
       toast.success("Object created successfully");
+      setIsSubmitted(true); // Ensure this is set after successful submission
     } catch (error) {
       toast.error(
         (error as Error).message || "Failed to upload files. Please try again."
@@ -574,11 +579,14 @@ const HostStepper = () => {
                     </Button>
                     <Button
                       type="submit"
-                      disabled={isSubmitting}
-                      onClick={() => setIsSubmitted(true)}
+                      disabled={isSubmitting || isUploading}
                       className="mt-4 text-center max-w-[320px] outline-green-500 border-green-500 text-green-700"
                       variant={"outline"}>
-                      {isSubmitting ? "Submitting..." : "Submit"}
+                      {isSubmitting
+                        ? "Submitting..."
+                        : isUploading
+                        ? "Waiting for image..."
+                        : "Submit"}
                     </Button>
                   </div>
                 </div>
