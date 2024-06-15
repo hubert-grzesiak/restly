@@ -16,8 +16,8 @@ const page = () => {
             </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/users">
-              Users
+            <Link className="hover:underline" href="/conversations">
+              Conversations
             </Link>
           </li>
           <li>

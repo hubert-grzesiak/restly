@@ -20,10 +20,10 @@ const useRoutes = () => {
         active: pathname === "/conversations" || !!conversationId,
       },
       {
-        label: "Users",
-        href: "/users",
+        label: "Conversations",
+        href: "/conversations",
         icon: HiUsers,
-        active: pathname === "/users",
+        active: pathname === "/conversations",
       },
       {
         label: "Logout",

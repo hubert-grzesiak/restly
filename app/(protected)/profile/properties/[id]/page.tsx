@@ -3,6 +3,7 @@ import Image from "next/image";
 import getPropertyInfo from "@/lib/actions/properties/getPropertyInfo";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+
 import {
   PopoverTrigger,
   PopoverContent,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import Opinions from "./components/Opinions";
 import AddToFavourite from "./components/AddToFavourite";
+import { currentUser } from "@/lib/actualUserInfo";
 import ContactHost from "./components/ContactHost";
 
 interface PageProps {
@@ -25,6 +27,8 @@ interface PageProps {
 }
 
 const Details: React.FC<PageProps> = async ({ params }) => {
+  const user = await currentUser();
+  console.log(user);
   const id = params.id;
   if (!id) {
     return <div>No property ID provided</div>;
@@ -43,7 +47,9 @@ const Details: React.FC<PageProps> = async ({ params }) => {
           <div className="container mx-auto flex justify-between px-4 md:px-0">
             <h1 className="mb-4 text-3xl font-bold">{property.name}</h1>
             <div className="flex gap-2">
-              <ContactHost property={property} />
+              {user?.id !== property.ownerId && (
+                <ContactHost property={property} />
+              )}
               <AddToFavourite property={property} />
             </div>
           </div>

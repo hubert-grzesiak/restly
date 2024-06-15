@@ -15,7 +15,9 @@ const NormalNavbar = ({ id }: { id: string }) => {
         <Link className="text-sm font-medium hover:underline" href="/settings">
           Profile
         </Link>
-        <Link className="text-sm font-medium hover:underline" href="/users">
+        <Link
+          className="text-sm font-medium hover:underline"
+          href="/conversations">
           Chat
         </Link>
         <Link

@@ -34,8 +34,8 @@ export default async function RootLayout({
       icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
-      name: "Users",
-      link: "/users",
+      name: "Conversations",
+      link: "/conversations",
       icon: (
         <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
       ),

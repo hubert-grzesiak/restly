@@ -1,24 +1,33 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { HeartIcon } from "@/components/icons";
-import { toggleFavoriteProperty } from "@/lib/actions/properties/saveProperty";
-import { motion } from "framer-motion";
-import Link from "next/link";
 
-function ContactHost({ property }) {
+import { useCallback, useState } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import React from "react";
+import { SendIcon } from "@/components/icons";
+
+const ContactHost = ({ property }) => {
+  const router = useRouter();
+
+  const handleClick = useCallback(() => {
+    axios
+      .post("/api/conversations", { userId: property.ownerId })
+      .then((data) => {
+        router.push(`/conversations/${data.data.id}`);
+      });
+  }, [property, router]);
   return (
-    <>
-      <Link className="" href={`/conversations/${property.ownerId}`}>
-        <div className="relative">
-          <HeartIcon />
-        </div>
-        Contact Host
+    <Button variant={"outline"} onClick={handleClick}>
+      <Link
+        className="flex gap-2 items-center justify-center"
+        href={`/conversations/${property.ownerId}`}>
+        <SendIcon />
+        <span>Contact Host</span>
       </Link>
-    </>
+    </Button>
   );
-}
+};
 
 export default ContactHost;
