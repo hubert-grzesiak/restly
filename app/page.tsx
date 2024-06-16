@@ -195,8 +195,10 @@ export default async function Home() {
                       <StarIcon className="h-5 w-5 fill-primary" />
                       <StarIcon className="h-5 w-5 fill-primary" />
                       <StarIcon className="h-5 w-5 fill-primary" />
-                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
+                      <StarIcon className="h-5 w-5 fill-primary" />
+                      <StarIcon className="h-5 w-5 fill-primary" />
+                      {/* <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
+                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" /> */}
                       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         ({property.reviewsCount || 0})
                       </span>

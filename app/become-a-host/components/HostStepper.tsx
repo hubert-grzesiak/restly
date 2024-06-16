@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -22,18 +22,24 @@ import Congratulation from "./Congratulation";
 import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
-import { Select, Checkbox, UploadFile } from "antd";
-import { register } from "module";
+import { Select } from "antd";
+import Uploader from "@/components/ui/uploader";
+import { TypeOf } from "zod";
 
-const HostStepper = () => {
-  const [steps, setSteps] = useState(0);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [facilities, setFacilities] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [files, setFiles] = useState([]);
+const HostStepper: React.FC = () => {
+  const [steps, setSteps] = useState<number>(0);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [facilities, setFacilities] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [facilityValue, setFacilityValue] = useState<string[]>([]);
 
-  const form = useForm({
+  type FormSchemaType = TypeOf<typeof FormSchema>;
+
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
@@ -74,35 +80,33 @@ const HostStepper = () => {
     fetchFacilities();
   }, []);
 
-  async function handleInputFiles(e) {
-    const newFiles = Array.from(e.target.files).filter(
+  async function handleInputFiles(e: ChangeEvent<HTMLInputElement>) {
+    const newFiles = Array.from(e.target.files ?? []).filter(
       (file) => file.size < 10000 * 10024 && file.type.startsWith("image/")
     );
 
     setFiles((prev) => [...prev, ...newFiles]);
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormSchemaType) => {
     setIsSubmitting(true);
     try {
       const formData = new FormData();
       files.forEach((file) => {
         formData.append("files", file);
       });
-      console.log(data);
       formData.append("data", JSON.stringify(data));
       await createObject(formData);
       toast.success("Object created successfully");
       setIsSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
   };
-  const currentMonth = new Date().getMonth();
 
-  const [facilityValue, setFacilityValue] = useState([]);
+  const currentMonth = new Date().getMonth();
 
   return !isSubmitted ? (
     <>
@@ -478,7 +482,10 @@ const HostStepper = () => {
                             filterOption
                             style={{ width: "100%" }}
                             placeholder="Please select"
-                            options={facilities}
+                            options={facilities.map((facility) => ({
+                              label: facility.label,
+                              value: facility.value,
+                            }))}
                           />
                         </FormControl>
                         <FormMessage />

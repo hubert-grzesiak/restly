@@ -1,18 +1,31 @@
 "use server";
 import { auth } from "@/lib/auth";
 import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import path from "path";
 import fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 import os from "os";
 import { db } from "@/lib/db"; // Use the db from your module
+import { TypeOf } from "zod";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
+  cloud_name: process.env.CLOUD_NAME!,
+  api_key: process.env.CLOUD_API_KEY!,
+  api_secret: process.env.CLOUD_API_SECRET!,
 });
+
+type FormSchemaType = TypeOf<typeof FormSchema>;
+
+interface FileWithType extends File {
+  type: string;
+}
+
+interface SavedFile {
+  filepath: string;
+  filename: string;
+  ext: string;
+}
 
 export const createObject = async (formData: FormData) => {
   try {
@@ -22,15 +35,15 @@ export const createObject = async (formData: FormData) => {
       throw new Error("User not authenticated");
     }
 
-    const data = JSON.parse(formData.get("data"));
+    const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
     console.log("data", data);
-    const files = formData.getAll("files");
+    const files = formData.getAll("files") as FileWithType[];
     console.log("files", files);
     const newFiles = await savePhotosLocal(files);
     console.log("newFiles", newFiles);
     const photos = await uploadPhotosCloudinary(newFiles);
     console.log("photos", photos);
-    newFiles.map((file) => fs.unlink(file.filepath));
+    await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
 
     const newPhotos = photos.map((photo) => photo.secure_url);
     console.log("newPhotos", newPhotos);
@@ -74,13 +87,13 @@ export const createObject = async (formData: FormData) => {
       },
     });
     return newObject;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating object:", error);
     return null;
   }
 };
 
-async function savePhotosLocal(files) {
+async function savePhotosLocal(files: FileWithType[]): Promise<SavedFile[]> {
   const multipleBuffersPromise = files.map((file) => {
     return file.arrayBuffer().then((data) => {
       const buffer = Buffer.from(data);
@@ -99,14 +112,18 @@ async function savePhotosLocal(files) {
   return await Promise.all(multipleBuffersPromise);
 }
 
-const uploadPhotosCloudinary = async (newFiles) => {
+const uploadPhotosCloudinary = async (
+  newFiles: SavedFile[]
+): Promise<UploadApiResponse[]> => {
   const multipleUploadsPromise = newFiles.map((file) =>
     cloudinary.uploader.upload(file.filepath, { folder: "restly" })
   );
   return await Promise.all(multipleUploadsPromise);
 };
 
-export async function deletePhoto(public_id: string) {
+export async function deletePhoto(
+  public_id: string
+): Promise<{ msg?: string; errMsg?: string }> {
   try {
     await Promise.all([
       db.image.delete({ where: { public_id } }),
@@ -114,7 +131,7 @@ export async function deletePhoto(public_id: string) {
     ]);
 
     return { msg: "Photo deleted successfully" };
-  } catch (error) {
+  } catch (error: any) {
     return { errMsg: error.message };
   }
 }
