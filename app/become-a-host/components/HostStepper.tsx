@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -23,8 +23,11 @@ import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
 import { Select } from "antd";
-import Uploader from "@/components/ui/uploader";
+import Uploader from "@/components/ui/uploader"; 
+import { UploadFile } from "antd/es/upload/interface";
 import { TypeOf } from "zod";
+
+type FormSchemaType = TypeOf<typeof FormSchema>;
 
 const HostStepper: React.FC = () => {
   const [steps, setSteps] = useState<number>(0);
@@ -34,10 +37,8 @@ const HostStepper: React.FC = () => {
   >([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilityValue, setFacilityValue] = useState<string[]>([]);
-
-  type FormSchemaType = TypeOf<typeof FormSchema>;
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -80,20 +81,18 @@ const HostStepper: React.FC = () => {
     fetchFacilities();
   }, []);
 
-  async function handleInputFiles(e: ChangeEvent<HTMLInputElement>) {
-    const newFiles = Array.from(e.target.files ?? []).filter(
-      (file) => file.size < 10000 * 10024 && file.type.startsWith("image/")
-    );
-
-    setFiles((prev) => [...prev, ...newFiles]);
-  }
+  const onFilesChange = (newFiles: UploadFile[]) => {
+    setFiles(newFiles);
+  };
 
   const onSubmit = async (data: FormSchemaType) => {
     setIsSubmitting(true);
     try {
       const formData = new FormData();
       files.forEach((file) => {
-        formData.append("files", file);
+        if (file.originFileObj) {
+          formData.append("files", file.originFileObj);
+        }
       });
       formData.append("data", JSON.stringify(data));
       await createObject(formData);
@@ -516,12 +515,7 @@ const HostStepper: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleInputFiles}
-                          />
+                          <Uploader onFilesChange={onFilesChange} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
