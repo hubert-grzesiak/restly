@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,28 +15,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { FormSchema } from "./HostForm.schema";
-import { Checkbox, Select, Space } from "antd";
-import axios from "axios";
-import { UploadFile } from "antd";
 import getFacilities from "@/lib/actions/host/getFacilities";
-import { ComboboxDemo } from "@/components/ui/combobox";
-import Uploader from "@/components/ui/uploader";
-import { countries } from "@/lib/consts";
 import { Textarea } from "@/components/ui/textarea";
-import createObject from "@/lib/actions/host/createObject";
 import { motion } from "framer-motion";
 import Congratulation from "./Congratulation";
+import { createObject } from "@/lib/actions/host/createObject";
+import { ComboboxDemo } from "@/components/ui/combobox";
+import { countries } from "@/lib/consts";
+import { Select, Checkbox, UploadFile } from "antd";
+import { register } from "module";
 
 const HostStepper = () => {
   const [steps, setSteps] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [facilities, setFacilities] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [facilities, setFacilities] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // Nowy stan
+  const [isUploading, setIsUploading] = useState(false);
+  const [files, setFiles] = useState([]);
 
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
@@ -77,60 +74,35 @@ const HostStepper = () => {
     fetchFacilities();
   }, []);
 
-  const handleFilesChange = async (newFiles: UploadFile[]) => {
-    setIsUploading(true); // Ustawianie stanu na true przed rozpoczęciem przesyłania
-    const uploadedUrls: string[] = [];
-    for (const file of newFiles) {
-      const formData = new FormData();
-      formData.append("file", file.originFileObj as Blob);
-      formData.append("upload_preset", "restly");
+  async function handleInputFiles(e) {
+    const newFiles = Array.from(e.target.files).filter(
+      (file) => file.size < 10000 * 10024 && file.type.startsWith("image/")
+    );
 
-      try {
-        const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/dev6yhoh3/image/upload",
-          formData
-        );
-        uploadedUrls.push(response.data.secure_url);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-        throw error;
-      }
-    }
-    form.setValue("image.urls", uploadedUrls);
-    setIsUploading(false); // Ustawianie stanu na false po zakończeniu przesyłania
-  };
+    setFiles((prev) => [...prev, ...newFiles]);
+  }
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log(data);
     try {
-      const formData = { ...data };
-
-      formData.facility = formData.facility.map((facility) => ({
-        name: facility.name,
-      }));
-
-      if (formData.facility.some((facility) => !facility.name)) {
-        throw new Error("All facilities must have names.");
-      }
-
-      toast.success(JSON.stringify(formData, null, 2));
-      console.log("FormData: ", formData);
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      console.log(data);
+      formData.append("data", JSON.stringify(data));
       await createObject(formData);
       toast.success("Object created successfully");
-      setIsSubmitted(true); // Ensure this is set after successful submission
+      setIsSubmitted(true);
     } catch (error) {
-      toast.error(
-        (error as Error).message || "Failed to upload files. Please try again."
-      );
+      toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const currentMonth = new Date().getMonth();
 
-  const [facilityValue, setFacilityValue] = useState<string[]>([]);
+  const [facilityValue, setFacilityValue] = useState([]);
 
   return !isSubmitted ? (
     <>
@@ -527,6 +499,7 @@ const HostStepper = () => {
                   </div>
                 </div>
               )}
+
               {steps === 4 && (
                 <div className="p-8 gap-2 flex flex-col">
                   <h2 className="text-lg font-bold">Images</h2>
@@ -536,41 +509,18 @@ const HostStepper = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Uploader onFilesChange={handleFilesChange} />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleInputFiles}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="image.isMain"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onChange={field.onChange}>
-                            Is Main Image
-                          </Checkbox>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="image.description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Image Description</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
                   <div className="w-full flex justify-between flex-row">
                     <Button
                       onClick={() => setSteps(steps - 1)}

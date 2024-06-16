@@ -15,13 +15,13 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const Uploader: React.FC<{ onFilesChange: (files: UploadFile[]) => void }> = ({
+const Uploader: React.FC<{ onFilesChange?: (files: UploadFile[]) => void }> = ({
   onFilesChange,
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+  console.log("fileList", fileList);
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
@@ -33,6 +33,7 @@ const Uploader: React.FC<{ onFilesChange: (files: UploadFile[]) => void }> = ({
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    //@ts-ignore
     onFilesChange(newFileList); // Update the parent component with the current file list
   };
 
@@ -47,6 +48,7 @@ const Uploader: React.FC<{ onFilesChange: (files: UploadFile[]) => void }> = ({
     <>
       <Upload
         listType="picture-card"
+        multiple
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
