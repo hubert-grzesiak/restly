@@ -52,7 +52,7 @@ export default async function Home() {
                   alt="World Map"
                   className="rounded-xl object-cover"
                   fill
-                  src={placeholderImage}
+                  src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1718575030/restly/dkmtrnz8biy6m4m88ci6.jpg"
                 />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-gray-100/60 to-transparent dark:from-gray-800 dark:to-transparent" />
                 <div className="absolute bottom-4 left-4 rounded-md bg-white p-3 shadow-md dark:bg-gray-950">
@@ -80,7 +80,7 @@ export default async function Home() {
                   alt="Destination"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   height={200}
-                  src="/images/popular/paris.jpg"
+                  src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1718575030/restly/dkmtrnz8biy6m4m88ci6.jpg"
                   style={{
                     aspectRatio: "300/200",
                     objectFit: "cover",

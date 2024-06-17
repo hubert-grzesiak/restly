@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import os from "os";
 import { db } from "@/lib/db"; // Use the db from your module
 import { TypeOf } from "zod";
+import sharp from "sharp"; // Add sharp for image optimization
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME!,
@@ -95,18 +96,21 @@ export const createObject = async (formData: FormData) => {
 
 async function savePhotosLocal(files: FileWithType[]): Promise<SavedFile[]> {
   const multipleBuffersPromise = files.map((file) => {
-    return file.arrayBuffer().then((data) => {
+    return file.arrayBuffer().then(async (data) => {
       const buffer = Buffer.from(data);
       const name = uuidv4();
-      const ext = file.type.split("/")[1];
+      const ext = "webp"; // Convert all images to WebP format
 
       const tempdir = os.tmpdir();
       const uploadDir = path.join(tempdir, `/${name}.${ext}`);
 
-      // Ensure file write completes before proceeding
-      return fs.writeFile(uploadDir, buffer).then(() => {
-        return { filepath: uploadDir, filename: file.name, ext: ext };
-      });
+      // Use sharp to optimize and convert the image
+      await sharp(buffer)
+        .resize({ width: 1920 }) // Resize the image to a max width of 800px
+        .webp({ quality: 90 }) // Convert to WebP format with 80% quality
+        .toFile(uploadDir);
+
+      return { filepath: uploadDir, filename: file.name, ext: ext };
     });
   });
   return await Promise.all(multipleBuffersPromise);
