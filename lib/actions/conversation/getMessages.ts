@@ -15,7 +15,12 @@ const getMessages = async (conversationId: string) => {
     });
 
     return messages;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching messages:", error.message);
+    } else {
+      console.error("Unknown error fetching messages");
+    }
     return [];
   }
 };

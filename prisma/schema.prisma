@@ -140,6 +140,7 @@ model Facility {
 
 model Image {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  public_id   String?
   description String
   isMain      Boolean
   urls        String[]

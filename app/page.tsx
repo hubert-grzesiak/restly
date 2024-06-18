@@ -1,8 +1,5 @@
-import { Poppins } from "next/font/google";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import LoginButton from "@/components/auth/login-button";
 import {
   FilterIcon,
   LocateIcon,
@@ -10,14 +7,8 @@ import {
   StarIcon,
 } from "@/components/icons";
 import Link from "next/link";
-import placeholderImage from "@/public/images/avatar-placeholder.png";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
-
-const font = Poppins({
-  subsets: ["latin"],
-  weight: ["600"],
-});
 
 export default async function Home() {
   const properties = await getAllProperties();
@@ -203,7 +194,13 @@ export default async function Home() {
                       {/* <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
                       <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" /> */}
                       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        ({property.reviewsCount || 0})
+                        (
+                        {
+                          // property?.reviewsCount
+                          // ||
+                          0
+                        }
+                        )
                       </span>
                     </div>
                     <p className="mb-4 text-gray-500 dark:text-gray-400">
@@ -211,7 +208,11 @@ export default async function Home() {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold">
-                        ${property.pricePerNight ?? 0}
+                        $
+                        {
+                          // property.pricePerNight ??
+                          0
+                        }
                       </span>
                       <Button size="sm" variant="default">
                         <Link href={`/profile/properties/${property.id}`}>

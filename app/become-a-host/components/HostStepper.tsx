@@ -23,7 +23,7 @@ import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
 import { Select } from "antd";
-import Uploader from "@/components/ui/uploader"; 
+import Uploader from "@/components/ui/uploader";
 import { UploadFile } from "antd/es/upload/interface";
 import { TypeOf } from "zod";
 
@@ -36,7 +36,6 @@ const HostStepper: React.FC = () => {
     { label: string; value: string }[]
   >([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilityValue, setFacilityValue] = useState<string[]>([]);
 
@@ -98,8 +97,12 @@ const HostStepper: React.FC = () => {
       await createObject(formData);
       toast.success("Object created successfully");
       setIsSubmitted(true);
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -512,7 +515,7 @@ const HostStepper: React.FC = () => {
                   <FormField
                     control={form.control}
                     name="image.urls"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormControl>
                           <Uploader onFilesChange={onFilesChange} />
@@ -530,14 +533,10 @@ const HostStepper: React.FC = () => {
                     </Button>
                     <Button
                       type="submit"
-                      disabled={isSubmitting || isUploading}
+                      disabled={isSubmitting}
                       className="mt-4 text-center max-w-[320px] outline-green-500 border-green-500 text-green-700"
                       variant={"outline"}>
-                      {isSubmitting
-                        ? "Submitting..."
-                        : isUploading
-                        ? "Waiting for image..."
-                        : "Submit"}
+                      {isSubmitting ? "Submitting..." : "Submit"}
                     </Button>
                   </div>
                 </div>

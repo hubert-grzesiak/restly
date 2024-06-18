@@ -1,17 +1,29 @@
 "use client";
 
 import clsx from "clsx";
-import ReactSelect from "react-select";
+import ReactSelect, { MultiValue, ActionMeta, SingleValue } from "react-select";
+interface Option {
+  label: string;
+  value: string;
+}
 
 interface SelectProps {
   label: string;
-  value?: Record<string, any>;
-  onChange: (value: Record<string, any>) => void;
-  options: Record<string, any>[];
+  value?: Option | Option[];
+  onChange: (
+    value: MultiValue<Option> | SingleValue<Option>,
+    actionMeta: ActionMeta<Option>
+  ) => void;
+  options: Option[];
   disabled?: boolean;
 }
-
-const Select: React.FC<SelectProps> = ({ label, value, onChange, options, disabled }) => {
+const Select: React.FC<SelectProps> = ({
+  label,
+  value,
+  onChange,
+  options,
+  disabled,
+}) => {
   return (
     <div className="z-[100]">
       <label
@@ -22,8 +34,7 @@ const Select: React.FC<SelectProps> = ({ label, value, onChange, options, disabl
           leading-6 
           text-gray-900
           dark:text-gray-200
-        "
-      >
+        ">
         {label}
       </label>
       <div className="mt-2">

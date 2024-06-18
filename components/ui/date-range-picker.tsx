@@ -3,14 +3,7 @@ import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Calendar } from "./calendar";
 import { DateInput } from "./date-input";
-import { Label } from "./label";
-import { Switch } from "./switch";
-import {
-  ChevronUpIcon,
-  ChevronDownIcon,
-  CheckIcon,
-} from "@radix-ui/react-icons";
-import { cn } from "@/lib/utils";
+import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 
 export interface DateRangePickerProps {
   onUpdate?: (values: {
@@ -22,12 +15,11 @@ export interface DateRangePickerProps {
   initialCompareFrom?: Date | string;
   initialCompareTo?: Date | string;
   align?: "start" | "center" | "end";
-  locale?: string;
   showCompare?: boolean;
   blockedDates?: Array<{ from: string; to: string }>;
 }
 
-const formatDate = (date: Date, locale: string = "en-us"): string => {
+const formatDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString();
@@ -42,17 +34,6 @@ const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
   } else {
     return dateInput;
   }
-};
-
-const isDateBlocked = (
-  date: Date,
-  blockedDates: Array<{ from: string; to: string }>
-): boolean => {
-  return blockedDates.some(({ from, to }) => {
-    const fromDate = new Date(from.split(".").reverse().join("-"));
-    const toDate = new Date(to.split(".").reverse().join("-"));
-    return date >= fromDate && date <= toDate;
-  });
 };
 
 const getBlockedDates = (
@@ -84,7 +65,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   initialCompareTo,
   onUpdate,
   align = "end",
-  locale = "en-US",
   blockedDates = [],
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
@@ -171,7 +151,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       openedRangeRef.current = range;
       openedRangeCompareRef.current = rangeCompare;
     }
-  }, [isOpen]);
+  }, [isOpen, range, rangeCompare]);
 
   return (
     <Popover
@@ -187,16 +167,16 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         <Button size={"lg"} variant="outline">
           <div className="text-right">
             <div className="py-1">
-              <div>{`${formatDate(range.from, locale)}${
-                range.to != null ? " - " + formatDate(range.to, locale) : ""
+              <div>{`${formatDate(range.from)}${
+                range.to != null ? " - " + formatDate(range.to) : ""
               }`}</div>
             </div>
             {rangeCompare != null && (
               <div className="opacity-60 text-xs -mt-1">
                 <>
-                  vs. {formatDate(rangeCompare.from, locale)}
+                  vs. {formatDate(rangeCompare.from)}
                   {rangeCompare.to != null
-                    ? ` - ${formatDate(rangeCompare.to, locale)}`
+                    ? ` - ${formatDate(rangeCompare.to)}`
                     : ""}
                 </>
               </div>
@@ -259,7 +239,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                   disabledDates={[
                     ...blockedDatesArray,
                     ...getBlockedDates([
-                      { from: "01.01.2024", to: formatDate(today, "en-US") },
+                      { from: "01.01.2024", to: formatDate(today) },
                     ]),
                   ]}
                 />
@@ -285,13 +265,13 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               ) {
                 onUpdate?.({
                   range: {
-                    from: formatDate(range.from, locale),
-                    to: formatDate(range.to!, locale),
+                    from: formatDate(range.from),
+                    to: formatDate(range.to!),
                   },
                   rangeCompare: rangeCompare
                     ? {
-                        from: formatDate(rangeCompare.from, locale),
-                        to: formatDate(rangeCompare.to!, locale),
+                        from: formatDate(rangeCompare.from),
+                        to: formatDate(rangeCompare.to!),
                       }
                     : undefined,
                 });

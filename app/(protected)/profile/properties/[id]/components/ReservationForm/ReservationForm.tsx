@@ -54,8 +54,6 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
     formState: { errors },
   } = form;
 
-  
-
   useEffect(() => {
     setValue("dateRange", dateRange);
   }, [dateRange, setValue]);
@@ -67,24 +65,24 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
     return blockedDates.some(({ from, to }) => {
       const fromDate = new Date(from.split(".").reverse().join("-"));
       const toDate = new Date(to.split(".").reverse().join("-"));
-      console.log(date >= fromDate && date <= toDate);
       return date >= fromDate && date <= toDate;
     });
   };
 
-  const getNextAvailableDateRange = (
-    blockedDates: Array<{ from: string; to: string }>
-  ) => {
-    let date = new Date();
-    while (isDateBlocked(date, blockedDates)) {
-      date.setDate(date.getDate() + 1);
-    }
-    const from = date.toISOString().split("T")[0];
-    date.setDate(date.getDate() + 1);
-    const to = date.toISOString().split("T")[0];
-    return { from, to };
-  };
   useEffect(() => {
+    const getNextAvailableDateRange = (
+      blockedDates: Array<{ from: string; to: string }>
+    ) => {
+      const date = new Date();
+      while (isDateBlocked(date, blockedDates)) {
+        date.setDate(date.getDate() + 1);
+      }
+      const from = date.toISOString().split("T")[0];
+      date.setDate(date.getDate() + 1);
+      const to = date.toISOString().split("T")[0];
+      return { from, to };
+    };
+
     async function fetchReservations() {
       const result = await getReservations(propertyId);
       if (result.success) {
@@ -97,6 +95,7 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
 
     fetchReservations();
   }, [propertyId]);
+
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
@@ -114,7 +113,7 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
       } else {
         toast.error(result.message);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
     } finally {
@@ -132,7 +131,7 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
             <FormField
               control={form.control}
               name="dateRange"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormControl>
                     <DateRangePicker

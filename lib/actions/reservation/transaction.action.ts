@@ -1,13 +1,11 @@
 "use server";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
-import { ReservationSchema } from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
-import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
+import { Transaction } from "@prisma/client";
 
-export async function checkoutCredits(transaction) {
+export async function checkoutCredits(transaction: Transaction) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const amount = transaction.amount * 100;
 
@@ -39,7 +37,7 @@ export async function checkoutCredits(transaction) {
 
 
 
-export async function createTransaction(transaction) {
+export async function createTransaction(transaction: Transaction) {
   try {
     const session = await auth();
     if (!session?.user?.email) {
@@ -60,19 +58,3 @@ export async function createTransaction(transaction) {
     return { success: false, message: "Failed to create transaction." };
   }
 }
-
-async function updateCredits(userId, credits) {
-    try {
-      await db.user.update({
-        where: { id: userId },
-        data: {
-          credits: {
-            increment: credits,
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Failed to update credits", error);
-      throw new Error("Failed to update credits.");
-    }
-  }

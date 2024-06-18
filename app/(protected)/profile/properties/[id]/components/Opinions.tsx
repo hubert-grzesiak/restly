@@ -102,12 +102,12 @@ export default function Opinions() {
   );
 }
 
-function MoveHorizontalIcon(props) {
+function MoveHorizontalIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
-      width="50px"
-      height="50px"
+      width="25px"
+      height="25px"
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
       fill="#000000"
@@ -117,7 +117,7 @@ function MoveHorizontalIcon(props) {
   );
 }
 
-function StarIcon(props) {
+function StarIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

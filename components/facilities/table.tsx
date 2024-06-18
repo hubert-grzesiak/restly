@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { UpdateFacility, DeleteFacility } from "./buttons";
-import FacilityStatus from "./status";
 import { fetchFilteredFacilities } from "@/lib/actions/admin";
 export default async function FacilitiesTable({
   query,

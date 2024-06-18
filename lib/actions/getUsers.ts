@@ -10,9 +10,6 @@ const getUsers = async () => {
 
   try {
     const users = await db.user.findMany({
-      // orderBy: {
-      //   createdAt: "desc",
-      // },
       where: {
         NOT: {
           email: session.user.email,
@@ -21,7 +18,12 @@ const getUsers = async () => {
     });
 
     return users;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching users:", error.message);
+    } else {
+      console.error("Unknown error fetching users");
+    }
     return [];
   }
 };

@@ -1,12 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import * as z from "zod";
-import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -18,10 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createFacility, editFacility } from "@/lib/actions/admin";
-import { Badge } from "lucide-react";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
-// import { Router } from "next/router";
 
 const FacilitySchema = z.object({
   name: z.string().nonempty("Facility name is required"),
@@ -34,9 +30,7 @@ interface Props {
 
 const FacilityForm = ({ type, facilityDetails }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const editorRef = useRef(null);
   const router = useRouter();
-  const pathname = usePathname();
 
   const parsefacilityDetails =
     facilityDetails && JSON.parse(facilityDetails || "");

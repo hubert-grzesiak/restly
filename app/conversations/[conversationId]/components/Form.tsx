@@ -9,6 +9,14 @@ import { CldUploadButton } from "next-cloudinary";
 import useConversation from "../../../../hooks/useConversation";
 import MessageInput from "./MessageInput";
 
+// interface UploadResult {
+//   info: {
+//     secure_url: string;
+//     public_id?: string;
+//     version?: number;
+//   };
+// }
+
 const Form = () => {
   const { conversationId } = useConversation();
 
@@ -31,12 +39,12 @@ const Form = () => {
     });
   };
 
-  const handleUpload = (result: any) => {
-    axios.post("/api/messages", {
-      image: result.info.secure_url,
-      conversationId: conversationId,
-    });
-  };
+  // const handleUpload = (result: UploadResult) => {
+  //   axios.post("/api/messages", {
+  //     image: result.info.secure_url,
+  //     conversationId: conversationId,
+  //   });
+  // };
 
   return (
     <div
@@ -55,7 +63,6 @@ const Form = () => {
       ">
       <CldUploadButton
         options={{ maxFiles: 1 }}
-        onUpload={handleUpload}
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}>
         <HiPhoto size={30} className="text-sky-500" />
       </CldUploadButton>

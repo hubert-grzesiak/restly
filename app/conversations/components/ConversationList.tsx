@@ -2,9 +2,7 @@
 
 import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
-import { MdOutlineGroupAdd } from "react-icons/md";
 
-import { User } from "@prisma/client";
 import { find } from "lodash";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,12 +14,11 @@ import ConversationBox from "./ConversationBox";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
-  users: User[];
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
-  users,
+  
 }) => {
   const [items, setItems] = useState(initialItems);
 

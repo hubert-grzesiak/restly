@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, HTMLAttributes, useEffect, useMemo, useState } from "react";
+import { CSSProperties, HTMLAttributes, useEffect, useState } from "react";
 import { animated, useSpring } from "react-spring";
 
 const defaultProperties = {
@@ -51,7 +51,6 @@ export interface Props extends SVGProps {
 
 export const DarkModeSwitch: React.FC<Props> = ({
   onChange,
-  children,
   checked = false,
   size = 24,
   moonColor = "rgb(229 231 235)",
@@ -66,7 +65,8 @@ export const DarkModeSwitch: React.FC<Props> = ({
     setId(REACT_TOGGLE_DARK_MODE_GLOBAL_ID);
   }, [setId]);
 
-  const { circle, svg, lines, mask } = defaultProperties[checked ? "dark" : "light"];
+  const { circle, svg, lines, mask } =
+    defaultProperties[checked ? "dark" : "light"];
 
   const svgContainerProps = useSpring({
     ...svg,
@@ -101,8 +101,7 @@ export const DarkModeSwitch: React.FC<Props> = ({
         transition
         dark:bg-lightgray
         dark:text-gray-200
-      "
-    >
+      ">
       <animated.svg
         xmlns="http://www.w3.org/2000/svg"
         width={size}
@@ -118,12 +117,11 @@ export const DarkModeSwitch: React.FC<Props> = ({
           ...svgContainerProps,
           ...style,
         }}
-        {...rest}
-      >
+        {...rest}>
         <mask id={uniqueMaskId}>
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           <animated.circle
-            // @ts-ignore
+            // @ts-expect-error: Incorrect types from react-spring for animated.circle
             style={maskedCircleProps}
             r="9"
             fill="black"
@@ -134,7 +132,7 @@ export const DarkModeSwitch: React.FC<Props> = ({
           cx="12"
           cy="12"
           fill={checked ? moonColor : sunColor}
-          // @ts-ignore
+          // @ts-expect-error: Incorrect types from react-spring for animated.circle
           style={centerCircleProps}
           mask={`url(#${uniqueMaskId})`}
         />

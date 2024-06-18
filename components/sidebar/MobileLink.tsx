@@ -4,7 +4,7 @@ import Link from "next/link";
 
 interface MobileItemProps {
   href: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   active?: boolean;
   onClick?: () => void;
 }

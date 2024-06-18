@@ -108,7 +108,7 @@ export const createObject = async (formData: FormData) => {
     });
 
     return newObject;
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating object:", error);
     return null;
   }
@@ -144,17 +144,20 @@ const uploadPhotosCloudinary = async (
   return await Promise.all(multipleUploadsPromise);
 };
 
-export async function deletePhoto(
-  public_id: string
-): Promise<{ msg?: string; errMsg?: string }> {
-  try {
-    await Promise.all([
-      db.image.delete({ where: { public_id } }),
-      cloudinary.uploader.destroy(public_id),
-    ]);
+// export async function deletePhoto(
+//   public_id: string
+// ): Promise<{ msg?: string; errMsg?: string }> {
+//   try {
+//     await Promise.all([
+//       db.images.delete({ where: { public_id } }),
+//       cloudinary.uploader.destroy(public_id),
+//     ]);
 
-    return { msg: "Photo deleted successfully" };
-  } catch (error: any) {
-    return { errMsg: error.message };
-  }
-}
+//     return { msg: "Photo deleted successfully" };
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       return { errMsg: error.message };
+//     }
+//     return { errMsg: "Unknown error" };
+//   }
+// }

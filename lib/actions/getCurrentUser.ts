@@ -1,4 +1,3 @@
-
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
@@ -7,7 +6,7 @@ const getCurrentUser = async () => {
     const session = await auth();
 
     if (!session?.user?.email) {
-      return null; 
+      return null;
     }
 
     const currentUser = await db.user.findUnique({
@@ -21,7 +20,12 @@ const getCurrentUser = async () => {
     }
 
     return currentUser;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching current user:", error.message);
+    } else {
+      console.error("Unknown error fetching current user");
+    }
     return null;
   }
 };

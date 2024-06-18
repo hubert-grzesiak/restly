@@ -4,13 +4,19 @@ import Link from "next/link";
 
 interface DesktopItemProps {
   label: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
   href: string;
   onClick?: () => void;
   active?: boolean;
 }
 
-const DesktopItem: React.FC<DesktopItemProps> = ({ label, href, icon: Icon, active, onClick }) => {
+const DesktopItem: React.FC<DesktopItemProps> = ({
+  label,
+  href,
+  icon: Icon,
+  active,
+  onClick,
+}) => {
   const handleClick = () => {
     if (onClick) {
       return onClick();
@@ -37,10 +43,10 @@ const DesktopItem: React.FC<DesktopItemProps> = ({ label, href, icon: Icon, acti
             dark:hover:bg-lightgray
             dark:hover:text-gray-100
           `,
-          active && "bg-gray-100 text-black dark:bg-lightgray dark:text-gray-200"
-        )}
-      >
-        <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+          active &&
+            "bg-gray-100 text-black dark:bg-lightgray dark:text-gray-200"
+        )}>
+        <Icon className="h-6 w-6 shrink-0" />
         <span className="sr-only">{label}</span>
       </Link>
     </li>

@@ -10,33 +10,25 @@ import {
   isPropertyFavorite,
 } from "@/lib/actions/properties/saveProperty";
 
-type Property = {
-  id: string;
-  isFavorite: boolean;
-};
 
-interface AddToFavouriteProps {
-  property: Property;
-}
-
-const AddToFavourite: React.FC<AddToFavouriteProps> = ({ property }) => {
+const AddToFavourite = ({ propertyId }: { propertyId: string }) => {
   const { data: session } = useSession();
   const [isAnimating, setIsAnimating] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
 
   useEffect(() => {
     const checkFavorite = async () => {
-      const status = await isPropertyFavorite(property.id);
+      const status = await isPropertyFavorite(propertyId);
       setIsFavourite(status!);
     };
     checkFavorite();
-  }, [property.id]); // Only re-run this effect if property.id changes
+  }, [propertyId]); // Only re-run this effect if propertyId changes
 
   const handleToggleFavorite = async () => {
     if (!session) return;
 
     try {
-      const newFavouriteStatus = await toggleFavoriteProperty(property.id);
+      const newFavouriteStatus = await toggleFavoriteProperty(propertyId);
       setIsFavourite(newFavouriteStatus); // Directly use the boolean value returned
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 500); // Duration of animation
