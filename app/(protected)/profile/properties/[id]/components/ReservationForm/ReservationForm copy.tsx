@@ -25,7 +25,6 @@ import { toast } from "sonner";
 import { makeReservation } from "@/lib/actions/reservation/makeReservation";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
-import { result } from "lodash";
 
 const ReservationForm = ({ propertyId }: { propertyId: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,19 +58,19 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
     setIsSubmitting(true);
     try {
       console.log(values);
-      const result = await makeReservation({
-        objectId: propertyId,
-        userId: session.data?.user.id as string,
-        guests: values.guests,
-        dateFrom: values.dateRange.from,
-        dateTo: values.dateRange.to,
-      });
+      // const result = await makeReservation({
+      //   objectId: propertyId,
+      //   userId: session.data?.user.id as string,
+      //   guests: values.guests,
+      //   dateFrom: values.dateRange.from,
+      //   dateTo: values.dateRange.to,
+      // });
 
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
+      // if (result.success) {
+      //   toast.success(result.message);
+      // } else {
+      //   toast.error(result.message);
+      // }
     } catch (error: any) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
@@ -98,7 +97,10 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
                       initialDateTo={dateRange.to}
                       locale="en-GB"
                       showCompare={false}
-                      onUpdate={(values) => setDateRange(values.range)}
+                      onUpdate={(values) => {
+                        setDateRange(values.range);
+                        field.onChange(values.range);
+                      }}
                     />
                   </FormControl>
                   <FormMessage>
