@@ -14,8 +14,8 @@ import Footer from "@/components/footer/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next Auth | NextJS",
-  description: "Authentication using next-auth-v5",
+  title: "Restly",
+  description: "A platform for booking and hosting stays around the world.",
   icons: {
     icon: "/icon.png",
   },

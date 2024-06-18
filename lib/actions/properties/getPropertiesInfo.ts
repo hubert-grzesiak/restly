@@ -17,6 +17,8 @@ const getPropertiesInfo = async () => {
         },
         include: {
             images:true,
+            facility:true,
+            geometry:true
         }
     });
 

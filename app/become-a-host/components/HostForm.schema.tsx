@@ -5,6 +5,10 @@ export const FormSchema = z.object({
     country: z.string(),
     city: z.string(),
     street: z.string(),
+    // geometry: z.object({
+    //   type: z.literal("Point"), // Ensure the type is always "Point"
+    //   coordinates: z.tuple([z.number(), z.number()]), // Longitude and latitude
+    // }),
     name: z.string(),
     description: z.string(),
     numberOfBedrooms: z.string(),

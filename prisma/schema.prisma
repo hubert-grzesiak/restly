@@ -159,6 +159,7 @@ model Object {
   country          String
   city             String
   street           String
+  geometry         Geometry? @relation(fields: [geometryId], references: [id])
   name             String
   description      String
   numberOfBedrooms String
@@ -178,6 +179,8 @@ model Object {
   facility Facility[]
   images   Image[]
   Favorite Favorite[]
+
+  geometryId String @unique @db.ObjectId
 }
 
 model Favorite {
@@ -190,4 +193,11 @@ model Favorite {
   object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 
   @@unique([userId, objectId])
+}
+
+model Geometry {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  type        String   @default("Point")
+  coordinates Float[]
+  Object      Object[]
 }

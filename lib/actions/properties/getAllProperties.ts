@@ -7,6 +7,7 @@ const getAllProperties = async () => {
       include: {
         images: true,
         prices: true,
+        geometry: true,
       },
     });
 

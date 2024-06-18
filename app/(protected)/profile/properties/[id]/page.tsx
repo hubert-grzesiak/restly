@@ -21,6 +21,7 @@ import Opinions from "./components/Opinions";
 import AddToFavourite from "./components/AddToFavourite";
 import { currentUser } from "@/lib/actualUserInfo";
 import ContactHost from "./components/ContactHost";
+import Map from "./components/Map";
 
 interface PageProps {
   params: { id?: string };
@@ -179,17 +180,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
           <div className="col-span-2">
             <h2 className="mb-4 text-2xl font-bold">Location</h2>
             <div>
-              <Image
-                alt="Property Image"
-                className="h-[500px] w-full rounded-lg object-cover"
-                height="500"
-                src={property.urls[0] || "/placeholder.svg"}
-                style={{
-                  aspectRatio: "600/500",
-                  objectFit: "cover",
-                }}
-                width="600"
-              />
+              <Map coordinates={property.geometry.coordinates} />
             </div>
           </div>
         </div>

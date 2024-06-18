@@ -9,7 +9,6 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { MyLogo } from "../icons";
-import FamilyButtonSection from "@/components/FamilyButtonSection";
 import { LogoutButton } from "@/components/auth/logout-button";
 import LoginButton from "@/components/auth/login-button";
 
@@ -94,7 +93,7 @@ const FloatingNav = ({
               <span className="text-lg font-bold">Restly</span>
             </Link>
           )}
-          
+
           <div className={cn("flex space-x-4 ")}>
             {navItems.map((navItem: any, idx: number) => (
               <Link

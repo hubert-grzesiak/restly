@@ -27,15 +27,13 @@ export const admin = async () => {
   return { error: "Forbidden Server Action!" };
 };
 
-export const getFacilitiesAmount = async () => {
+export const getFacilitiesAmount = async (): Promise<number | { error: string; count: number; }> => {
   const role = await currentRole();
 
   if (role === UserRole.ADMIN) {
     try {
       const facilities = await db.facilities.findMany();
-      console.log(facilities.length);
-      // Assuming you want to paginate the facilities
-      return facilities.length; // Return count instead of facilities directly
+      return facilities.length; 
     } catch (error) {
       return { error: "Error fetching all facilities", count: 0 };
     }

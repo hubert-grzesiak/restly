@@ -11,9 +11,7 @@ import {
 } from "@/components/icons";
 import Link from "next/link";
 import placeholderImage from "@/public/images/avatar-placeholder.png";
-import FamilyButtonSection from "@/components/FamilyButtonSection";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
-
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],

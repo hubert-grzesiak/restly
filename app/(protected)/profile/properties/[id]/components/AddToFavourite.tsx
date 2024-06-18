@@ -7,7 +7,16 @@ import { HeartIcon } from "@/components/icons";
 import { toggleFavoriteProperty } from "@/lib/actions/properties/saveProperty";
 import { motion } from "framer-motion";
 
-function AddToFavourite({ property }) {
+type Property = {
+  id: string;
+  isFavorite: boolean;
+};
+
+interface AddToFavouriteProps {
+  property: Property;
+}
+
+const AddToFavourite: React.FC<AddToFavouriteProps> = ({ property }) => {
   const { data: session } = useSession();
   const [isFavorite, setIsFavorite] = useState(property.isFavorite);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -42,6 +51,6 @@ function AddToFavourite({ property }) {
       </Button>
     </>
   );
-}
+};
 
 export default AddToFavourite;

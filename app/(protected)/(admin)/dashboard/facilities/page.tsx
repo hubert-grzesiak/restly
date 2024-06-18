@@ -22,12 +22,25 @@ export default async function Page({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await getFacilitiesAmount();
+  const totalPagesResult = await getFacilitiesAmount();
+
+  if (typeof totalPagesResult === "object" && "error" in totalPagesResult) {
+    // Handle error case
+    console.error(totalPagesResult.error);
+    return (
+      <div className="w-full">
+        <h1 className="text-2xl">Facilities</h1>
+        <p>Error loading facilities: {totalPagesResult.error}</p>
+      </div>
+    );
+  }
+
+  const totalPages = Math.ceil(totalPagesResult / 6);
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={` text-2xl`}>Facilities</h1>
+        <h1 className="text-2xl">Facilities</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search Facilities..." />
@@ -43,7 +56,7 @@ export default async function Page({
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={Math.ceil(parseInt(totalPages) / 6)} />
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );

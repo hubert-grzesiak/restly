@@ -1,4 +1,5 @@
 "use server";
+import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 import { auth } from "@/lib/auth";
 import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
@@ -6,9 +7,9 @@ import path from "path";
 import fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 import os from "os";
-import { db } from "@/lib/db"; // Use the db from your module
+import { db } from "@/lib/db";
 import { TypeOf } from "zod";
-import sharp from "sharp"; // Add sharp for image optimization
+import sharp from "sharp";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME!,
@@ -37,23 +38,41 @@ export const createObject = async (formData: FormData) => {
     }
 
     const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
-    console.log("data", data);
     const files = formData.getAll("files") as FileWithType[];
-    console.log("files", files);
     const newFiles = await savePhotosLocal(files);
-    console.log("newFiles", newFiles);
     const photos = await uploadPhotosCloudinary(newFiles);
-    console.log("photos", photos);
     await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
 
     const newPhotos = photos.map((photo) => photo.secure_url);
-    console.log("newPhotos", newPhotos);
+
+    // MAPBOX
+    // const mapboxToken = process.env.MAPBOX_TOKEN!;
+    // const geocoder = mbxGeocoding({ accessToken: mapboxToken });
+
+    // const geodata = await geocoder
+    //   .forwardGeocode({
+    //     query: `${data.object.city}, ${data.object.country}, ${data.object.street} ${data.object.houseNumber} ${data.object.postalCode}`,
+    //     limit: 1,
+    //   })
+    //   .send();
+
+    // const geometry = geodata.body.features[0]?.geometry;
+    // if (!geometry) {
+    //   throw new Error("Geocoding failed, no geometry found.");
+    // }
+    // console.log(geometry)
 
     const newObject = await db.object.create({
       data: {
         country: data.object.country,
         city: data.object.city,
         street: data.object.street,
+        // geometry: {
+        //   create: {
+        //     type: geometry.type,
+        //     coordinates: geometry.coordinates,
+        //   },
+        // },
         name: data.object.name,
         description: data.object.description,
         numberOfBedrooms: data.object.numberOfBedrooms,
@@ -87,6 +106,7 @@ export const createObject = async (formData: FormData) => {
         },
       },
     });
+
     return newObject;
   } catch (error: any) {
     console.error("Error creating object:", error);
@@ -99,15 +119,14 @@ async function savePhotosLocal(files: FileWithType[]): Promise<SavedFile[]> {
     return file.arrayBuffer().then(async (data) => {
       const buffer = Buffer.from(data);
       const name = uuidv4();
-      const ext = "webp"; // Convert all images to WebP format
+      const ext = "webp";
 
       const tempdir = os.tmpdir();
       const uploadDir = path.join(tempdir, `/${name}.${ext}`);
 
-      // Use sharp to optimize and convert the image
       await sharp(buffer)
-        .resize({ width: 1920 }) // Resize the image to a max width of 800px
-        .webp({ quality: 90 }) // Convert to WebP format with 80% quality
+        .resize({ width: 1920 })
+        .webp({ quality: 90 })
         .toFile(uploadDir);
 
       return { filepath: uploadDir, filename: file.name, ext: ext };

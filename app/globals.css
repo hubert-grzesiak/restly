@@ -81,7 +81,6 @@ body,
   }
 }
 
-
 /* LOADING */
 .pl {
   display: block;
@@ -173,30 +172,27 @@ body,
 
 @keyframes ringStroke42 {
   from,
-	to {
-    stroke-dashoffset: 452;
+  to {
+    strokedashoffset: 452;
     transform: rotate(-45deg);
   }
 
   50% {
-    stroke-dashoffset: 169.5;
+    strokedashoffset: 169.5;
     transform: rotate(-180deg);
   }
 }
 
 @keyframes tick42 {
   from,
-	3%,
-	47%,
-	to {
-    stroke-dashoffset: -12;
+  3%,
+  47%,
+  to {
+    strokedashoffset: -12;
   }
 
   14%,
-	36% {
-    stroke-dashoffset: 0;
+  36% {
+    strokedashoffset: 0;
   }
 }
-
-
-

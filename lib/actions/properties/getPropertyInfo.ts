@@ -19,6 +19,7 @@ const getPropertyInfo = async ({ id }) => {
         images: true,
         facility: true,
         prices: true,
+        geometry: true
       },
     });
 
@@ -31,6 +32,7 @@ const getPropertyInfo = async ({ id }) => {
     const propertyWithUrls = {
       ...property,
       urls: property.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
+      coordinates: property.geometry.coordinates, // Extracting coordinates
     };
 
     return propertyWithUrls;
