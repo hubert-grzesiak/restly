@@ -1,13 +1,8 @@
 "use server";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
-import { ReservationSchema } from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
-import { toast } from "sonner";
 
 export async function getReservations(objectId: string) {
   try {
-    // Fetch all reservations for the given object
     const reservations = await db.reservation.findMany({
       where: {
         objectId,
@@ -18,7 +13,6 @@ export async function getReservations(objectId: string) {
       },
     });
 
-    // Format the dates to "dd.mm.yyyy"
     const formattedReservations = reservations.map((reservation) => ({
       from: reservation.dateFrom
         .toISOString()

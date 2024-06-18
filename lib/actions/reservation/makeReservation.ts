@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { ReservationSchema } from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const MakeReservation = ReservationSchema;
 
@@ -86,13 +87,13 @@ export async function makeReservation(params: any) {
     });
 
     // Revalidate the path to reflect the changes
-    revalidatePath(`/profile/properties/${objectId}`);
 
     return { success: true, message: "Reservation successfully created." };
   } catch (error) {
     console.error("Error in makeReservation:", error);
     return { success: false, message: "Failed to create reservation." };
+  } finally {
+    revalidatePath(`/profile/properties/${objectId}`);
+    redirect(`/profile/properties/${objectId}`);
   }
 }
-
-

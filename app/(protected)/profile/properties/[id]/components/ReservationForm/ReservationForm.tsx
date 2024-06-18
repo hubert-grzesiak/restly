@@ -23,9 +23,9 @@ import { useState, useEffect } from "react";
 import { ReservationSchema } from "./ReservationFormSchema";
 import { toast } from "sonner";
 import { makeReservation } from "@/lib/actions/reservation/makeReservation";
+import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
-import { result } from "lodash";
 
 const ReservationForm = ({ propertyId }: { propertyId: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,6 +34,9 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
     from: new Date().toISOString().split("T")[0],
     to: new Date().toISOString().split("T")[0],
   });
+  const [blockedDates, setBlockedDates] = useState<
+    Array<{ from: string; to: string }>
+  >([]);
 
   const form = useForm<z.infer<typeof ReservationSchema>>({
     resolver: zodResolver(ReservationSchema),
@@ -51,10 +54,49 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
     formState: { errors },
   } = form;
 
+  
+
   useEffect(() => {
     setValue("dateRange", dateRange);
   }, [dateRange, setValue]);
 
+  const isDateBlocked = (
+    date: Date,
+    blockedDates: Array<{ from: string; to: string }>
+  ): boolean => {
+    return blockedDates.some(({ from, to }) => {
+      const fromDate = new Date(from.split(".").reverse().join("-"));
+      const toDate = new Date(to.split(".").reverse().join("-"));
+      console.log(date >= fromDate && date <= toDate);
+      return date >= fromDate && date <= toDate;
+    });
+  };
+
+  const getNextAvailableDateRange = (
+    blockedDates: Array<{ from: string; to: string }>
+  ) => {
+    let date = new Date();
+    while (isDateBlocked(date, blockedDates)) {
+      date.setDate(date.getDate() + 1);
+    }
+    const from = date.toISOString().split("T")[0];
+    date.setDate(date.getDate() + 1);
+    const to = date.toISOString().split("T")[0];
+    return { from, to };
+  };
+  useEffect(() => {
+    async function fetchReservations() {
+      const result = await getReservations(propertyId);
+      if (result.success) {
+        setBlockedDates(result.reservations);
+        setDateRange(getNextAvailableDateRange(result.reservations));
+      } else {
+        console.error(result.message);
+      }
+    }
+
+    fetchReservations();
+  }, [propertyId]);
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
@@ -99,6 +141,7 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
                       locale="en-GB"
                       showCompare={false}
                       onUpdate={(values) => setDateRange(values.range)}
+                      blockedDates={blockedDates} // przekazanie zablokowanych dat
                     />
                   </FormControl>
                   <FormMessage>

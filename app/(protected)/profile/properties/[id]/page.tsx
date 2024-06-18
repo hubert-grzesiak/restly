@@ -108,10 +108,10 @@ const Details: React.FC<PageProps> = async ({ params }) => {
           <div className="col-span-2">
             <h2 className="mb-4 text-2xl font-bold">Location</h2>
             <div>
-              <Map
+              {/* <Map
                 coordinates={property?.geometry.coordinates}
                 property={property}
-              />
+              /> */}
             </div>
           </div>
         </div>

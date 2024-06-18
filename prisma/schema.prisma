@@ -37,6 +37,7 @@ model User {
   messages Message[]
   Favorite Favorite[]
   reservations Reservation[]
+  transactions Transaction[]
 
 }
 
@@ -218,4 +219,15 @@ model Reservation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([objectId, dateFrom, dateTo], name: "reservation_date_range_index")
+}
+
+model Transaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  stripeId  String   @unique
+  amount    Float
+  plan      String?
+  credits   Int?
+  buyerId   String   @db.ObjectId
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 }
