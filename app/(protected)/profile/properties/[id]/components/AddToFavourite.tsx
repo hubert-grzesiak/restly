@@ -1,11 +1,14 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
+
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { HeartIcon } from "@/components/icons";
-import { toggleFavoriteProperty } from "@/lib/actions/properties/saveProperty";
 import { motion } from "framer-motion";
+import {
+  toggleFavoriteProperty,
+  isPropertyFavorite,
+} from "@/lib/actions/properties/saveProperty";
 
 type Property = {
   id: string;
@@ -18,17 +21,25 @@ interface AddToFavouriteProps {
 
 const AddToFavourite: React.FC<AddToFavouriteProps> = ({ property }) => {
   const { data: session } = useSession();
-  const [isFavorite, setIsFavorite] = useState(property.isFavorite);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      const status = await isPropertyFavorite(property.id);
+      setIsFavourite(status!);
+    };
+    checkFavorite();
+  }, [property.id]); // Only re-run this effect if property.id changes
 
   const handleToggleFavorite = async () => {
     if (!session) return;
 
     try {
-      await toggleFavoriteProperty(property.id);
+      const newFavouriteStatus = await toggleFavoriteProperty(property.id);
+      setIsFavourite(newFavouriteStatus); // Directly use the boolean value returned
       setIsAnimating(true);
-      setIsFavorite(!isFavorite);
-      setTimeout(() => setIsAnimating(false), 500); // Czas trwania animacji
+      setTimeout(() => setIsAnimating(false), 500); // Duration of animation
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }
@@ -38,16 +49,16 @@ const AddToFavourite: React.FC<AddToFavouriteProps> = ({ property }) => {
     <>
       <Button className="" variant="outline" onClick={handleToggleFavorite}>
         <motion.div
-          animate={isFavorite && { scale: isAnimating ? 1.5 : 1 }}
+          animate={isFavourite ? { scale: isAnimating ? 1.5 : 1 } : {}}
           transition={{ duration: 0.3 }}
           className="relative">
           <HeartIcon
             className={`mr-2 h-5 w-5 transition-all ${
-              isFavorite ? "fill-red-600" : ""
+              isFavourite ? "fill-red-600" : ""
             }`}
           />
         </motion.div>
-        Save
+        {isFavourite ? "Saved" : "Save"}
       </Button>
     </>
   );

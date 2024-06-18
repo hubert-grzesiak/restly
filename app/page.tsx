@@ -12,6 +12,8 @@ import {
 import Link from "next/link";
 import placeholderImage from "@/public/images/avatar-placeholder.png";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
+import CustomSearch from "@/components/CustomSearch";
+
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],
@@ -23,6 +25,9 @@ export default async function Home() {
   return (
     <>
       <main className="flex-1">
+        <div className="fixed top-1/2 z-[999] flex items-center justify-center rounded-[32px]">
+          <CustomSearch />
+        </div>
         <section className="relative m-auto h-screen max-h-[700px] w-full overflow-hidden bg-gray-100 pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20">
           <div className="container max-w-[1400px] px-4 md:px-0">
             <div className="grid items-center gap-6 md:grid-cols-2 lg:grid-cols-[1fr_500px]">
@@ -100,7 +105,7 @@ export default async function Home() {
                   alt="Bali"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   height={200}
-                  src="/images/popular/bali.jpg"
+                  src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1718575030/restly/dkmtrnz8biy6m4m88ci6.jpg"
                   style={{
                     aspectRatio: "300/200",
                     objectFit: "cover",
@@ -122,7 +127,7 @@ export default async function Home() {
                   alt="Tokyo"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   height={200}
-                  src={placeholderImage}
+                  src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1718575030/restly/dkmtrnz8biy6m4m88ci6.jpg"
                   style={{
                     aspectRatio: "300/200",
                     objectFit: "cover",
@@ -144,7 +149,7 @@ export default async function Home() {
                   alt="London"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   height={200}
-                  src="/images/popular/london.jpg"
+                  src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1718575030/restly/dkmtrnz8biy6m4m88ci6.jpg"
                   style={{
                     aspectRatio: "300/200",
                     objectFit: "cover",

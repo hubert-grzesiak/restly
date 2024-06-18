@@ -196,3 +196,21 @@ body,
     strokedashoffset: 0;
   }
 }
+
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  font: 400 15px/22px "Inter", sans-serif;
+  padding: 0;
+  border-radius: 12px !important;
+  display: flex;
+  min-width: 100px;
+  justify-content: center;
+  align-items: center;
+}
+
+.mapboxgl-popup-content-wrapper {
+  padding: 1%;
+}

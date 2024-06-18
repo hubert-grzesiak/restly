@@ -46,33 +46,33 @@ export const createObject = async (formData: FormData) => {
     const newPhotos = photos.map((photo) => photo.secure_url);
 
     // MAPBOX
-    // const mapboxToken = process.env.MAPBOX_TOKEN!;
-    // const geocoder = mbxGeocoding({ accessToken: mapboxToken });
+    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+    const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
-    // const geodata = await geocoder
-    //   .forwardGeocode({
-    //     query: `${data.object.city}, ${data.object.country}, ${data.object.street} ${data.object.houseNumber} ${data.object.postalCode}`,
-    //     limit: 1,
-    //   })
-    //   .send();
+    const geodata = await geocoder
+      .forwardGeocode({
+        query: `${data.object.city}, ${data.object.country}, ${data.object.street} ${data.object.houseNumber} ${data.object.postalCode}`,
+        limit: 1,
+      })
+      .send();
 
-    // const geometry = geodata.body.features[0]?.geometry;
-    // if (!geometry) {
-    //   throw new Error("Geocoding failed, no geometry found.");
-    // }
-    // console.log(geometry)
+    const geometry = geodata.body.features[0]?.geometry;
+    if (!geometry) {
+      throw new Error("Geocoding failed, no geometry found.");
+    }
+    console.log(geometry);
 
     const newObject = await db.object.create({
       data: {
         country: data.object.country,
         city: data.object.city,
         street: data.object.street,
-        // geometry: {
-        //   create: {
-        //     type: geometry.type,
-        //     coordinates: geometry.coordinates,
-        //   },
-        // },
+        geometry: {
+          create: {
+            type: geometry.type,
+            coordinates: geometry.coordinates,
+          },
+        },
         name: data.object.name,
         description: data.object.description,
         numberOfBedrooms: data.object.numberOfBedrooms,

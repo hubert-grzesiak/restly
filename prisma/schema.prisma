@@ -36,6 +36,8 @@ model User {
   accounts Account[]
   messages Message[]
   Favorite Favorite[]
+  reservations Reservation[]
+
 }
 
 model Account {
@@ -179,6 +181,7 @@ model Object {
   facility Facility[]
   images   Image[]
   Favorite Favorite[]
+  Reservation Reservation[]
 
   geometryId String @unique @db.ObjectId
 }
@@ -200,4 +203,19 @@ model Geometry {
   type        String   @default("Point")
   coordinates Float[]
   Object      Object[]
+}
+
+model Reservation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  objectId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  guests    Int
+  dateFrom  DateTime
+  dateTo    DateTime
+  createdAt DateTime @default(now())
+
+  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([objectId, dateFrom, dateTo], name: "reservation_date_range_index")
 }

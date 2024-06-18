@@ -1,27 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import getPropertyInfo from "@/lib/actions/properties/getPropertyInfo";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 
-import {
-  PopoverTrigger,
-  PopoverContent,
-  Popover,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
-  Select,
-} from "@/components/ui/select";
 import Opinions from "./components/Opinions";
 import AddToFavourite from "./components/AddToFavourite";
 import { currentUser } from "@/lib/actualUserInfo";
 import ContactHost from "./components/ContactHost";
 import Map from "./components/Map";
+import ReservationForm from "./components/ReservationForm/ReservationForm";
 
 interface PageProps {
   params: { id?: string };
@@ -29,7 +15,6 @@ interface PageProps {
 
 const Details: React.FC<PageProps> = async ({ params }) => {
   const user = await currentUser();
-  console.log(user);
   const id = params.id;
   if (!id) {
     return <div>No property ID provided</div>;
@@ -113,74 +98,20 @@ const Details: React.FC<PageProps> = async ({ params }) => {
             ))}
           </div>
         </div>
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
+        <div className="mt-6 flex gap-6 flex-col md:flex-row">
           <div>
             <h2 className="mb-4 text-2xl font-bold">Reservation</h2>
             <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-950">
-              <form>
-                <div className="grid gap-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <Label htmlFor="check-in">Check-in</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            className="w-full justify-start text-left font-normal"
-                            id="check-in"
-                            variant="outline">
-                            <CalendarDaysIcon className="mr-1 h-4 w-4 -translate-x-1" />
-                            Select date
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="start" className="w-auto p-0">
-                          <Calendar initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div>
-                      <Label htmlFor="check-out">Check-out</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            className="w-full justify-start text-left font-normal"
-                            id="check-out"
-                            variant="outline">
-                            <CalendarDaysIcon className="mr-1 h-4 w-4 -translate-x-1" />
-                            Select date
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="start" className="w-auto p-0">
-                          <Calendar initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="guests">Guests</Label>
-                    <Select>
-                      <SelectTrigger id="guests">
-                        <SelectValue placeholder="Select guests" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1 guest</SelectItem>
-                        <SelectItem value="2">2 guests</SelectItem>
-                        <SelectItem value="3">3 guests</SelectItem>
-                        <SelectItem value="4">4 guests</SelectItem>
-                        <SelectItem value="5">5 guests</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button className="w-full" size="lg">
-                    Reserve
-                  </Button>
-                </div>
-              </form>
+              <ReservationForm propertyId={id} />
             </div>
           </div>
           <div className="col-span-2">
             <h2 className="mb-4 text-2xl font-bold">Location</h2>
             <div>
-              <Map coordinates={property.geometry.coordinates} />
+              <Map
+                coordinates={property?.geometry.coordinates}
+                property={property}
+              />
             </div>
           </div>
         </div>

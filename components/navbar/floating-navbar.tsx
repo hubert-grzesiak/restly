@@ -57,6 +57,7 @@ const FloatingNav = ({
       }
     }
   });
+  const handleSearch = () => {};
   const user = useCurrentUser();
   return (
     <AnimatePresence mode="wait">
@@ -106,7 +107,6 @@ const FloatingNav = ({
                 <span className="hidden sm:block text-sm">{navItem.name}</span>
               </Link>
             ))}
-
             {shrink === false && (
               <div className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
                 {user != null ? (
