@@ -33,12 +33,11 @@ model User {
   seenMessageIds String[]  @db.ObjectId
   seenMessages   Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
 
-  accounts Account[]
-  messages Message[]
-  Favorite Favorite[]
+  accounts     Account[]
+  messages     Message[]
+  Favorite     Favorite[]
   reservations Reservation[]
   transactions Transaction[]
-
 }
 
 model Account {
@@ -179,10 +178,10 @@ model Object {
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
 
-  prices   Price[]
-  facility Facility[]
-  images   Image[]
-  Favorite Favorite[]
+  prices      Price[]
+  facility    Facility[]
+  images      Image[]
+  Favorite    Favorite[]
   Reservation Reservation[]
 
   geometryId String @unique @db.ObjectId
@@ -226,9 +225,7 @@ model Transaction {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
   stripeId  String   @unique
-  amount    Float
-  plan      String?
-  credits   Int?
+  price     Float
   buyerId   String   @db.ObjectId
   buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 }

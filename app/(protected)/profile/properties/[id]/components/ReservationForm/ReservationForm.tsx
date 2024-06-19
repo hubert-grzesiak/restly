@@ -26,9 +26,19 @@ import { makeReservation } from "@/lib/actions/reservation/makeReservation";
 import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
+import Checkout from "@/components/Checkout";
+import { Object } from "@prisma/client";
 
-const ReservationForm = ({ propertyId }: { propertyId: string }) => {
+const ReservationForm = ({
+  propertyId,
+  property,
+}: {
+  propertyId: string;
+  property: Object;
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formValues, setFormValues] =
+    useState<z.infer<typeof ReservationSchema>>();
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -107,7 +117,7 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
         dateFrom: values.dateRange.from,
         dateTo: values.dateRange.to,
       });
-
+      setFormValues(values);
       if (result.success) {
         toast.success(result.message);
       } else {
@@ -122,72 +132,79 @@ const ReservationForm = ({ propertyId }: { propertyId: string }) => {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex w-full flex-col gap-10">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <FormField
-              control={form.control}
-              name="dateRange"
-              render={() => (
-                <FormItem>
-                  <FormControl>
-                    <DateRangePicker
-                      initialDateFrom={dateRange.from}
-                      initialDateTo={dateRange.to}
-                      locale="en-GB"
-                      showCompare={false}
-                      onUpdate={(values) => setDateRange(values.range)}
-                      blockedDates={blockedDates} // przekazanie zablokowanych dat
-                    />
-                  </FormControl>
-                  <FormMessage>
-                    {errors.dateRange?.from?.message ||
-                      errors.dateRange?.to?.message}
-                  </FormMessage>
-                </FormItem>
-              )}
-            />
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex w-full flex-col gap-10">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <FormField
+                control={form.control}
+                name="dateRange"
+                render={() => (
+                  <FormItem>
+                    <FormControl>
+                      <DateRangePicker
+                        initialDateFrom={dateRange.from}
+                        initialDateTo={dateRange.to}
+                        showCompare={false}
+                        onUpdate={(values) => setDateRange(values.range)}
+                        blockedDates={blockedDates} // przekazanie zablokowanych dat
+                      />
+                    </FormControl>
+                    <FormMessage>
+                      {errors.dateRange?.from?.message ||
+                        errors.dateRange?.to?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
-        </div>
 
-        <FormField
-          control={form.control}
-          name="guests"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel htmlFor="guests">Guests</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={(value) => field.onChange(parseInt(value))}>
-                  <SelectTrigger id="guests">
-                    <SelectValue placeholder="Select guests" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 guest</SelectItem>
-                    <SelectItem value="2">2 guests</SelectItem>
-                    <SelectItem value="3">3 guests</SelectItem>
-                    <SelectItem value="4">4 guests</SelectItem>
-                    <SelectItem value="5">5 guests</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage>{errors.guests?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="guests"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="guests">Guests</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => field.onChange(parseInt(value))}>
+                    <SelectTrigger id="guests">
+                      <SelectValue placeholder="Select guests" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 guest</SelectItem>
+                      <SelectItem value="2">2 guests</SelectItem>
+                      <SelectItem value="3">3 guests</SelectItem>
+                      <SelectItem value="4">4 guests</SelectItem>
+                      <SelectItem value="5">5 guests</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage>{errors.guests?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
 
-        <Button
+          {/* <Button
           type="submit"
           className="w-full"
           size="lg"
           disabled={isSubmitting}>
           {isSubmitting ? "Reserving..." : "Reserve"}
-        </Button>
-      </form>
-    </Form>
+        </Button> */}
+        </form>
+      </Form>
+      <Checkout
+        price={10}
+        buyerId={session.data?.user.id!}
+        property={property}
+        formValues={formValues}
+      />
+    </>
   );
 };
 

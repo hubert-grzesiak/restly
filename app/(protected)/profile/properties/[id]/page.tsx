@@ -102,15 +102,13 @@ const Details: React.FC<PageProps> = async ({ params }) => {
           <div>
             <h2 className="mb-4 text-2xl font-bold">Reservation</h2>
             <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-950">
-              <ReservationForm propertyId={id} />
+              <ReservationForm propertyId={id} property={property} />
             </div>
           </div>
           <div className="col-span-2">
             <h2 className="mb-4 text-2xl font-bold">Location</h2>
             <div>
-              <Map
-                property={property}
-              />
+              <Map property={property} />
             </div>
           </div>
         </div>

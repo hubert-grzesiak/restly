@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { Transaction } from "@prisma/client";
 
-export async function checkoutCredits(transaction: Transaction) {
+export async function checkoutReservation(transaction: Transaction) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  const amount = transaction.amount * 100;
+  const amount = 10 * 100;
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -16,23 +16,29 @@ export async function checkoutCredits(transaction: Transaction) {
           currency: "pln",
           unit_amount: amount,
           product_data: {
-            name: transaction.plan,
+            name: transaction.buyerId,
+            description: transaction.property.name,
           },
         },
         quantity: 1,
       },
     ],
     metadata: {
-        plan: transaction.plan,
-        credits: transaction.credits,
         buyerId: transaction.buyerId,
+        property: transaction.property.name,
+        city: transaction.property.city,
+        country: transaction.property.country,
+        // dateFrom: transaction.formValues?.dateRange.from,
+        // dateTo: transaction.formValues?.dateRange.to,
+        price: amount,
     },
     mode: 'payment',
-    success_url: `localhost:3000/profile`,
-    cancel_url: `localhost:3000/`,
+    success_url: `http://localhost:3000/profile`,
+    cancel_url: `http://localhost:3000/`,
   });
 
-  redirect(session.url);
+  redirect(session.url!)
+  return session.payment_status;
 }
 
 
