@@ -108,7 +108,7 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
           {isSubmitting ? (
             <>{type === "Edit" ? "Editing..." : "Posting..."}</>
           ) : (
-            <>{type === "Edit" ? "Edit facility" : "Ask a Question"}</>
+            <>{type === "Edit" ? "Edit facility" : "Create Facility"}</>
           )}
         </Button>
       </form>

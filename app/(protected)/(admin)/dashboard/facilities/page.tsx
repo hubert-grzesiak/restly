@@ -28,7 +28,7 @@ export default async function Page({
     // Handle error case
     console.error(totalPagesResult.error);
     return (
-      <div className="w-full">
+      <div className="w-full mx-auto max-w-[1000px]">
         <h1 className="text-2xl">Facilities</h1>
         <p>Error loading facilities: {totalPagesResult.error}</p>
       </div>
@@ -38,7 +38,7 @@ export default async function Page({
   const totalPages = Math.ceil(totalPagesResult / 6);
 
   return (
-    <div className="w-full">
+    <div className="w-full mx-auto max-w-[1400px] mt-4">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl">Facilities</h1>
       </div>

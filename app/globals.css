@@ -2,11 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body,
-:root {
-  height: 100%;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+main {
+  min-height: 85vh;
+}
+
 
 @layer base {
   :root {

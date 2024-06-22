@@ -67,6 +67,7 @@ export default async function RootLayout({
             <Toaster />
             <ActiveStatus />
             {children}
+
             <Footer />
           </NextUIProvider>
         </body>

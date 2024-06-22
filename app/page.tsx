@@ -9,12 +9,13 @@ import {
 import Link from "next/link";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
-
+import CookieComponent from "@/components/CookieComponent";
 export default async function Home() {
   const properties = await getAllProperties();
 
   return (
     <>
+      <CookieComponent />
       <main className="flex-1">
         <div className="fixed top-1/2 z-[999] flex items-center justify-center rounded-[32px]">
           <CustomSearch />

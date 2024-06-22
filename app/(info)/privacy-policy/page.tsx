@@ -73,6 +73,16 @@ function Page() {
             </p>
           </div>
           <div>
+            <h2 className="text-2xl font-bold mb-4">Cookies</h2>
+            <p className="text-gray-500 mb-4">
+              Our website uses cookies to enhance your browsing experience.
+              Cookies are small text files that are stored on your device when
+              you visit our website. They help us understand how you use our
+              site and improve its functionality. You can manage your cookie
+              preferences through your browser settings.
+            </p>
+          </div>
+          <div>
             <h2 className="text-2xl font-bold mb-4">
               Changes to the Privacy Policy
             </h2>
