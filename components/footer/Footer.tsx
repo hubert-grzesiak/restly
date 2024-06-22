@@ -3,7 +3,7 @@ import Link from "next/link";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-white py-6 dark:bg-gray-950">
+    <footer className="bg-transparent py-6 dark:bg-gray-950">
       <div className="container flex flex-col-reverse items-center px-4 md:flex-row md:justify-between md:px-0">
         <p className="mt-2 px-4 text-sm text-gray-500 dark:text-gray-400">
           © {currentYear} Restly. All rights reserved.

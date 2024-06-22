@@ -3,12 +3,10 @@ import React from "react";
 
 const page = () => {
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Welcome to the dashboard</p>
-      <h2>Quick Links</h2>
+    <main className="background-gradient w-full pt-100">
+      <div className="mx-auto flex max-w-[200px] flex-col items-center justify-center rounded-xl bg-gray-100 p-4">
+        <h1 className="text-lg font-bold">Dashboard</h1>
 
-      <div className="bg-gray-100 rounded-xl p-4">
         <ul className="text-blue-500">
           <li>
             <Link className="hover:underline" href="/dashboard/facilities">
@@ -21,8 +19,8 @@ const page = () => {
             </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/profile/settings">
-              Settings
+            <Link className="hover:underline" href="/profile">
+              Profile
             </Link>
           </li>
           <li>
@@ -32,7 +30,7 @@ const page = () => {
           </li>
         </ul>
       </div>
-    </div>
+    </main>
   );
 };
 

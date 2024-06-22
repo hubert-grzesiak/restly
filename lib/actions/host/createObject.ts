@@ -10,6 +10,7 @@ import os from "os";
 import { db } from "@/lib/db";
 import { TypeOf } from "zod";
 import sharp from "sharp";
+import { to } from "react-spring";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME!,
@@ -87,9 +88,9 @@ export const createObject = async (formData: FormData) => {
         ownerId: session?.user?.id ?? "",
         prices: {
           create: data.calendar.prices.map((price) => ({
-            year: price.year,
-            month: price.month,
-            dailyRate: price.dailyRate,
+            from: price.from,
+            to: price.to,
+            price: price.price,
           })),
         },
         facility: {
@@ -136,10 +137,10 @@ async function savePhotosLocal(files: FileWithType[]): Promise<SavedFile[]> {
 }
 
 const uploadPhotosCloudinary = async (
-  newFiles: SavedFile[]
+  newFiles: SavedFile[],
 ): Promise<UploadApiResponse[]> => {
   const multipleUploadsPromise = newFiles.map((file) =>
-    cloudinary.uploader.upload(file.filepath, { folder: "restly" })
+    cloudinary.uploader.upload(file.filepath, { folder: "restly" }),
   );
   return await Promise.all(multipleUploadsPromise);
 };

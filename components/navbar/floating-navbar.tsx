@@ -64,12 +64,7 @@ const FloatingNav = ({
   const user = useCurrentUser();
   return (
     <AnimatePresence mode="wait">
-      <div
-        className={cn(
-          "w-full bg-white h-[62px]",
-          shrink === false &&
-            "shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
-        )}>
+      <div className={cn("w-full bg-transparent h-[62px] z-[999] fixed top-0")}>
         <motion.div
           ref={ref}
           initial={{
@@ -85,10 +80,10 @@ const FloatingNav = ({
           }}
           transition={shrink ? { duration: 0.2 } : { ...bounceTransition }}
           className={cn(
-            "flex fixed inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] dark:bg-black bg-white z-[10] py-2",
+            "flex fixed inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] dark:bg-black bg-transparent z-[10] py-2",
             className,
             shrink
-              ? "max-w-fit rounded-full top-5 items-center justify-center shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+              ? "max-w-fit rounded-full top-5 bg-[rgba(255,255,255,0.95)] backdrop:blur-lg items-center justify-center shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
               : "w-full max-w-[1400px] rounded-none border-r-none border-l-none justify-between"
           )}>
           {shrink === false && (

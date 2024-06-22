@@ -70,7 +70,7 @@ const ReservationForm = ({
 
   const isDateBlocked = (
     date: Date,
-    blockedDates: Array<{ from: string; to: string }>
+    blockedDates: Array<{ from: string; to: string }>,
   ): boolean => {
     return blockedDates.some(({ from, to }) => {
       const fromDate = new Date(from.split(".").reverse().join("-"));
@@ -81,7 +81,7 @@ const ReservationForm = ({
 
   useEffect(() => {
     const getNextAvailableDateRange = (
-      blockedDates: Array<{ from: string; to: string }>
+      blockedDates: Array<{ from: string; to: string }>,
     ) => {
       const date = new Date();
       while (isDateBlocked(date, blockedDates)) {
@@ -136,14 +136,16 @@ const ReservationForm = ({
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex w-full flex-col gap-10">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-2">
+          className="flex w-full flex-col gap-[10px]"
+        >
+          <div className="w-full">
+            <div className="flex w-full flex-col gap-2">
               <FormField
                 control={form.control}
                 name="dateRange"
                 render={() => (
-                  <FormItem>
+                  <FormItem className="flex">
+                    <FormLabel htmlFor="dateRange">Date Range</FormLabel>
                     <FormControl>
                       <DateRangePicker
                         initialDateFrom={dateRange.from}
@@ -171,7 +173,8 @@ const ReservationForm = ({
                 <FormLabel htmlFor="guests">Guests</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={(value) => field.onChange(parseInt(value))}>
+                    onValueChange={(value) => field.onChange(parseInt(value))}
+                  >
                     <SelectTrigger id="guests">
                       <SelectValue placeholder="Select guests" />
                     </SelectTrigger>
@@ -198,12 +201,14 @@ const ReservationForm = ({
         </Button> */}
         </form>
       </Form>
-      <Checkout
-        price={10}
-        buyerId={session.data?.user.id!}
-        property={property}
-        formValues={formValues}
-      />
+      <div className="mt-[20px] flex items-center justify-center">
+        <Checkout
+          price={10}
+          buyerId={session.data?.user.id!}
+          property={property}
+          formValues={formValues}
+        />
+      </div>
     </>
   );
 };

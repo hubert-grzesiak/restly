@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Import Mapbox GL CSS
 
@@ -28,6 +28,8 @@ type Property = {
 };
 
 const Map = ({ property }: { property: Property }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   // Ensure the token is set correctly
   if (!process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
     console.error("Mapbox token is not defined in environment variables.");
@@ -47,6 +49,10 @@ const Map = ({ property }: { property: Property }) => {
       zoom: 13, // starting zoom
     });
 
+    map.on("load", () => {
+      setIsLoading(false);
+    });
+
     const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
       <div">
         <h3 style="margin: 0; color: #333;">${property.name}</h3>
@@ -63,7 +69,16 @@ const Map = ({ property }: { property: Property }) => {
     return () => map.remove(); // Clean up on unmount
   }, [property.geometry, property]);
 
-  return <div id="map" className="w-[700px] h-[585px]"></div>;
+  return (
+    <div className="relative h-[585px] min-w-[700px] rounded-md">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center text-lg">
+          Map is loading...
+        </div>
+      )}
+      <div id="map" className="h-full w-full"></div>
+    </div>
+  );
 };
 
 export default Map;

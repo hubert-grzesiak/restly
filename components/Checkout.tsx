@@ -59,12 +59,13 @@ const Checkout = ({
   };
 
   return (
-    <form action={onCheckout} method="POST">
+    <form action={onCheckout} method="POST" className="max-w-[250px]">
       <section>
         <Button
           type="submit"
           role="link"
-          className="w-full rounded-full  bg-cover">
+          className="w-full rounded-full bg-cover"
+        >
           Make a reservation
         </Button>
       </section>

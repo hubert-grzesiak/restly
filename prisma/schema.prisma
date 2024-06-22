@@ -150,9 +150,9 @@ model Image {
 model Price {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   objectId  String @db.ObjectId
-  year      Int
-  month     Int
-  dailyRate Float
+  from      String
+  to        String
+  price     Float
 
   object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
 }

@@ -20,8 +20,8 @@ export default async function Home() {
         <div className="fixed top-1/2 z-[999] flex items-center justify-center rounded-[32px]">
           <CustomSearch />
         </div>
-        <section className="relative m-auto h-screen max-h-[700px] w-full overflow-hidden bg-gray-100 pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20">
-          <div className="container max-w-[1400px] px-4 md:px-0">
+        <section className="relative m-auto h-screen max-h-[700px] w-full overflow-hidden  pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20 background-gradient">
+          <div className="container max-w-[1400px] px-4 md:px-0 z-[20]">
             <div className="grid items-center gap-6 md:grid-cols-2 lg:grid-cols-[1fr_500px]">
               <div className="flex flex-col gap-4">
                 <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
@@ -159,7 +159,7 @@ export default async function Home() {
             </div>
           </div>
         </section>
-        <section className="bg-gray-100 py-12 dark:bg-gray-800 md:py-16 lg:py-20">
+        <section className="bg-gray-100 py-12 dark:bg-gray-800 md:py-16 lg:py-20 background-gradient">
           <div className="container px-4 md:px-0">
             <h2 className="mb-6 text-2xl font-bold tracking-tight md:mb-8">
               Featured Rentals

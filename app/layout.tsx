@@ -29,7 +29,7 @@ export default async function RootLayout({
   const navItems = [
     {
       name: "Profile",
-      link: "/profile/settings",
+      link: "/profile",
       icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
