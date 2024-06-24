@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
 import useRoutes from "@/hooks/useRoutes";
 import ThemeToggle from "../theme/ThemeToggle";
@@ -8,7 +8,12 @@ import DesktopItem from "./DesktopItem";
 import ProfileItem from "./ProfileItem";
 
 interface DesktopSidebarProps {
-  currentUser: User;
+  currentUser: {
+    role: UserRole,
+    isTwoFactorEnabled: boolean,
+    isOAuth: boolean,
+
+  };
 }
 
 const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {

@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -131,10 +130,10 @@ model Facilities {
 }
 
 model Facility {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  objectId String @db.ObjectId
-  object   Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  propertyId String   @db.ObjectId
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Image {
@@ -143,21 +142,21 @@ model Image {
   description String
   isMain      Boolean
   urls        String[]
-  objectId    String   @db.ObjectId
-  object      Object   @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  propertyId  String   @db.ObjectId
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Price {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  objectId  String @db.ObjectId
-  from      String
-  to        String
-  price     Float
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  propertyId String @db.ObjectId
+  from       String
+  to         String
+  price      Float
 
-  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
-model Object {
+model Property {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId
   country          String
   city             String
@@ -188,44 +187,44 @@ model Object {
 }
 
 model Favorite {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  objectId  String   @db.ObjectId
-  createdAt DateTime @default(now())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  propertyId String   @db.ObjectId
+  createdAt  DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, objectId])
+  @@unique([userId, propertyId])
 }
 
 model Geometry {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  type        String   @default("Point")
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  type        String     @default("Point")
   coordinates Float[]
-  Object      Object[]
+  Property    Property[]
 }
 
 model Reservation {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  objectId  String   @db.ObjectId
-  userId    String   @db.ObjectId
-  guests    Int
-  dateFrom  DateTime
-  dateTo    DateTime
-  createdAt DateTime @default(now())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  propertyId String    @db.ObjectId
+  userId     String    @db.ObjectId
+  guests     Int
+  dateFrom   String
+  dateTo     String
+  createdAt  DateTime? @default(now())
 
-  object Object @relation(fields: [objectId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([objectId, dateFrom, dateTo], name: "reservation_date_range_index")
+  @@index([propertyId, dateFrom, dateTo], name: "reservation_date_range_index")
 }
 
 model Transaction {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  stripeId  String   @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime? @default(now())
+  stripeId  String?   @unique
   price     Float
-  buyerId   String   @db.ObjectId
-  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId   String    @db.ObjectId
+  buyer     User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 }

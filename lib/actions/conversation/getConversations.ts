@@ -1,8 +1,8 @@
-import {cache} from 'react';
-
+import { cache } from 'react';
 import { auth } from "@/lib/auth";
 import { User, UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
+import { FullConversationType } from "@/types";
 
 // Define a common type that includes all necessary properties
 interface ExtendedUser extends User {
@@ -16,7 +16,7 @@ interface ExtendedUser extends User {
   seenMessageIds: string[];
 }
 
-const getConversations = cache(async () => {
+const getConversations = cache(async (): Promise<FullConversationType[]> => {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -46,14 +46,15 @@ const getConversations = cache(async () => {
       },
     });
 
-    return conversations;
+    // Type assertion to ensure the return type matches FullConversationType[]
+    return conversations as FullConversationType[];
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("SERVER_ERROR:", error.message);
     } else {
       console.error("SERVER_ERROR: An unknown error occurred");
     }
-    return null;
+    return [];
   }
 });
 

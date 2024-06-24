@@ -10,7 +10,6 @@ import os from "os";
 import { db } from "@/lib/db";
 import { TypeOf } from "zod";
 import sharp from "sharp";
-import { to } from "react-spring";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME!,

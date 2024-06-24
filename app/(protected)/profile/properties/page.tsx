@@ -2,9 +2,15 @@ import getPropertiesInfo from "@/lib/actions/properties/getPropertiesInfo";
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
+import { Property, Image as PropertyImage, Facility } from "@prisma/client";
 
+interface PropertyWithUrls extends Property {
+  images: PropertyImage[];
+  facility: Facility[];
+  urls: string[];
+}
 const Properties = async () => {
-  const result = await getPropertiesInfo();
+  const result: PropertyWithUrls[] = await getPropertiesInfo();
   console.log(result);
   return (
     <main className="w-full bg-gray-100 min-h-screen pb-10">
@@ -22,7 +28,7 @@ const Properties = async () => {
         <div
           className="w-full flex flex-col [&>a]:border [&>a]:border-collapse [&>a]:border-black [&>a]:hover:cursor-pointer
       ">
-          {result.map((property) => (
+          {result.map((property: PropertyWithUrls) => (
             <Link href={`/profile/properties/${property.id}`} key={property.id}>
               <div className="w-full hover:opacity-90 relative">
                 <div className="relative w-full h-[200px]">

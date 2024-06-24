@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 
-import { User } from "@prisma/client";
+import {  UserRole } from "@prisma/client";
 
 import Avatar from "@/components/Avatar";
 import SettingsModal from "./SettingsModal";
 
 interface ProfileItemProps {
-  currentUser: User;
+  currentUser: {
+    role: UserRole,
+    isTwoFactorEnabled: boolean,
+    isOAuth: boolean,
+  };
 }
 
 const ProfileItem: React.FC<ProfileItemProps> = ({ currentUser }) => {

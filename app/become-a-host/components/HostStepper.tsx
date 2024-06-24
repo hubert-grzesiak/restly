@@ -454,7 +454,7 @@ const HostStepper: React.FC = () => {
                         return (
                           <PriceItem
                             key={field.id}
-                            control={control}
+                            // control={control}
                             remove={remove}
                             index={index}
                           />

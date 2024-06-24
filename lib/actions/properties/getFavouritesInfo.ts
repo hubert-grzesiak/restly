@@ -32,8 +32,8 @@ const getFavouritesInfo = cache(async () => {
 
     // Wyciąganie URLs z powiązanych obrazów
     const propertiesWithUrls = favorites.map(favorite => ({
-      ...favorite.object,
-      urls: favorite.object.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
+      ...favorite.property,
+      urls: favorite.property.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
     }));
 
     return propertiesWithUrls;

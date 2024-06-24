@@ -3,9 +3,14 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import { Transaction } from "@prisma/client";
+import {  Property, Transaction } from "@prisma/client";
 
-export async function checkoutReservation(transaction: Transaction) {
+import {
+  ReservationSchema
+} from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
+import * as z from "zod";
+
+export async function checkoutReservation(price: number, buyerId: string, property: Property , formValues: z.infer<typeof ReservationSchema>, ) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const amount = 10 * 100;
 
@@ -16,21 +21,21 @@ export async function checkoutReservation(transaction: Transaction) {
           currency: "pln",
           unit_amount: amount,
           product_data: {
-            name: transaction.buyerId,
-            description: transaction.property.name,
+            name: buyerId,
+            description: property.name,
           },
         },
         quantity: 1,
       },
     ],
     metadata: {
-        buyerId: transaction.buyerId,
-        property: transaction.property.name,
-        city: transaction.property.city,
-        country: transaction.property.country,
-        // dateFrom: transaction.formValues?.dateRange.from,
-        // dateTo: transaction.formValues?.dateRange.to,
-        price: amount,
+        buyerId: buyerId,
+        property: property.name,
+        city: property.city,
+        country: property.country,
+        dateFrom: formValues?.dateFrom,
+        dateTo: formValues?.dateTo,
+        price: price,
     },
     mode: 'payment',
     success_url: `http://localhost:3000/profile`,

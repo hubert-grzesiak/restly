@@ -1,10 +1,6 @@
 import React from "react";
-import { useFormContext, Controller } from "react-hook-form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { useFormContext, Controller, UseFieldArrayRemove, FieldValues, FieldPath, ControllerRenderProps } from "react-hook-form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -13,16 +9,25 @@ import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { IconTrash } from "@tabler/icons-react";
 
-const PriceItem = ({ index, remove, control }) => {
-  const { register } = useFormContext();
+interface PriceItemProps {
+  index: number;
+  remove: UseFieldArrayRemove;
+}
 
-  const handleDateChange = (date, field) => {
-    // Upewniamy się, że data jest prawidłowo skonwertowana do ISO String bez zmiany czasu
+type FieldType = ControllerRenderProps<FieldValues, FieldPath<FieldValues>>;
+
+const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
+  const { register, control } = useFormContext();
+
+  const handleDateChange = (date: Date | string | number, field: FieldType) => {
+    if (typeof date === 'string' || typeof date === 'number') {
+      date = new Date(date);
+    }
     const adjustedDate = addDays(date, 1); // Dodajemy jeden dzień, aby skorygować problem
     field.onChange(adjustedDate.toISOString().substring(0, 10));
   };
 
-  const renderDateButton = (field, label) => (
+  const renderDateButton = (field: FieldType) => (
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -43,8 +48,8 @@ const PriceItem = ({ index, remove, control }) => {
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={field.value ? parseISO(field.value) : null}
-          onSelect={(date) => handleDateChange(date, field)}
+          selected={field.value ? parseISO(field.value) : undefined}
+          onSelect={(date) => handleDateChange(date ?? '', field)}
           disabled={(date) =>
             date > new Date() || date < new Date("1900-01-01")
           }
@@ -64,7 +69,7 @@ const PriceItem = ({ index, remove, control }) => {
             render={({ field }) => (
               <>
                 <label>Date from</label>
-                {renderDateButton(field, "Date from")}
+                {renderDateButton(field)}
               </>
             )}
           />
@@ -76,7 +81,7 @@ const PriceItem = ({ index, remove, control }) => {
             render={({ field }) => (
               <>
                 <label>Date to</label>
-                {renderDateButton(field, "Date of birth")}
+                {renderDateButton(field)}
               </>
             )}
           />

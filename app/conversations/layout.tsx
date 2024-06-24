@@ -4,8 +4,8 @@ import getUsers from "@/lib/actions/getUsers";
 import ConversationList from "./components/ConversationList";
 
 export default async function ConversationsLayout({
-  children,
-}: {
+                                                    children,
+                                                  }: {
   children: React.ReactNode;
 }) {
   const conversations = await getConversations();

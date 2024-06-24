@@ -10,6 +10,7 @@ import Link from "next/link";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
 import CookieComponent from "@/components/CookieComponent";
+import { Property } from "@prisma/client";
 export default async function Home() {
   const properties = await getAllProperties();
 
@@ -165,7 +166,7 @@ export default async function Home() {
               Featured Rentals
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {properties.map((property) => (
+              {properties.map((property: Property) => (
                 <div
                   key={property.id}
                   className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">

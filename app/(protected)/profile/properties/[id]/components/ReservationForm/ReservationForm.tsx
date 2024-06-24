@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -27,14 +26,14 @@ import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
 import Checkout from "@/components/Checkout";
-import { Object } from "@prisma/client";
+import { Property } from "@prisma/client";
 
 const ReservationForm = ({
   propertyId,
   property,
 }: {
   propertyId: string;
-  property: Object;
+  property: Property;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formValues, setFormValues] =
@@ -95,7 +94,7 @@ const ReservationForm = ({
 
     async function fetchReservations() {
       const result = await getReservations(propertyId);
-      if (result.success) {
+      if (result.success && result.reservations) {
         setBlockedDates(result.reservations);
         setDateRange(getNextAvailableDateRange(result.reservations));
       } else {
@@ -204,9 +203,10 @@ const ReservationForm = ({
       <div className="mt-[20px] flex items-center justify-center">
         <Checkout
           price={10}
-          buyerId={session.data?.user.id!}
+          buyerId={ session?.data?.user.id || ''}
           property={property}
-          formValues={formValues}
+          formValues={formValues || {objectId: '', userId: '', dateFrom: '', dateTo: '', guests: 0, dateRange: {from: '', to: ''}}}
+          disabled={isSubmitting}
         />
       </div>
     </>

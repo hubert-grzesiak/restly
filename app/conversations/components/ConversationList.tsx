@@ -11,9 +11,11 @@ import useConversation from "@/hooks/useConversation";
 import { pusherClient, pusherEvents } from "@/lib/pusher";
 import { FullConversationType } from "@/types";
 import ConversationBox from "./ConversationBox";
+import { ExtendedUser } from "@/lib/actions/getUsers";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
+  users: ExtendedUser[];
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({

@@ -1,7 +1,21 @@
 import { auth } from "@/lib/auth";
+import { User, UserRole } from "@prisma/client";
 
 import { db } from "@/lib/db";
-const getUsers = async () => {
+
+
+export interface ExtendedUser extends User {
+  role: UserRole;
+  isTwoFactorEnabled: boolean;
+  isOAuth?: boolean;
+  emailVerified: Date | null;
+  password: string | null;
+  twoFactorConfirmationId: string | null;
+  conversationIds: string[];
+  seenMessageIds: string[];
+}
+
+const getUsers = async (): Promise<ExtendedUser[]> => {
   const session = await auth();
 
   if (!session?.user?.email) {

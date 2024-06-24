@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,13 @@ import Modal from "../modals/Modal";
 interface SettingsModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  currentUser: User;
+  currentUser: {
+    name: User["name"],
+    image: User["image"],
+    role: UserRole,
+    isTwoFactorEnabled: boolean,
+    isOAuth: boolean,
+  };
 }
 // interface CloudinaryResult {
 //   info: {

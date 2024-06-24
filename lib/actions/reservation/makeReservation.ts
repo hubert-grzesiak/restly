@@ -5,11 +5,16 @@ import { revalidatePath } from "next/cache";
 import { ReservationSchema } from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
-import { Reservation } from "@prisma/client";
 
 const MakeReservation = ReservationSchema;
 
-export async function makeReservation(params: Reservation) {
+export async function makeReservation(params: {
+  guests: number;
+  dateTo: string;
+  dateFrom: string;
+  userId: string;
+  objectId: string
+}) {
   const { objectId, userId, guests, dateFrom, dateTo } = params;
 
   try {

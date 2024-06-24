@@ -6,18 +6,24 @@ import { checkoutReservation } from "@/lib/actions/reservation/transaction.actio
 import { useToast } from "@/components/ui/use-toast";
 
 import { Button } from "@/components/ui/button";
-import { Object } from "@prisma/client";
+import {
+  ReservationSchema
+} from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
+import { Property } from "@prisma/client";
+import * as z from "zod";
 
 const Checkout = ({
   price,
   buyerId,
   property,
+  disabled,
   formValues,
 }: {
   price: number;
   buyerId: string;
-  property: Object;
-  formValues: any;
+  property: Property;
+  disabled: boolean;
+  formValues: z.infer<typeof ReservationSchema>;
 }) => {
   const { toast } = useToast();
 
@@ -45,17 +51,10 @@ const Checkout = ({
         className: "error-toast",
       });
     }
-  }, []);
+  }, [toast]);
 
   const onCheckout = async () => {
-    const transaction = {
-      price,
-      buyerId,
-      property,
-      formValues,
-    };
-
-    await checkoutReservation(transaction);
+    await checkoutReservation(price,buyerId, property, formValues);
   };
 
   return (
@@ -65,6 +64,7 @@ const Checkout = ({
           type="submit"
           role="link"
           className="w-full rounded-full bg-cover"
+          disabled={disabled}
         >
           Make a reservation
         </Button>

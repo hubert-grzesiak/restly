@@ -11,7 +11,7 @@ const getPropertiesInfo = cache(async () => {
       return [];
     }
 
-    const properties = await db.object.findMany({
+    const properties = await db.property.findMany({
       where: {
         ownerId: session?.user?.id,
       },

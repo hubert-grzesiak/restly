@@ -69,9 +69,9 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  {property.facility.map((fac, index) => (
+                  {property.facility.map((facility: {name: string}, index:number) => (
                     <div key={index} className="flex items-center gap-2">
-                      <span>{fac.name}</span>
+                      <span>{facility.name}</span>
                     </div>
                   ))}
                 </div>
@@ -83,7 +83,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
               </div>
             </div>
             <div className="mx-6 mt-4 grid grid-cols-2 gap-4 pb-4 md:grid-cols-4">
-              {property.urls.slice(1, 5).map((url, index) => (
+              {property.urls.slice(1, 5).map((url:string, index: number) => (
                 <Image
                   key={index}
                   alt={`Property Image ${index + 1}`}

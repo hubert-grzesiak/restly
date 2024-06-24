@@ -2,7 +2,7 @@
 
 import useConversation from "@/hooks/useConversation";
 import useRoutes from "@/hooks/useRoutes";
-import { User } from "@prisma/client";
+import {  UserRole } from "@prisma/client";
 
 import ThemeToggle from "../theme/ThemeToggle";
 import MobileItem from "./MobileItem";
@@ -10,7 +10,11 @@ import MobileLink from "./MobileLink";
 import ProfileItem from "./ProfileItem";
 
 interface MobileFooterProps {
-  currentUser: User;
+  currentUser: {
+    role: UserRole,
+    isTwoFactorEnabled: boolean,
+    isOAuth: boolean,
+  };
 }
 
 const MobileFooter: React.FC<MobileFooterProps> = ({ currentUser }) => {
