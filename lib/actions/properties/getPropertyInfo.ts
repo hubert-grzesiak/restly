@@ -1,4 +1,5 @@
-"use server";
+import {cache} from 'react';
+
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
@@ -42,4 +43,4 @@ const getPropertyInfo = async ({ id }) => {
   }
 };
 
-export default getPropertyInfo;
+export default cache(getPropertyInfo);

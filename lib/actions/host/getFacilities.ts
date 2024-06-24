@@ -1,8 +1,8 @@
-"use server";
+import {cache} from 'react';
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getFacilities = async () => {
+const getFacilities = cache(async () => {
   try {
     const session = await auth();
 
@@ -26,6 +26,6 @@ const getFacilities = async () => {
     console.error("Failed to fetch facilities:", error);
     return [];
   }
-};
+});
 
 export default getFacilities;

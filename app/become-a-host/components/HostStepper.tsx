@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,16 +19,26 @@ import { FormSchema } from "./HostForm.schema";
 import getFacilities from "@/lib/actions/host/getFacilities";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
-import Congratulation from "./Congratulation";
 import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
 import { Select } from "antd";
-import Uploader from "@/components/ui/uploader";
 import { UploadFile } from "antd/es/upload/interface";
 import { TypeOf } from "zod";
 import { Steps } from "antd";
-import { DevTool } from "@hookform/devtools";
+import dynamic from "next/dynamic";
+
+const Uploader = dynamic(() => import("@/components/ui/uploader"), {
+  ssr: false,
+});
+
+const Congratulation = dynamic(() => import("./Congratulation"), {
+  ssr: false,
+});
+
+const PriceItem = dynamic(() => import("./PriceItem"), {
+  ssr: false,
+});
 
 import {
   IconCalendar,
@@ -36,8 +47,6 @@ import {
   IconLocation,
   IconPlus,
 } from "@tabler/icons-react";
-
-import PriceItem from "./PriceItem";
 
 type FormSchemaType = TypeOf<typeof FormSchema>;
 

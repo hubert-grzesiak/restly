@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
-const getMessages = async (conversationId: string) => {
+import {cache} from 'react';
+
+const getMessages = cache(async (conversationId: string) => {
   try {
     const messages = await db.message.findMany({
       where: {
@@ -23,6 +25,6 @@ const getMessages = async (conversationId: string) => {
     }
     return [];
   }
-};
+});
 
 export default getMessages;

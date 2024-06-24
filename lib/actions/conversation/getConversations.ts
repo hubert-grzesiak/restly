@@ -1,3 +1,5 @@
+import {cache} from 'react';
+
 import { auth } from "@/lib/auth";
 import { User, UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
@@ -14,7 +16,7 @@ interface ExtendedUser extends User {
   seenMessageIds: string[];
 }
 
-const getConversations = async () => {
+const getConversations = cache(async () => {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -53,6 +55,6 @@ const getConversations = async () => {
     }
     return null;
   }
-};
+});
 
 export default getConversations;

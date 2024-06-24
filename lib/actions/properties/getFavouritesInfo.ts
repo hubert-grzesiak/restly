@@ -1,8 +1,9 @@
-"use server";
+import {cache} from 'react';
+
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getFavouritesInfo = async () => {
+const getFavouritesInfo = cache(async () => {
   try {
     const session = await auth();
 
@@ -40,6 +41,6 @@ const getFavouritesInfo = async () => {
     console.error("Failed to fetch favorites:", error);
     return [];
   }
-};
+});
 
 export default getFavouritesInfo;

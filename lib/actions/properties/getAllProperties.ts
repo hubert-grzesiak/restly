@@ -1,7 +1,8 @@
-"use server";
+import {cache} from 'react';
+
 import { db } from "@/lib/db";
 
-const getAllProperties = async () => {
+const getAllProperties = cache(async () => {
   try {
     const properties = await db.object.findMany({
       include: {
@@ -26,6 +27,6 @@ const getAllProperties = async () => {
     console.error("Failed to fetch properties:", error);
     return [];
   }
-};
+});
 
 export default getAllProperties;

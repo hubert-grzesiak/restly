@@ -1,4 +1,6 @@
 "use server";
+import {cache} from 'react';
+
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -42,7 +44,7 @@ export async function toggleFavoriteProperty(propertyId: string) {
   }
 }
 
-export async function isPropertyFavorite(propertyId: string) {
+export const isPropertyFavorite = cache(async (propertyId) => {
   try {
     const session = await auth();
 
@@ -53,7 +55,7 @@ export async function isPropertyFavorite(propertyId: string) {
 
     const userId = session.user.id;
 
-    // Sprawdzenie, czy obiekt jest już w ulubionych użytkownika
+    // Check if the object is already in the user's favorites
     const favorite = await db.favorite.findFirst({
       where: {
         userId,
@@ -66,4 +68,4 @@ export async function isPropertyFavorite(propertyId: string) {
     console.error("Error in isPropertyFavorite:", error);
     throw error;
   }
-}
+});

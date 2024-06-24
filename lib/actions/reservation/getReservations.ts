@@ -1,7 +1,7 @@
-"use server";
+import {cache} from 'react';
 import { db } from "@/lib/db";
 
-export async function getReservations(objectId: string) {
+export const getReservations = cache(async (objectId: string) =>{
   try {
     const reservations = await db.reservation.findMany({
       where: {
@@ -33,4 +33,4 @@ export async function getReservations(objectId: string) {
     console.error("Error fetching reservations:", error);
     return { success: false, message: "Failed to fetch reservations." };
   }
-}
+});

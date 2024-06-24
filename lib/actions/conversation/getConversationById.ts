@@ -1,7 +1,9 @@
 import { db } from "@/lib/db";
+import { cache } from "react";
+
 import getCurrentUser from "../getCurrentUser";
 
-const getConversationById = async (conversationId: string) => {
+const getConversationById = cache(async (conversationId: string) => {
   try {
     const currentUser = await getCurrentUser();
 
@@ -27,6 +29,6 @@ const getConversationById = async (conversationId: string) => {
     }
     return null;
   }
-};
+});
 
 export default getConversationById;

@@ -1,8 +1,8 @@
-"use server";
+import { cache } from 'react';
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getPropertiesInfo = async () => {
+const getPropertiesInfo = cache(async () => {
   try {
     const session = await auth();
 
@@ -12,14 +12,14 @@ const getPropertiesInfo = async () => {
     }
 
     const properties = await db.object.findMany({
-        where: {
-            ownerId: session?.user?.id
-        },
-        include: {
-            images:true,
-            facility:true,
-            geometry:true
-        }
+      where: {
+        ownerId: session?.user?.id,
+      },
+      include: {
+        images: true,
+        facility: true,
+        geometry: true,
+      },
     });
 
     if (!properties.length) {
@@ -27,17 +27,17 @@ const getPropertiesInfo = async () => {
       return [];
     }
 
- // Wyciąganie URLs z powiązanych obrazów
- const propertiesWithUrls = properties.map(property => ({
-  ...property,
-  urls: property.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
-}));
+    // Extracting URLs from related images
+    const propertiesWithUrls = properties.map((property) => ({
+      ...property,
+      urls: property.images.map((image) => image.urls).flat(), // Getting all URLs
+    }));
 
-return propertiesWithUrls;
+    return propertiesWithUrls;
   } catch (error) {
     console.error("Failed to fetch properties:", error);
     return [];
   }
-};
+});
 
 export default getPropertiesInfo;
