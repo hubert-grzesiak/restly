@@ -13,7 +13,7 @@ export async function makeReservation(params: {
   dateTo: string;
   dateFrom: string;
   userId: string;
-  objectId: string
+  objectId: string;
 }) {
   const { objectId, userId, guests, dateFrom, dateTo } = params;
 
@@ -47,26 +47,22 @@ export async function makeReservation(params: {
     } = validatedFields.data;
 
     // Parse dates from string to Date objects
-    const parsedDateFrom = new Date(
-      validatedDateFrom.split(".").reverse().join("-")
-    );
-    const parsedDateTo = new Date(
-      validatedDateTo.split(".").reverse().join("-")
-    );
+    new Date(validatedDateFrom.split(".").reverse().join("-"));
+    new Date(validatedDateTo.split(".").reverse().join("-"));
 
     // Check for overlapping reservations
     const overlappingReservation = await db.reservation.findFirst({
       where: {
-        objectId: validatedObject,
+        propertyId: validatedObject,
         AND: [
           {
             dateFrom: {
-              lte: parsedDateTo,
+              lte: validatedDateTo, // Use validatedDateTo (string)
             },
           },
           {
             dateTo: {
-              gte: parsedDateFrom,
+              gte: validatedDateFrom, // Use validatedDateFrom (string)
             },
           },
         ],
@@ -85,21 +81,22 @@ export async function makeReservation(params: {
     await db.reservation.create({
       data: {
         userId: validatedUser,
-        objectId: validatedObject,
+        propertyId: validatedObject,
         guests: validatedGuests,
-        dateFrom: parsedDateFrom,
-        dateTo: parsedDateTo,
+        dateFrom: validatedDateFrom, // Use validatedDateFrom (string)
+        dateTo: validatedDateTo, // Use validatedDateTo (string)
       },
     });
 
     // Revalidate the path to reflect the changes
+    revalidatePath(`/profile/properties/${objectId}`);
+
+    // Redirect to the profile page
+    redirect(`/profile/properties/${objectId}`);
 
     return { success: true, message: "Reservation successfully created." };
   } catch (error) {
     console.error("Error in makeReservation:", error);
     return { success: false, message: "Failed to create reservation." };
-  } finally {
-    revalidatePath(`/profile/properties/${objectId}`);
-    redirect(`/profile/properties/${objectId}`);
   }
 }

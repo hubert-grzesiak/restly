@@ -17,7 +17,7 @@ const getFavouritesInfo = cache(async () => {
         userId: session.user.id,
       },
       include: {
-        object: {
+        property: {
           include: {
             images: true,
           },

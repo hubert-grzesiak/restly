@@ -11,6 +11,11 @@ import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
 import CookieComponent from "@/components/CookieComponent";
 import { Property } from "@prisma/client";
+
+interface PropertyCustom extends Property {
+  urls: string[];
+}
+
 export default async function Home() {
   const properties = await getAllProperties();
 
@@ -21,8 +26,8 @@ export default async function Home() {
         <div className="fixed top-1/2 z-[999] flex items-center justify-center rounded-[32px]">
           <CustomSearch />
         </div>
-        <section className="relative m-auto h-screen max-h-[700px] w-full overflow-hidden  pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20 background-gradient">
-          <div className="container max-w-[1400px] px-4 md:px-0 z-[20]">
+        <section className="background-gradient relative m-auto h-screen max-h-[700px] w-full overflow-hidden pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20">
+          <div className="container z-[20] max-w-[1400px] px-4 md:px-0">
             <div className="grid items-center gap-6 md:grid-cols-2 lg:grid-cols-[1fr_500px]">
               <div className="flex flex-col gap-4">
                 <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
@@ -71,7 +76,8 @@ export default async function Home() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <Link
                 className="group relative overflow-hidden rounded-xl"
-                href="#">
+                href="#"
+              >
                 <Image
                   alt="Destination"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -93,7 +99,8 @@ export default async function Home() {
               </Link>
               <Link
                 className="group relative overflow-hidden rounded-xl"
-                href="#">
+                href="#"
+              >
                 <Image
                   alt="Bali"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -115,7 +122,8 @@ export default async function Home() {
               </Link>
               <Link
                 className="group relative overflow-hidden rounded-xl"
-                href="#">
+                href="#"
+              >
                 <Image
                   alt="Tokyo"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -137,7 +145,8 @@ export default async function Home() {
               </Link>
               <Link
                 className="group relative overflow-hidden rounded-xl"
-                href="#">
+                href="#"
+              >
                 <Image
                   alt="London"
                   className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -160,16 +169,17 @@ export default async function Home() {
             </div>
           </div>
         </section>
-        <section className="bg-gray-100 py-12 dark:bg-gray-800 md:py-16 lg:py-20 background-gradient">
+        <section className="background-gradient bg-gray-100 py-12 dark:bg-gray-800 md:py-16 lg:py-20">
           <div className="container px-4 md:px-0">
             <h2 className="mb-6 text-2xl font-bold tracking-tight md:mb-8">
               Featured Rentals
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {properties.map((property: Property) => (
+              {properties.map((property: PropertyCustom) => (
                 <div
                   key={property.id}
-                  className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950">
+                  className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950"
+                >
                   <Link className="block" href="#">
                     <Image
                       alt={property.name}

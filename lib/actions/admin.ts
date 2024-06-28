@@ -25,13 +25,15 @@ export const admin = async () => {
   return { error: "Forbidden Server Action!" };
 };
 
-export const getFacilitiesAmount = async (): Promise<number | { error: string; count: number; }> => {
+export const getFacilitiesAmount = async (): Promise<
+  number | { error: string; count: number }
+> => {
   const role = await currentRole();
 
   if (role === UserRole.ADMIN) {
     try {
       const facilities = await db.facilities.findMany();
-      return facilities.length; 
+      return facilities.length;
     } catch (error) {
       return { error: "Error fetching all facilities", count: 0 };
     }
@@ -79,9 +81,8 @@ export type State = {
 //   }
 //   return { error: "Forbidden Server Power!" };
 // };
-export const createFacility = async (params: Facilities) => {
+export const createFacility = async ({ name }: { name: string }) => {
   const role = await currentRole();
-  const { name } = params;
 
   const validatedFields = CreateFacility.safeParse({
     name: name,
@@ -179,7 +180,7 @@ const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredFacilities(
   query: string,
-  currentPage: number
+  currentPage: number,
 ) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;

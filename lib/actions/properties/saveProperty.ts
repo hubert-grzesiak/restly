@@ -1,5 +1,4 @@
-"use server";
-import {cache} from 'react';
+import { cache } from "react";
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
@@ -12,11 +11,17 @@ export async function toggleFavoriteProperty(propertyId: string) {
       console.log("No user session found.");
       return false; // Ensure we always return a boolean
     }
+
     const userId = session.user.id;
+    if (!userId) {
+      console.log("No user ID found.");
+      return false; // Ensure we always return a boolean
+    }
+
     const favorite = await db.favorite.findFirst({
       where: {
         userId,
-        objectId: propertyId,
+        propertyId: propertyId,
       },
     });
 
@@ -32,7 +37,7 @@ export async function toggleFavoriteProperty(propertyId: string) {
       await db.favorite.create({
         data: {
           userId,
-          objectId: propertyId,
+          propertyId: propertyId,
         },
       });
       revalidatePath("/profile/favourites");
@@ -44,7 +49,7 @@ export async function toggleFavoriteProperty(propertyId: string) {
   }
 }
 
-export const isPropertyFavorite = cache(async (propertyId) => {
+export const isPropertyFavorite = cache(async (propertyId: string) => {
   try {
     const session = await auth();
 
@@ -54,12 +59,16 @@ export const isPropertyFavorite = cache(async (propertyId) => {
     }
 
     const userId = session.user.id;
+    if (!userId) {
+      console.log("No user ID found.");
+      return null;
+    }
 
     // Check if the object is already in the user's favorites
     const favorite = await db.favorite.findFirst({
       where: {
         userId,
-        objectId: propertyId,
+        propertyId: propertyId,
       },
     });
 

@@ -62,7 +62,7 @@ export const createObject = async (formData: FormData) => {
     }
     console.log(geometry);
 
-    const newObject = await db.object.create({
+    const newObject = await db.property.create({
       data: {
         country: data.object.country,
         city: data.object.city,

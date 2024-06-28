@@ -1,9 +1,8 @@
-import {cache} from 'react';
-
+import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getPropertyInfo = async ({ id }) => {
+const getPropertyInfo = async ({ id }: { id: string }) => {
   try {
     const session = await auth();
 
@@ -12,7 +11,7 @@ const getPropertyInfo = async ({ id }) => {
       return null;
     }
 
-    const property = await db.object.findFirst({
+    const property = await db.property.findFirst({
       where: {
         id: id,
       },
@@ -20,7 +19,7 @@ const getPropertyInfo = async ({ id }) => {
         images: true,
         facility: true,
         prices: true,
-        geometry: true
+        geometry: true,
       },
     });
 
@@ -29,11 +28,22 @@ const getPropertyInfo = async ({ id }) => {
       return null;
     }
 
+    if (property.geometry === null) {
+      return false;
+    }
+
+    const coordinates: [number, number] = property.geometry.coordinates.length >= 2
+      ? [property.geometry.coordinates[0], property.geometry.coordinates[1]]
+      : [0, 0]; // Default values if coordinates are insufficient
+
     // Wyciąganie URLs z powiązanych obrazów
     const propertyWithUrls = {
       ...property,
-      urls: property.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
-      coordinates: property.geometry.coordinates, // Extracting coordinates
+      geometry: {
+        ...property.geometry,
+        coordinates: coordinates, // Ensure correct type
+      },
+      urls: property.images.map((image) => image.urls).flat(), // Pobieranie wszystkich URLs
     };
 
     return propertyWithUrls;

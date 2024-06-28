@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 
 const getAllProperties = cache(async () => {
   try {
-    const properties = await db.object.findMany({
+    const properties = await db.property.findMany({
       include: {
         images: true,
         prices: true,

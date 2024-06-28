@@ -69,21 +69,23 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  {property.facility.map((facility: {name: string}, index:number) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <span>{facility.name}</span>
-                    </div>
-                  ))}
+                  {property.facility.map(
+                    (facility: { name: string }, index: number) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <span>{facility.name}</span>
+                      </div>
+                    ),
+                  )}
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                   <span className="text-2xl font-bold">
-                    ${property.prices[0]?.dailyRate || "N/A"}/night
+                    ${property.prices[0]?.price || "N/A"}/night
                   </span>
                 </div>
               </div>
             </div>
             <div className="mx-6 mt-4 grid grid-cols-2 gap-4 pb-4 md:grid-cols-4">
-              {property.urls.slice(1, 5).map((url:string, index: number) => (
+              {property.urls.slice(1, 5).map((url: string, index: number) => (
                 <Image
                   key={index}
                   alt={`Property Image ${index + 1}`}
@@ -100,7 +102,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
             </div>
           </div>
         </section>
-        <section className="mt-6 flex w-full flex-col justify-between gap-6 md:flex-row items-start">
+        <section className="mt-6 flex w-full flex-col items-start justify-between gap-6 md:flex-row">
           <div className="background-gradient flex-1 rounded-lg p-6 shadow-md">
             <h2 className="mb-4 text-2xl font-bold">Reservation</h2>
             <div className="rounded-md bg-white p-4">

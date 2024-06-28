@@ -3,31 +3,16 @@
 import { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Import Mapbox GL CSS
-
-type Property = {
-  id: string;
-  name: string;
-  city: string;
-  country: string;
-  street: string;
-  houseNumber: string;
+import { Property } from "@prisma/client";
+interface PropertyInterface extends Property {
   geometry: {
-    coordinates: [number, number];
-  } | null;
-  urls: string[];
-  facility: { id: string; name: string; objectId: string }[];
-  prices: {
     id: string;
-    objectId: string;
-    year: number;
-    month: number;
-    dailyRate: number;
-  }[];
-  description: string;
-  ownerId: string;
-};
+    type: string;
+    coordinates: [number,number];
+  } | null;
+}
 
-const Map = ({ property }: { property: Property }) => {
+const Map = ({ property }: { property: PropertyInterface }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Ensure the token is set correctly

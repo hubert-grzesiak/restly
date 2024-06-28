@@ -1,11 +1,11 @@
-import {cache} from 'react';
+import { cache } from "react";
 import { db } from "@/lib/db";
 
-export const getReservations = cache(async (objectId: string) =>{
+export const getReservations = cache(async (propertyId: string) => {
   try {
     const reservations = await db.reservation.findMany({
       where: {
-        objectId,
+        propertyId,
       },
       select: {
         dateFrom: true,
@@ -13,20 +13,19 @@ export const getReservations = cache(async (objectId: string) =>{
       },
     });
 
-    const formattedReservations = reservations.map((reservation) => ({
-      from: reservation.dateFrom
-        .toISOString()
-        .split("T")[0]
-        .split("-")
-        .reverse()
-        .join("."),
-      to: reservation.dateTo
-        .toISOString()
-        .split("T")[0]
-        .split("-")
-        .reverse()
-        .join("."),
-    }));
+    const formattedReservations = reservations.map((reservation) => {
+      const dateFrom = new Date(reservation.dateFrom);
+      const dateTo = new Date(reservation.dateTo);
+      return {
+        from: dateFrom
+          .toISOString()
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("."),
+        to: dateTo.toISOString().split("T")[0].split("-").reverse().join("."),
+      };
+    });
 
     return { success: true, reservations: formattedReservations };
   } catch (error) {

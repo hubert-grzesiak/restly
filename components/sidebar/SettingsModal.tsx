@@ -18,8 +18,8 @@ interface SettingsModalProps {
   isOpen?: boolean;
   onClose: () => void;
   currentUser: {
-    name: User["name"],
-    image: User["image"],
+    name?: User["name"],
+    image?: User["image"],
     role: UserRole,
     isTwoFactorEnabled: boolean,
     isOAuth: boolean,

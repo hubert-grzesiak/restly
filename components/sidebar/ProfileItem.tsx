@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 
-import {  UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
 import Avatar from "@/components/Avatar";
 import SettingsModal from "./SettingsModal";
 
 interface ProfileItemProps {
   currentUser: {
-    role: UserRole,
-    isTwoFactorEnabled: boolean,
-    isOAuth: boolean,
+    role: UserRole;
+    isTwoFactorEnabled: boolean;
+    isOAuth: boolean;
   };
 }
 
@@ -27,7 +27,8 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ currentUser }) => {
       />
       <div
         onClick={() => setIsOpen(true)}
-        className="cursor-pointer hover:opacity-75 transition">
+        className="cursor-pointer transition hover:opacity-75"
+      >
         <Avatar user={currentUser} />
       </div>
     </>

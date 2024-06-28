@@ -177,6 +177,7 @@ model Property {
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
 
+
   prices      Price[]
   facility    Facility[]
   images      Image[]
