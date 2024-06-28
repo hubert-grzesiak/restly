@@ -1,5 +1,4 @@
-import { cache } from "react";
-
+"use server";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -49,7 +48,7 @@ export async function toggleFavoriteProperty(propertyId: string) {
   }
 }
 
-export const isPropertyFavorite = cache(async (propertyId: string) => {
+export const isPropertyFavorite = async (propertyId: string) => {
   try {
     const session = await auth();
 
@@ -77,4 +76,4 @@ export const isPropertyFavorite = cache(async (propertyId: string) => {
     console.error("Error in isPropertyFavorite:", error);
     throw error;
   }
-});
+};
