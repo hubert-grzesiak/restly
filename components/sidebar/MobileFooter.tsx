@@ -2,7 +2,7 @@
 
 import useConversation from "@/hooks/useConversation";
 import useRoutes from "@/hooks/useRoutes";
-import {  UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
 import ThemeToggle from "../theme/ThemeToggle";
 import MobileItem from "./MobileItem";
@@ -11,9 +11,9 @@ import ProfileItem from "./ProfileItem";
 
 interface MobileFooterProps {
   currentUser: {
-    role: UserRole,
-    isTwoFactorEnabled: boolean,
-    isOAuth: boolean,
+    role: UserRole;
+    isTwoFactorEnabled: boolean;
+    isOAuth: boolean;
   };
 }
 
@@ -27,21 +27,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({ currentUser }) => {
 
   return (
     <>
-      <div
-        className="
-        fixed 
-        justify-between 
-        w-full 
-        bottom-0 
-        z-40 
-        flex 
-        items-center 
-        bg-white 
-        border-t-[1px] 
-        lg:hidden
-        dark:bg-dusk
-        dark:border-lightgray
-      ">
+      <div className="dark:bg-dusk dark:border-lightgray fixed bottom-0 z-40 flex w-full items-center justify-between border-t-[1px] bg-white lg:hidden">
         {routes.map((route) => (
           <MobileLink
             key={route.href}

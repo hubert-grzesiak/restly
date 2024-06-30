@@ -227,7 +227,7 @@ export default async function Home() {
                         }
                       </span>
                       <Button size="sm" variant="default">
-                        <Link href={`/profile/properties/${property.id}`}>
+                        <Link href={`/properties/${property.id}`}>
                           Book Now
                         </Link>
                       </Button>

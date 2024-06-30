@@ -1,16 +1,8 @@
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 
 const getPropertyInfo = async ({ id }: { id: string }) => {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      console.log("No user session found.");
-      return null;
-    }
-
     const property = await db.property.findFirst({
       where: {
         id: id,
@@ -32,9 +24,10 @@ const getPropertyInfo = async ({ id }: { id: string }) => {
       return false;
     }
 
-    const coordinates: [number, number] = property.geometry.coordinates.length >= 2
-      ? [property.geometry.coordinates[0], property.geometry.coordinates[1]]
-      : [0, 0]; // Default values if coordinates are insufficient
+    const coordinates: [number, number] =
+      property.geometry.coordinates.length >= 2
+        ? [property.geometry.coordinates[0], property.geometry.coordinates[1]]
+        : [0, 0]; // Default values if coordinates are insufficient
 
     // Wyciąganie URLs z powiązanych obrazów
     const propertyWithUrls = {

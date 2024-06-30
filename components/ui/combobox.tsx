@@ -47,7 +47,8 @@ export function ComboboxDemo({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("justify-between", className)}>
+          className={cn("justify-between", className)}
+        >
           {value
             ? items.find((item) => item.value === value)?.label
             : `Select ${selectPlaceholder}...`}
@@ -56,7 +57,8 @@ export function ComboboxDemo({
       </PopoverTrigger>
       <PopoverContent
         className="w-full p-0"
-        style={{ minWidth: triggerRef.current?.offsetWidth }}>
+        style={{ minWidth: triggerRef.current?.offsetWidth }}
+      >
         <Command>
           <CommandInput
             placeholder={`Search ${searchPlaceholder}...`}
@@ -72,12 +74,13 @@ export function ComboboxDemo({
                   onSelect={(currentValue) => {
                     onChange(currentValue === value ? "" : currentValue);
                     setOpen(false);
-                  }}>
+                  }}
+                >
                   {item.label}
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      value === item.value ? "opacity-100" : "opacity-0"
+                      value === item.value ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>

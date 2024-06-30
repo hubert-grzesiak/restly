@@ -2,20 +2,16 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function toggleFavoriteProperty(propertyId: string) {
   try {
     const session = await auth();
-    if (!session?.user?.email) {
-      console.log("No user session found.");
-      return false; // Ensure we always return a boolean
-    }
 
-    const userId = session.user.id;
-    if (!userId) {
-      console.log("No user ID found.");
-      return false; // Ensure we always return a boolean
+    if (!session?.user?.id) {
+      redirect("/auth/login");
     }
+    const userId = session.user.id;
 
     const favorite = await db.favorite.findFirst({
       where: {
@@ -52,16 +48,12 @@ export const isPropertyFavorite = async (propertyId: string) => {
   try {
     const session = await auth();
 
-    if (!session?.user?.email) {
-      console.log("No user session found.");
+    if (!session?.user?.id) {
+      // If no user is logged in, return null
       return null;
     }
 
     const userId = session.user.id;
-    if (!userId) {
-      console.log("No user ID found.");
-      return null;
-    }
 
     // Check if the object is already in the user's favorites
     const favorite = await db.favorite.findFirst({

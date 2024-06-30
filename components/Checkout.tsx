@@ -6,9 +6,7 @@ import { checkoutReservation } from "@/lib/actions/reservation/transaction.actio
 import { useToast } from "@/components/ui/use-toast";
 
 import { Button } from "@/components/ui/button";
-import {
-  ReservationSchema
-} from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
+import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import { Property } from "@prisma/client";
 import * as z from "zod";
 
@@ -27,6 +25,7 @@ const Checkout = ({
 }) => {
   const { toast } = useToast();
 
+  console.log("Checkout -> price", price, buyerId, property, formValues);
   useEffect(() => {
     loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
   }, []);
@@ -54,7 +53,7 @@ const Checkout = ({
   }, [toast]);
 
   const onCheckout = async () => {
-    await checkoutReservation(price,buyerId, property, formValues);
+    await checkoutReservation(price, buyerId, property, formValues);
   };
 
   return (

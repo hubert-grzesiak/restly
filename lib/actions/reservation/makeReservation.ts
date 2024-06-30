@@ -2,7 +2,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { ReservationSchema } from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
+import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
 
@@ -89,10 +89,10 @@ export async function makeReservation(params: {
     });
 
     // Revalidate the path to reflect the changes
-    revalidatePath(`/profile/properties/${objectId}`);
+    revalidatePath(`/properties/${objectId}`);
 
     // Redirect to the profile page
-    redirect(`/profile/properties/${objectId}`);
+    redirect(`/properties/${objectId}`);
 
     return { success: true, message: "Reservation successfully created." };
   } catch (error) {

@@ -3,50 +3,65 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import {  Property, Transaction } from "@prisma/client";
+import { Property, Transaction } from "@prisma/client";
 
-import {
-  ReservationSchema
-} from "@/app/(protected)/profile/properties/[id]/components/ReservationForm/ReservationFormSchema";
+import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
 
-export async function checkoutReservation(price: number, buyerId: string, property: Property , formValues: z.infer<typeof ReservationSchema>, ) {
+/**
+ * Tworzy sesję Stripe dla rezerwacji nieruchomości.
+ * @param price Cena rezerwacji w PLN.
+ * @param buyerId Identyfikator kupującego.
+ * @param property Obiekt typu Property zawierający dane nieruchomości.
+ * @param formValues Wartości formularza zgodne ze schematem ReservationSchema.
+ * @returns Status płatności sesji.
+ */
+
+export async function checkoutReservation(
+  price: number,
+  buyerId: string,
+  property: Property,
+  formValues: z.infer<typeof ReservationSchema>,
+) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  const amount = 10 * 100;
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
           currency: "pln",
-          unit_amount: amount,
+          unit_amount: price * 100,
           product_data: {
-            name: buyerId,
-            description: property.name,
+            name: property.name, // Nazwa nieruchomości
+            description: `
+              Reservation for: ${property.name}
+              Location: ${property.city}, ${property.country}
+              Stay Duration: ${formValues?.dateFrom} to ${formValues?.dateTo}
+              Total Price: ${price} PLN
+            `, // Szczegółowy opis rezerwacji
           },
         },
         quantity: 1,
       },
     ],
     metadata: {
-        buyerId: buyerId,
-        property: property.name,
-        city: property.city,
-        country: property.country,
-        dateFrom: formValues?.dateFrom,
-        dateTo: formValues?.dateTo,
-        price: price,
+      buyerId: buyerId,
+      property: property.name,
+      city: property.city,
+      country: property.country,
+      dateFrom: formValues?.dateFrom,
+      dateTo: formValues?.dateTo,
+      price: price,
     },
-    mode: 'payment',
+    mode: "payment",
+    custom_fields: [],
     success_url: `http://localhost:3000/profile`,
     cancel_url: `http://localhost:3000/`,
   });
 
-  redirect(session.url!)
+  redirect(session.url!);
   return session.payment_status;
 }
-
-
 
 export async function createTransaction(transaction: Transaction) {
   try {

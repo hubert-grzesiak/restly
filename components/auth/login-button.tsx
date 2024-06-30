@@ -25,7 +25,7 @@ const LoginButton = ({
     return (
       <Dialog>
         <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
-        <DialogContent className="p-0 w-auto bg-transparent border-none">
+        <DialogContent className="w-auto border-none bg-transparent p-0">
           <LoginForm />
         </DialogContent>
       </Dialog>

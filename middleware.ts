@@ -7,6 +7,7 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/lib/routes";
+import { match } from "path-to-regexp";
 
 const { auth } = NextAuth(authConfig);
 
@@ -15,7 +16,10 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.some((route) => {
+    const matcher = match(route, { decode: decodeURIComponent });
+    return matcher(nextUrl.pathname) !== false;
+  });
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) return;
@@ -52,5 +56,6 @@ export const config = {
     "/terms-of-service",
     "/about-us",
     "/contact",
+    "/properties/:id*",
   ],
 };

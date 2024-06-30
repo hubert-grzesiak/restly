@@ -77,7 +77,8 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full flex-col gap-10">
+        className="flex w-full flex-col gap-10"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -92,7 +93,7 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormDescription className="body-regular mt-2.5 text-light-500">
+              <FormDescription className="body-regular text-light-500 mt-2.5">
                 Be specific and imagine you`&apos;re asking a facility to
                 another person.
               </FormDescription>
@@ -103,8 +104,9 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
 
         <Button
           type="submit"
-          className="primary-gradient w-fit !text-light-900"
-          disabled={isSubmitting}>
+          className="primary-gradient !text-light-900 w-fit"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <>{type === "Edit" ? "Editing..." : "Posting..."}</>
           ) : (

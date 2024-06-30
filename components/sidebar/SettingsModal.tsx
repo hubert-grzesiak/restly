@@ -18,11 +18,11 @@ interface SettingsModalProps {
   isOpen?: boolean;
   onClose: () => void;
   currentUser: {
-    name?: User["name"],
-    image?: User["image"],
-    role: UserRole,
-    isTwoFactorEnabled: boolean,
-    isOAuth: boolean,
+    name?: User["name"];
+    image?: User["image"];
+    role: UserRole;
+    isTwoFactorEnabled: boolean;
+    isOAuth: boolean;
   };
 }
 // interface CloudinaryResult {
@@ -77,14 +77,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h2
-              className="
-                text-base 
-                font-semibold 
-                leading-7 
-                text-gray-900
-                dark:text-gray-200
-              ">
+            <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-gray-200">
               Profile
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">
@@ -103,14 +96,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               <div>
                 <label
                   htmlFor="photo"
-                  className="
-                    block 
-                    text-sm 
-                    font-medium 
-                    leading-6 
-                    text-gray-900
-                    dark:text-gray-200
-                  ">
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
+                >
                   Photo
                 </label>
                 <div className="mt-2 flex items-center gap-x-3">
@@ -129,7 +116,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     options={{ maxFiles: 1 }}
                     uploadPreset={
                       process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME
-                    }>
+                    }
+                  >
                     <Button disabled={isLoading} type="button">
                       Change
                     </Button>
@@ -140,14 +128,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
         </div>
 
-        <div
-          className="
-            mt-6 
-            flex 
-            items-center 
-            justify-end 
-            gap-x-6
-          ">
+        <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button disabled={isLoading} onClick={onClose}>
             Cancel
           </Button>

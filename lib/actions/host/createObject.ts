@@ -1,7 +1,7 @@
 "use server";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 import { auth } from "@/lib/auth";
-import { FormSchema } from "@/app/become-a-host/components/HostForm.schema";
+import { FormSchema } from "@/app/(home)/become-a-host/components/HostForm.schema";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import path from "path";
 import fs from "fs/promises";

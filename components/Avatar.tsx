@@ -6,8 +6,8 @@ import Image from "next/image";
 import useActiveList from "@/hooks/useActiveList";
 
 interface AvatarProps {
-  user?: Partial<User>; 
-  role?: UserRole; 
+  user?: Partial<User>;
+  role?: UserRole;
   isTwoFactorEnabled?: boolean;
   isOAuth?: boolean;
 }
