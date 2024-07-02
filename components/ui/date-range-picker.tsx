@@ -49,6 +49,7 @@ const formatDate = (date: Date, locale: string = "en-us"): string => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString();
+  console.log(locale);
   return `${day}.${month}.${year}`;
 };
 

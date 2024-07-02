@@ -31,18 +31,21 @@ import * as z from "zod";
 import { Property } from "@prisma/client";
 import { checkoutReservation } from "@/lib/actions/reservation/transaction.action";
 import { Button } from "@/components/ui/button";
-import { result } from "lodash";
+// import { result } from "lodash";
+
+interface PropertyAdditionals extends Property {
+  prices: Array<{ price: number }>;
+}
 
 const ReservationForm = ({
   propertyId,
   property,
 }: {
   propertyId: string;
-  property: Property;
+  property: PropertyAdditionals;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formValues, setFormValues] =
-    useState<z.infer<typeof ReservationSchema>>();
+
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -154,21 +157,11 @@ const ReservationForm = ({
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
-      toast({
-        title: "Reservation placed!",
-        description: "You will receive an email confirmation",
-        duration: 5000,
-        className: "success-toast",
-      });
+      toast("Reservation placed!");
     }
 
     if (query.get("canceled")) {
-      toast({
-        title: "Reservation cancelled!",
-        description: "Your reservation has been canceled.",
-        duration: 5000,
-        className: "error-toast",
-      });
+      toast("Reservation cancelled!");
     }
   }, [toast]);
 

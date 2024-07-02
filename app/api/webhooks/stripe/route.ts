@@ -31,6 +31,10 @@ export async function POST(request: Request) {
       price: amount_total ? amount_total / 100 : 0,
       buyerId: metadata?.buyerId || "",
       propertyId: metadata?.propertyId || "",
+      userId: metadata?.userId || "",
+      guests: parseInt(metadata?.guests || "1"),
+      dateFrom: metadata?.dateFrom || "",
+      dateTo: metadata?.dateTo || "",
       createdAt: new Date(),
     };
 

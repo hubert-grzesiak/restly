@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import { Property, Reservation } from "@prisma/client";
+import { Property } from "@prisma/client";
 
 import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
@@ -32,8 +32,8 @@ export async function checkoutReservation(
   };
 
   // Przekształcenie dat na obiekty Date
-  const fromDate = new Date(convertDate(formValues.dateRange.from)); 
-  const toDate = new Date(convertDate(formValues.dateRange.to)); 
+  const fromDate = new Date(convertDate(formValues.dateRange.from));
+  const toDate = new Date(convertDate(formValues.dateRange.to));
 
   console.log("From date:", fromDate);
 
@@ -90,12 +90,29 @@ export async function checkoutReservation(
   redirect(session.url!);
 }
 
-export async function createReservation(reservation: Reservation) {
+interface ReservationResponse {
+  stripeId: string;
+  price: number;
+  buyerId: string;
+  propertyId: string;
+  createdAt: Date;
+  userId: string;
+  guests: number;
+  dateFrom: string;
+  dateTo: string;
+}
+
+export async function createReservation(reservation: ReservationResponse) {
   try {
     const session = await auth();
     if (!session?.user?.email) {
       console.log("No user session found.");
       return { success: false, message: "No user session found." };
+    }
+
+    if (!reservation.userId) {
+      console.log("No user ID found.");
+      return { success: false, message: "No user ID found." };
     }
 
     const newReservation = await db.reservation.create({
