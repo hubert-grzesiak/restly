@@ -45,7 +45,7 @@ export default async function Page({
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search Facilities..." />
         <Link
-          href="/dashboard/facilities/create"
+          href="/admin/facilities/create"
           className="rounded-md bg-green-500 px-4 py-2 font-bold text-white"
         >
           Create facility

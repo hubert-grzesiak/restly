@@ -73,7 +73,7 @@ export type State = {
 //           name: validatedName,
 //         },
 //       });
-//       revalidatePath("/dashboard/facilities");
+//       revalidatePath("/admin/facilities");
 //       return { success: "Facility created" };
 //     } catch (error) {
 //       return { error: "Error creating facility" };
@@ -118,7 +118,7 @@ export const createFacility = async ({ name }: { name: string }) => {
           name: validatedName,
         },
       });
-      revalidatePath("/dashboard/facilities");
+      revalidatePath("/admin/facilities");
       return { success: "Facility created" };
     } catch (error) {
       return { error: "Error creating facility" };
@@ -150,7 +150,7 @@ export async function editFacility(params: Facilities) {
           name,
         },
       });
-      revalidatePath("/dashboard/facilities");
+      revalidatePath("/admin/facilities");
       return { success: "Facility updated" };
     } catch (error) {
       return { error: "Error updating facility" };
@@ -167,7 +167,7 @@ export const deleteFacility = async (id: string) => {
       await db.facilities.delete({
         where: { id: String(id) },
       });
-      revalidatePath("/dashboard/facilities");
+      revalidatePath("/admin/facilities");
       return { success: "Facility deleted" };
     } catch (error) {
       return { error: "Error deleting facility" };

@@ -54,7 +54,7 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
         });
         toast.success("Facility updated successfully");
 
-        router.push(`/dashboard/facilities`);
+        router.push(`/admin/facilities`);
       } else {
         // make an async to your API -> create a facility
         // contain all form data
@@ -63,7 +63,7 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
         });
         toast.success("Facility created successfully");
         // navigate to home page
-        router.push("/dashboard/facilities");
+        router.push("/admin/facilities");
       }
     } catch (error) {
       console.error("Failed to create facility", error);

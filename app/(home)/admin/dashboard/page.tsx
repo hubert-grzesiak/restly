@@ -9,7 +9,7 @@ const Page = () => {
 
         <ul className="text-blue-500">
           <li>
-            <Link className="hover:underline" href="/dashboard/facilities">
+            <Link className="hover:underline" href="/admin/facilities">
               Facilities
             </Link>
           </li>

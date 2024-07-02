@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import { Property, Transaction } from "@prisma/client";
+import { Property, Reservation } from "@prisma/client";
 
 import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
@@ -25,19 +25,46 @@ export async function checkoutReservation(
 ) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+  // Funkcja do konwersji daty w formacie dd.mm.yyyy na yyyy-mm-dd
+  const convertDate = (dateString: string) => {
+    const [day, month, year] = dateString.split(".");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Przekształcenie dat na obiekty Date
+  const fromDate = new Date(convertDate(formValues.dateRange.from)); 
+  const toDate = new Date(convertDate(formValues.dateRange.to)); 
+
+  console.log("From date:", fromDate);
+
+  let numberOfDays;
+
+  if (fromDate === toDate) {
+    numberOfDays = 1;
+  } else {
+    numberOfDays =
+      Math.round(
+        (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+      ) + 1;
+  }
+  const newPrice = price * numberOfDays;
+
+  console.log("Price for all days:", newPrice);
+  console.log("Number of days:", numberOfDays);
+
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
           currency: "pln",
-          unit_amount: price * 100,
+          unit_amount: newPrice * 100,
           product_data: {
             name: property.name, // Nazwa nieruchomości
             description: `
               Reservation for: ${property.name}
               Location: ${property.city}, ${property.country}
-              Stay Duration: ${formValues?.dateFrom} to ${formValues?.dateTo}
-              Total Price: ${price} PLN
+              Stay Duration: ${formValues?.dateRange.from} to ${formValues?.dateRange.to} (${numberOfDays} days)
+              Total Price: ${(price * numberOfDays).toFixed(2)} PLN
               For ${formValues?.guests} guests.
             `, // Szczegółowy opis rezerwacji
           },
@@ -50,9 +77,9 @@ export async function checkoutReservation(
       property: property.name,
       city: property.city,
       country: property.country,
-      dateFrom: formValues?.dateFrom,
-      dateTo: formValues?.dateTo,
-      price: price,
+      dateFrom: formValues?.dateRange.from,
+      dateTo: formValues?.dateRange.to,
+      price: newPrice,
     },
     mode: "payment",
     custom_fields: [],
@@ -61,10 +88,9 @@ export async function checkoutReservation(
   });
 
   redirect(session.url!);
-  return session.payment_status;
 }
 
-export async function createTransaction(transaction: Transaction) {
+export async function createReservation(reservation: Reservation) {
   try {
     const session = await auth();
     if (!session?.user?.email) {
@@ -72,16 +98,16 @@ export async function createTransaction(transaction: Transaction) {
       return { success: false, message: "No user session found." };
     }
 
-    const newTransaction = await db.transaction.create({
+    const newReservation = await db.reservation.create({
       data: {
-        ...transaction,
-        buyerId: transaction.buyerId,
+        ...reservation,
+        userId: reservation.userId,
       },
     });
 
-    return JSON.parse(JSON.stringify(newTransaction));
+    return JSON.parse(JSON.stringify(newReservation));
   } catch (error) {
-    console.error("Failed to create transaction", error);
-    return { success: false, message: "Failed to create transaction." };
+    console.error("Failed to create reservation", error);
+    return { success: false, message: "Failed to create reservation." };
   }
 }

@@ -12,10 +12,10 @@ export default function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Facilities", href: "/dashboard/facilities" },
+          { label: "Facilities", href: "/admin/facilities" },
           {
             label: "Create Facility",
-            href: "/dashboard/facilities/create",
+            href: "/admin/facilities/create",
             active: true,
           },
         ]}

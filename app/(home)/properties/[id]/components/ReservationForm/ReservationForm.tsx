@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
   SelectTrigger,
@@ -23,14 +23,15 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useState, useEffect } from "react";
 import { ReservationSchema } from "./ReservationFormSchema";
 import { toast } from "sonner";
-import { makeReservation } from "@/lib/actions/reservation/makeReservation";
+// import { makeReservation } from "@/lib/actions/reservation/makeReservation";
 import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
-import Checkout from "@/components/Checkout";
+// import Checkout from "@/components/Checkout";
 import { Property } from "@prisma/client";
 import { checkoutReservation } from "@/lib/actions/reservation/transaction.action";
 import { Button } from "@/components/ui/button";
+import { result } from "lodash";
 
 const ReservationForm = ({
   propertyId,
@@ -52,7 +53,7 @@ const ReservationForm = ({
   >([]);
 
   const form = useForm<z.infer<typeof ReservationSchema>>({
-    resolver: zodResolver(ReservationSchema),
+    // resolver: zodResolver(ReservationSchema),
     defaultValues: {
       objectId: propertyId,
       userId: session.data?.user.id as string,
@@ -70,6 +71,10 @@ const ReservationForm = ({
   useEffect(() => {
     setValue("dateRange", dateRange);
   }, [dateRange, setValue]);
+
+  useEffect(() => {
+    loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+  }, []);
 
   const isDateBlocked = (
     date: Date,
@@ -121,13 +126,14 @@ const ReservationForm = ({
       //   dateTo: values.dateRange.to,
       // });
 
-      setFormValues(values);
+      // setFormValues(values);
       await checkoutReservation(
         property.prices[0].price || 0,
         session?.data?.user.id || "",
         property,
-        formValues,
+        values,
       );
+
       console.log(values);
       // if (result.success) {
       //   toast.success(result.message);
@@ -143,9 +149,6 @@ const ReservationForm = ({
   }
 
   // console.log("Checkout -> price", price, buyerId, property, formValues);
-  useEffect(() => {
-    loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-  }, []);
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -224,11 +227,14 @@ const ReservationForm = ({
                       <SelectValue placeholder="Select guests" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">1 guest</SelectItem>
-                      <SelectItem value="2">2 guests</SelectItem>
-                      <SelectItem value="3">3 guests</SelectItem>
-                      <SelectItem value="4">4 guests</SelectItem>
-                      <SelectItem value="5">5 guests</SelectItem>
+                      {Array.from(
+                        { length: parseInt(property.maxPeople) },
+                        (_, i) => (
+                          <SelectItem key={i} value={(i + 1).toString()}>
+                            {i + 1} guests
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>

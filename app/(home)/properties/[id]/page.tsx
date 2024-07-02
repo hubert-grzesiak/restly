@@ -111,9 +111,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
           </div>
           <div className="background-gradient w-full max-w-[900px] rounded-lg p-6 shadow-md">
             <h2 className="mb-4 text-2xl font-bold">Location</h2>
-            <div>
-              <Map property={property} />
-            </div>
+            <div>{/* <Map property={property} /> */}</div>
           </div>
         </section>
         <Opinions />
