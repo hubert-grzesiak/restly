@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
+// import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { Property } from "@prisma/client";
@@ -104,16 +104,16 @@ interface ReservationResponse {
 
 export async function createReservation(reservation: ReservationResponse) {
   try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      console.log("No user session found.");
-      return { success: false, message: "No user session found." };
-    }
+    // const session = await auth();
+    // if (!session?.user?.email) {
+    //   console.log("No user session found.");
+    //   return { success: false, message: "No user session found." };
+    // }
 
-    if (!reservation.userId) {
-      console.log("No user ID found.");
-      return { success: false, message: "No user ID found." };
-    }
+    // if (!reservation.userId) {
+    //   console.log("No user ID found.");
+    //   return { success: false, message: "No user ID found." };
+    // }
 
     const newReservation = await db.reservation.create({
       data: {

@@ -8,14 +8,23 @@ export async function POST(request: Request) {
   const sig = request.headers.get("stripe-signature") as string;
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
+  console.log("Received Stripe webhook with body:", body);
+  console.log("Stripe signature:", sig);
+  console.log("Stripe webhook secret:", endpointSecret);
+
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
   let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    console.log("Webhook event constructed successfully:", event);
   } catch (err) {
-    return NextResponse.json({ message: "Webhook error", error: err });
+    console.error("Failed to verify webhook signature:", err.message);
+    return NextResponse.json(
+      { message: "Webhook error", error: err.message },
+      { status: 400 },
+    );
   }
 
   // Get the ID and type
@@ -25,6 +34,8 @@ export async function POST(request: Request) {
   if (eventType === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const { id, amount_total, metadata } = session;
+
+    console.log("Processing checkout.session.completed for session:", session);
 
     const reservation = {
       stripeId: id,
@@ -39,6 +50,8 @@ export async function POST(request: Request) {
     };
 
     const newReservation = await createReservation(reservation);
+
+    console.log("Reservation created successfully:", newReservation);
 
     return NextResponse.json({ message: "OK", reservation: newReservation });
   }
