@@ -26,19 +26,11 @@ import { Select } from "antd";
 import { UploadFile } from "antd/es/upload/interface";
 import { TypeOf } from "zod";
 import { Steps } from "antd";
-import dynamic from "next/dynamic";
 
-const Uploader = dynamic(() => import("@/components/ui/uploader"), {
-  ssr: false,
-});
+import Uploader from "@/components/ui/uploader";
 
-const Congratulation = dynamic(() => import("./Congratulation"), {
-  ssr: false,
-});
-
-const PriceItem = dynamic(() => import("./PriceItem"), {
-  ssr: false,
-});
+import Congratulation from "./Congratulation";
+import PriceItem from "./PriceItem";
 
 import {
   IconCalendar,

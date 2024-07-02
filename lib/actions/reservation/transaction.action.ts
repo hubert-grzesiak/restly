@@ -38,6 +38,7 @@ export async function checkoutReservation(
               Location: ${property.city}, ${property.country}
               Stay Duration: ${formValues?.dateFrom} to ${formValues?.dateTo}
               Total Price: ${price} PLN
+              For ${formValues?.guests} guests.
             `, // Szczegółowy opis rezerwacji
           },
         },

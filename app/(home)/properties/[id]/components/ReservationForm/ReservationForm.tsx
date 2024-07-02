@@ -9,6 +9,8 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
+import { loadStripe } from "@stripe/stripe-js";
+
 import {
   Form,
   FormControl,
@@ -27,6 +29,8 @@ import { useSession } from "next-auth/react";
 import * as z from "zod";
 import Checkout from "@/components/Checkout";
 import { Property } from "@prisma/client";
+import { checkoutReservation } from "@/lib/actions/reservation/transaction.action";
+import { Button } from "@/components/ui/button";
 
 const ReservationForm = ({
   propertyId,
@@ -109,19 +113,27 @@ const ReservationForm = ({
     setIsSubmitting(true);
     try {
       console.log(values);
-      const result = await makeReservation({
-        objectId: propertyId,
-        userId: session.data?.user.id as string,
-        guests: values.guests,
-        dateFrom: values.dateRange.from,
-        dateTo: values.dateRange.to,
-      });
+      // const result = await makeReservation({
+      //   objectId: propertyId,
+      //   userId: session.data?.user.id as string,
+      //   guests: values.guests,
+      //   dateFrom: values.dateRange.from,
+      //   dateTo: values.dateRange.to,
+      // });
+
       setFormValues(values);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
+      await checkoutReservation(
+        property.prices[0].price || 0,
+        session?.data?.user.id || "",
+        property,
+        formValues,
+      );
+      console.log(values);
+      // if (result.success) {
+      //   toast.success(result.message);
+      // } else {
+      //   toast.error(result.message);
+      // }
     } catch (error: unknown) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
@@ -130,10 +142,42 @@ const ReservationForm = ({
     }
   }
 
+  // console.log("Checkout -> price", price, buyerId, property, formValues);
+  useEffect(() => {
+    loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+  }, []);
+
+  useEffect(() => {
+    // Check to see if this is a redirect back from Checkout
+    const query = new URLSearchParams(window.location.search);
+    if (query.get("success")) {
+      toast({
+        title: "Reservation placed!",
+        description: "You will receive an email confirmation",
+        duration: 5000,
+        className: "success-toast",
+      });
+    }
+
+    if (query.get("canceled")) {
+      toast({
+        title: "Reservation cancelled!",
+        description: "Your reservation has been canceled.",
+        duration: 5000,
+        className: "error-toast",
+      });
+    }
+  }, [toast]);
+
+  // const onCheckout = async () => {
+  //   await checkoutReservation(price, buyerId, property, formValues);
+  // };
+
   return (
     <>
       <Form {...form}>
         <form
+          method="POST"
           onSubmit={handleSubmit(onSubmit)}
           className="flex w-full flex-col gap-[10px]"
         >
@@ -172,7 +216,9 @@ const ReservationForm = ({
                 <FormLabel htmlFor="guests">Guests</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={(value) => field.onChange(parseInt(value))}
+                    onValueChange={(value) => {
+                      field.onChange(parseInt(value));
+                    }}
                   >
                     <SelectTrigger id="guests">
                       <SelectValue placeholder="Select guests" />
@@ -190,19 +236,37 @@ const ReservationForm = ({
               </FormItem>
             )}
           />
-
-          {/* <Button
-          type="submit"
-          className="w-full"
-          size="lg"
-          disabled={isSubmitting}>
-          {isSubmitting ? "Reserving..." : "Reserve"}
-        </Button> */}
+          <div className="mt-[20px] flex items-center justify-center">
+            {/* <Checkout
+              price={property.prices[0].price || 0}
+              buyerId={session?.data?.user.id || ""}
+              property={property}
+              formValues={
+                formValues || {
+                  objectId: "",
+                  userId: "",
+                  dateFrom: "",
+                  dateTo: "",
+                  guests: 0,
+                  dateRange: { from: "", to: "" },
+                }
+              }
+              disabled={isSubmitting}
+            /> */}
+          </div>
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Reserving..." : "Reserve"}
+          </Button>
         </form>
       </Form>
-      <div className="mt-[20px] flex items-center justify-center">
+      {/* <div className="mt-[20px] flex items-center justify-center">
         <Checkout
-          price={10}
+          price={property.prices[0].price || 0}
           buyerId={session?.data?.user.id || ""}
           property={property}
           formValues={
@@ -217,7 +281,7 @@ const ReservationForm = ({
           }
           disabled={isSubmitting}
         />
-      </div>
+      </div> */}
     </>
   );
 };
