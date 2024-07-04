@@ -213,6 +213,7 @@ model Reservation {
   guests     Int
   dateFrom   String
   dateTo     String
+  price      Float
   createdAt  DateTime? @default(now())
 
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)

@@ -4,20 +4,13 @@ import { headers } from "next/headers";
 import { createReservation as createReservationInDb } from "@/lib/actions/reservation/transaction.action";
 
 interface Reservation {
-  stripeId: string;
-  price: number;
-  buyerId: string;
   propertyId: string;
   userId: string;
+  stripeId: string;
   guests: number;
   dateFrom: string;
   dateTo: string;
-  createdAt: Date;
-}
-
-interface ErrorResponse {
-  message: string;
-  error: string;
+  price: number;
 }
 
 export async function POST(request: Request) {
@@ -34,16 +27,8 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
     console.log("Webhook event constructed successfully:", event);
   } catch (err) {
-    if (err instanceof Stripe.errors.StripeSignatureVerificationError) {
-      console.error("Webhook error:", err);
-      return NextResponse.json<ErrorResponse>(
-        { message: "Webhook error", error: err.message },
-        { status: 400 },
-      );
-    }
-    console.error("Unknown webhook error:", err);
-    return NextResponse.json<ErrorResponse>(
-      { message: "Unknown webhook error", error: "An unknown error occurred" },
+    return NextResponse.json(
+      { message: "Webhook error", error: err },
       { status: 400 },
     );
   }
@@ -51,6 +36,7 @@ export async function POST(request: Request) {
   // Get the ID and type
   const eventType = event.type;
 
+  // CREATE
   if (eventType === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const { id, amount_total, metadata } = session;
@@ -58,39 +44,20 @@ export async function POST(request: Request) {
     console.log("Processing checkout.session.completed for session:", session);
 
     const reservation: Reservation = {
-      stripeId: id,
-      price: amount_total ? amount_total / 100 : 0,
-      buyerId: metadata?.buyerId || "",
       propertyId: metadata?.propertyId || "",
       userId: metadata?.userId || "",
+      stripeId: id,
       guests: parseInt(metadata?.guests || "1"),
       dateFrom: metadata?.dateFrom || "",
       dateTo: metadata?.dateTo || "",
-      createdAt: new Date(),
+      price: amount_total ? amount_total / 100 : 0,
     };
 
-    try {
-      const newReservation = await createReservationInDb(reservation);
-      console.log("Reservation created successfully:", newReservation);
-      return NextResponse.json({ message: "OK", reservation: newReservation });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Failed to create reservation:", error);
-        return NextResponse.json<ErrorResponse>(
-          { message: "Failed to create reservation.", error: error.message },
-          { status: 500 },
-        );
-      } else {
-        console.error("Unknown error:", error);
-        return NextResponse.json<ErrorResponse>(
-          {
-            message: "Failed to create reservation.",
-            error: "An unknown error occurred",
-          },
-          { status: 500 },
-        );
-      }
-    }
+    const newReservation = await createReservationInDb(reservation);
+
+    console.log("Reservation created successfully:", newReservation);
+
+    return NextResponse.json({ message: "OK", reservation: newReservation });
   }
 
   return new Response("", { status: 200 });
