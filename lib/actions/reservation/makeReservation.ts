@@ -41,8 +41,8 @@ export async function makeReservation(params: {
 
     const {
       objectId: validatedObject,
-      userId: validatedUser,
-      guests: validatedGuests,
+      // userId: validatedUser,
+      // guests: validatedGuests,
       dateRange: { from: validatedDateFrom, to: validatedDateTo },
     } = validatedFields.data;
 
@@ -78,15 +78,15 @@ export async function makeReservation(params: {
     }
 
     // Create a new reservation if no overlap
-    await db.reservation.create({
-      data: {
-        userId: validatedUser,
-        propertyId: validatedObject,
-        guests: validatedGuests,
-        dateFrom: validatedDateFrom, // Use validatedDateFrom (string)
-        dateTo: validatedDateTo, // Use validatedDateTo (string)
-      },
-    });
+    // await db.reservation.create({
+    //   data: {
+    //     userId: validatedUser,
+    //     propertyId: validatedObject,
+    //     guests: validatedGuests,
+    //     dateFrom: validatedDateFrom, // Use validatedDateFrom (string)
+    //     dateTo: validatedDateTo, // Use validatedDateTo (string)
+    //   },
+    // });
 
     // Revalidate the path to reflect the changes
     revalidatePath(`/properties/${objectId}`);
