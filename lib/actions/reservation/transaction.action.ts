@@ -83,8 +83,8 @@ export async function checkoutReservation(
     },
     mode: "payment",
     custom_fields: [],
-    success_url: `http://localhost:3000/profile`,
-    cancel_url: `http://localhost:3000/`,
+    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/profile`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
   });
 
   redirect(session.url!);
@@ -101,20 +101,8 @@ interface ReservationResponse {
   dateFrom: string;
   dateTo: string;
 }
-
 export async function createReservation(reservation: ReservationResponse) {
   try {
-    // const session = await auth();
-    // if (!session?.user?.email) {
-    //   console.log("No user session found.");
-    //   return { success: false, message: "No user session found." };
-    // }
-
-    // if (!reservation.userId) {
-    //   console.log("No user ID found.");
-    //   return { success: false, message: "No user ID found." };
-    // }
-
     const newReservation = await db.reservation.create({
       data: {
         ...reservation,
@@ -124,7 +112,37 @@ export async function createReservation(reservation: ReservationResponse) {
 
     return JSON.parse(JSON.stringify(newReservation));
   } catch (error) {
-    console.error("Failed to create reservation", error);
-    return { success: false, message: "Failed to create reservation." };
+    console.error("Failed to create reservation:", {
+      reservation,
+      error: (error as Error).message,
+      stack: (error as Error).stack,
+    });
+    throw new Error("Failed to create reservation.");
   }
 }
+// export async function createReservation(reservation: ReservationResponse) {
+//   try {
+//     // const session = await auth();
+//     // if (!session?.user?.email) {
+//     //   console.log("No user session found.");
+//     //   return { success: false, message: "No user session found." };
+//     // }
+
+//     // if (!reservation.userId) {
+//     //   console.log("No user ID found.");
+//     //   return { success: false, message: "No user ID found." };
+//     // }
+
+//     const newReservation = await db.reservation.create({
+//       data: {
+//         ...reservation,
+//         userId: reservation.userId,
+//       },
+//     });
+
+//     return JSON.parse(JSON.stringify(newReservation));
+//   } catch (error) {
+//     console.error("Failed to create reservation", error);
+//     return { success: false, message: "Failed to create reservation." };
+//   }
+// }
