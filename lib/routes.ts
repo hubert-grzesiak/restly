@@ -11,6 +11,7 @@ export const publicRoutes = [
   "/privacy-policy",
   "/terms-of-service",
   "/properties/:id",
+  "/api/webhooks/stripe",
 ];
 
 /**
