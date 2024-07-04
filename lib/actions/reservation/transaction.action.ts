@@ -7,6 +7,7 @@ import { Property } from "@prisma/client";
 
 import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
+import { auth } from "@/lib/auth";
 
 /**
  * Tworzy sesję Stripe dla rezerwacji nieruchomości.
@@ -73,8 +74,8 @@ export async function checkoutReservation(
       },
     ],
     metadata: {
-      buyerId: buyerId,
-      property: property.name,
+      propertyId: property.id,
+      userId: buyerId,
       city: property.city,
       country: property.country,
       dateFrom: formValues?.dateRange.from,
@@ -101,12 +102,17 @@ interface ReservationResponse {
 }
 export async function createReservation(reservation: ReservationResponse) {
   try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      console.log("No user session found.");
+      return { success: false, message: "No user session found." };
+    }
     const newReservation = await db.reservation.create({
       data: {
         ...reservation,
       },
     });
-
+    console.log(JSON.parse(JSON.stringify(newReservation)));
     return JSON.parse(JSON.stringify(newReservation));
   } catch (error) {
     console.error("Failed to create reservation:", {
