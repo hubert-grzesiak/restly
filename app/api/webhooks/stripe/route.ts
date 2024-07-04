@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { createReservation } from "@/lib/actions/reservation/transaction.action";
+import { createReservation as createReservationInDb } from "@/lib/actions/reservation/transaction.action";
+
+interface Reservation {
+  propertyId: string;
+  userId: string;
+  stripeId: string;
+  guests: number;
+  dateFrom: string;
+  dateTo: string;
+  price: number;
+}
+
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -33,19 +44,17 @@ export async function POST(request: Request) {
 
     console.log("Processing checkout.session.completed for session:", session);
 
-    const reservation = {
-      stripeId: id,
-      price: amount_total ? amount_total / 100 : 0,
-      buyerId: metadata?.buyerId || "",
+    const reservation: Reservation = {
       propertyId: metadata?.propertyId || "",
       userId: metadata?.userId || "",
+      stripeId: id,
       guests: parseInt(metadata?.guests || "1"),
       dateFrom: metadata?.dateFrom || "",
       dateTo: metadata?.dateTo || "",
-      createdAt: new Date(),
+      price: amount_total ? amount_total / 100 : 0,
     };
 
-    const newReservation = await createReservation(reservation);
+    const newReservation = await createReservationInDb(reservation);
 
     console.log("Reservation created successfully:", newReservation);
 

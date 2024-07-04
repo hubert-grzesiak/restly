@@ -91,15 +91,13 @@ export async function checkoutReservation(
 }
 
 interface ReservationResponse {
-  stripeId: string;
-  price: number;
-  buyerId: string;
   propertyId: string;
-  createdAt: Date;
   userId: string;
+  stripeId: string;
   guests: number;
   dateFrom: string;
   dateTo: string;
+  price: number;
 }
 
 export async function createReservation(reservation: ReservationResponse) {
@@ -118,7 +116,6 @@ export async function createReservation(reservation: ReservationResponse) {
     const newReservation = await db.reservation.create({
       data: {
         ...reservation,
-        userId: reservation.userId,
       },
     });
 
