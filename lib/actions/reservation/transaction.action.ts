@@ -23,7 +23,7 @@ export async function checkoutReservation(
   property: Property,
   formValues: z.infer<typeof ReservationSchema>,
 ) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const stripe = new Stripe(process.env.STRIPE_KEY!);
 
   // Funkcja do konwersji daty w formacie dd.mm.yyyy na yyyy-mm-dd
   const convertDate = (dateString: string) => {
