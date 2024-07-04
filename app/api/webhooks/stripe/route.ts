@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   console.log("Stripe signature:", sig);
   console.log("Stripe webhook secret:", endpointSecret);
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const stripe = new Stripe(process.env.STRIPE_KEY!);
 
   let event: Stripe.Event;
 
@@ -20,9 +20,8 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
     console.log("Webhook event constructed successfully:", event);
   } catch (err) {
-    console.error("Failed to verify webhook signature:", err.message);
     return NextResponse.json(
-      { message: "Webhook error", error: err.message },
+      { message: "Webhook error", error: err },
       { status: 400 },
     );
   }
