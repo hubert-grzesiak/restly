@@ -10,13 +10,17 @@ interface VisitedTabProps {
 }
 
 interface Place {
-  imageSrc: string;
-  imageAlt: string;
-  location: string;
-  dateRange: string;
-  rating: number;
-  reviewCount: number;
-  description: string;
+  images?: {
+    urls: string[];
+  };
+  dateFrom: string;
+  dateTo: string;
+  rating?: number;
+  reviewCount?: number;
+  location?: string;
+  property: {
+    name: string;
+  };
 }
 
 export default function VisitedTab({ title, property }: VisitedTabProps) {
@@ -27,8 +31,8 @@ export default function VisitedTab({ title, property }: VisitedTabProps) {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="relative overflow-hidden rounded-lg shadow-lg">
             <Image
-              src={property?.images?.urls[0]}
-              alt={property?.imageAlt}
+              src={property?.images?.urls[0] ?? ""}
+              alt={"property?.imageAlt"}
               width={600}
               height={400}
               className="h-64 w-full object-cover"
@@ -61,7 +65,7 @@ export default function VisitedTab({ title, property }: VisitedTabProps) {
             <div className="prose text-muted-foreground">
               <p>{property?.property.name}</p>
             </div>
-            <ReviewForm reviewDetails={null} />
+            <ReviewForm reviewDetails={"1"} />
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
+// import Image from "next/image";
 import Settings from "./components/Settings";
 import ProfileCard from "./components/ProfileCard";
 import VisitedTab from "./components/VisitedTab";
@@ -126,7 +126,7 @@ export default async function Profile() {
         </TabsContent>
         <TabsContent value="visited">
           {result?.map((property) => (
-            <VisitedTab key={property.id} property={property} />
+            <VisitedTab key={property.id} property={property} title="xd" />
           ))}
           {/* <VisitedTab userId={session?.user.id} /> */}
         </TabsContent>
@@ -250,7 +250,7 @@ export default async function Profile() {
   );
 }
 
-function StarIcon(props) {
+function StarIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
