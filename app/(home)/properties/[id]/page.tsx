@@ -8,6 +8,7 @@ import { currentUser } from "@/lib/actualUserInfo";
 import ContactHost from "./components/ContactHost";
 // import Map from "./components/Map";
 import ReservationForm from "./components/ReservationForm/ReservationForm";
+import getReviews from "@/lib/actions/properties/getReviews";
 
 interface PageProps {
   params: { id?: string };
@@ -21,6 +22,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
   }
 
   const property = await getPropertyInfo({ id });
+  const reviews = await getReviews({ propertyId: id });
 
   if (!property) {
     return <div>Property not found</div>;
@@ -114,7 +116,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
             <div>{/* <Map property={property} /> */}</div>
           </div>
         </section>
-        <Opinions />
+        <Opinions reviews={reviews} name={user?.name} avatarSrc={user?.image} />
       </div>
     </main>
   );

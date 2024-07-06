@@ -8,7 +8,6 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,12 +15,15 @@ import { Textarea } from "@/components/ui/textarea";
 // import Image from "next/image";
 import Settings from "./components/Settings";
 import ProfileCard from "./components/ProfileCard";
-import VisitedTab from "./components/VisitedTab";
+import VisitedTab from "./components/tabs/VisitedTab";
 import { auth } from "@/lib/auth";
 import getVisitedProperties from "@/lib/actions/getVisitedProperties";
+import YourPropertiesTab from "./components/tabs/YourPropertiesTab";
+import { StarIcon } from "@/components/icons";
 
 export default async function Profile() {
   const session = await auth();
+  const userId = session?.user.id;
   const result = await getVisitedProperties({ userId: session?.user.id ?? "" });
   console.log(result);
   return (
@@ -35,98 +37,11 @@ export default async function Profile() {
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="properties">
-          <div className="grid gap-4 p-4 sm:p-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Card>
-                <Link href="#" className="group" prefetch={false}>
-                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                    <img
-                      src="/placeholder.svg"
-                      alt="Listing Image"
-                      className="h-full w-full object-cover transition-all group-hover:scale-105"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="grid gap-1">
-                        <div className="line-clamp-1 font-semibold">
-                          Cozy Mountain Retreat
-                        </div>
-                        <div className="line-clamp-1 text-sm text-muted-foreground">
-                          Santa Cruz, California
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm font-medium">
-                        <StarIcon className="h-4 w-4 fill-primary" />
-                        4.93
-                      </div>
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-              <Card>
-                <Link href="#" className="group" prefetch={false}>
-                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                    <img
-                      src="/placeholder.svg"
-                      alt="Listing Image"
-                      className="h-full w-full object-cover transition-all group-hover:scale-105"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="grid gap-1">
-                        <div className="line-clamp-1 font-semibold">
-                          Beachfront Villa
-                        </div>
-                        <div className="line-clamp-1 text-sm text-muted-foreground">
-                          Malibu, California
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm font-medium">
-                        <StarIcon className="h-4 w-4 fill-primary" />
-                        4.87
-                      </div>
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-              <Card>
-                <Link href="#" className="group" prefetch={false}>
-                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                    <img
-                      src="/placeholder.svg"
-                      alt="Listing Image"
-                      className="h-full w-full object-cover transition-all group-hover:scale-105"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="grid gap-1">
-                        <div className="line-clamp-1 font-semibold">
-                          Luxury Penthouse
-                        </div>
-                        <div className="line-clamp-1 text-sm text-muted-foreground">
-                          San Francisco, California
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm font-medium">
-                        <StarIcon className="h-4 w-4 fill-primary" />
-                        4.91
-                      </div>
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-            </div>
-            <Button variant="outline" className="justify-self-start">
-              View all properties
-            </Button>
-          </div>
+          <YourPropertiesTab />
         </TabsContent>
         <TabsContent value="visited">
           {result?.map((property) => (
-            <VisitedTab key={property.id} property={property} title="xd" />
+            <VisitedTab key={property.id} property={property} userId={userId} />
           ))}
           {/* <VisitedTab userId={session?.user.id} /> */}
         </TabsContent>
@@ -247,24 +162,5 @@ export default async function Profile() {
         </TabsContent>
       </Tabs>
     </main>
-  );
-}
-
-function StarIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
   );
 }

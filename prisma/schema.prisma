@@ -36,6 +36,7 @@ model User {
   messages     Message[]
   Favorite     Favorite[]
   reservations Reservation[]
+  reviews      Review[]
 }
 
 model Account {
@@ -182,6 +183,7 @@ model Property {
   images      Image[]
   Favorite    Favorite[]
   Reservation Reservation[]
+  Review      Review[]
 
   geometryId String @unique @db.ObjectId
 }
@@ -222,3 +224,16 @@ model Reservation {
   @@index([propertyId, dateFrom, dateTo], name: "reservation_date_range_index")
 }
 
+model Review {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  propertyId String   @db.ObjectId
+  userId     String   @db.ObjectId
+  rating     Int
+  body       String
+  createdAt  DateTime @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, userId], name: "unique_review")
+}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import clsx from "clsx";
 
 interface ButtonProps {
@@ -8,6 +9,7 @@ interface ButtonProps {
   secondary?: boolean;
   danger?: boolean;
   disabled?: boolean;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -18,13 +20,14 @@ const Button: React.FC<ButtonProps> = ({
   secondary,
   danger,
   disabled,
+  className,
 }) => {
   return (
     <button
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className={clsx(
+      className={cn(
         `
         flex 
         justify-center 
@@ -41,7 +44,8 @@ const Button: React.FC<ButtonProps> = ({
         fullWidth && "w-full",
         secondary ? "text-gray-900 dark:text-white" : "text-white",
         danger && "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600",
-        !secondary && !danger && "bg-sky-500 hover:bg-sky-600 focus-visible:outline-sky-600"
+        !secondary && !danger && "bg-sky-500 hover:bg-sky-600 focus-visible:outline-sky-600",
+        className
       )}
     >
       {children}

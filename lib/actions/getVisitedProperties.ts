@@ -21,6 +21,7 @@ const getVisitedProperties = cache(async ({ userId }: { userId: string }) => {
         property: {
           include: {
             images: true,
+            Review: true,
           },
         },
       },
