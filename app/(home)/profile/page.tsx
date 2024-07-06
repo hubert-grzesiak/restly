@@ -1,227 +1,270 @@
-"use client";
-
-import { useState, useTransition } from "react";
-import { useSession } from "next-auth/react";
-
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { SettingsSchema } from "@/schemas";
-import { UserRole } from "@prisma/client";
-
-import { settings } from "@/lib/actions/auth/settings";
-import { Switch } from "@/components/ui/switch";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormField,
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormDescription,
-  FormMessage,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { FormError } from "@/components/form-error";
-import { FormSucess } from "@/components/form-sucess";
+import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import Settings from "./components/Settings";
+import ProfileCard from "./components/ProfileCard";
+import VisitedTab from "./components/VisitedTab";
+import { auth } from "@/lib/auth";
+import getVisitedProperties from "@/lib/actions/getVisitedProperties";
 
-const SettingsPage = () => {
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
-  const [isPending, startTransition] = useTransition();
-  const { update } = useSession();
-
-  const user = useCurrentUser();
-
-  const form = useForm<z.infer<typeof SettingsSchema>>({
-    resolver: zodResolver(SettingsSchema),
-    defaultValues: {
-      name: user?.name || undefined,
-      email: user?.email || undefined,
-      password: undefined,
-      newPassword: undefined,
-      role: user?.role || undefined,
-      isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
-    },
-  });
-
-  const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
-    startTransition(() => {
-      settings(values)
-        .then((data) => {
-          if (data.error) {
-            setError(data.error);
-          }
-
-          if (data.success) {
-            update();
-            setSuccess(data.success);
-          }
-        })
-        .catch(() => setError("Something went wrong!"));
-    });
-  };
-
+export default async function Profile() {
+  const session = await auth();
+  const result = await getVisitedProperties({ userId: session?.user.id ?? "" });
+  console.log(result);
   return (
-    <main className="background-gradient flex w-full items-center justify-center pb-64 pt-100">
-      <Card className="max-auto w-[600px]">
-        <CardHeader>
-          <p className="text-center text-2xl font-semibold">⚙️ Settings</p>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="John Doe"
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {user?.isOAuth === false && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="john.doe@example.com"
-                              type="email"
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+    <main className="mx-auto w-full max-w-5xl">
+      <ProfileCard />
+      <Tabs defaultValue="properties" className="border-b">
+        <TabsList className="flex">
+          <TabsTrigger value="properties">Your properties</TabsTrigger>
+          <TabsTrigger value="favourites">Favourites</TabsTrigger>
+          <TabsTrigger value="visited">Visited</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+        <TabsContent value="properties">
+          <div className="grid gap-4 p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <Link href="#" className="group" prefetch={false}>
+                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
+                    <img
+                      src="/placeholder.svg"
+                      alt="Listing Image"
+                      className="h-full w-full object-cover transition-all group-hover:scale-105"
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="123456"
-                              type="password"
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="newPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>New Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="123456"
-                              type="password"
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        disabled={isPending}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                          <SelectItem value={UserRole.USER}>User</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {user?.isOAuth === false && (
-                  <FormField
-                    control={form.control}
-                    name="isTwoFactorEnabled"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>Two Factor Authentication</FormLabel>
-                          <FormDescription>
-                            Enable two factor authentication for your account
-                          </FormDescription>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="grid gap-1">
+                        <div className="line-clamp-1 font-semibold">
+                          Cozy Mountain Retreat
                         </div>
-                        <FormControl>
-                          <Switch
-                            disabled={isPending}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+                        <div className="line-clamp-1 text-sm text-muted-foreground">
+                          Santa Cruz, California
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm font-medium">
+                        <StarIcon className="h-4 w-4 fill-primary" />
+                        4.93
+                      </div>
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+              <Card>
+                <Link href="#" className="group" prefetch={false}>
+                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
+                    <img
+                      src="/placeholder.svg"
+                      alt="Listing Image"
+                      className="h-full w-full object-cover transition-all group-hover:scale-105"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="grid gap-1">
+                        <div className="line-clamp-1 font-semibold">
+                          Beachfront Villa
+                        </div>
+                        <div className="line-clamp-1 text-sm text-muted-foreground">
+                          Malibu, California
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm font-medium">
+                        <StarIcon className="h-4 w-4 fill-primary" />
+                        4.87
+                      </div>
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+              <Card>
+                <Link href="#" className="group" prefetch={false}>
+                  <div className="relative aspect-video overflow-hidden rounded-t-lg">
+                    <img
+                      src="/placeholder.svg"
+                      alt="Listing Image"
+                      className="h-full w-full object-cover transition-all group-hover:scale-105"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="grid gap-1">
+                        <div className="line-clamp-1 font-semibold">
+                          Luxury Penthouse
+                        </div>
+                        <div className="line-clamp-1 text-sm text-muted-foreground">
+                          San Francisco, California
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm font-medium">
+                        <StarIcon className="h-4 w-4 fill-primary" />
+                        4.91
+                      </div>
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+            </div>
+            <Button variant="outline" className="justify-self-start">
+              View all properties
+            </Button>
+          </div>
+        </TabsContent>
+        <TabsContent value="visited">
+          {result?.map((property) => (
+            <VisitedTab key={property.id} property={property} />
+          ))}
+          {/* <VisitedTab userId={session?.user.id} /> */}
+        </TabsContent>
+        <TabsContent value="favourites">
+          <div className="grid gap-4 p-4 sm:p-6">
+            <div className="grid gap-4">
+              <div className="flex items-start gap-4">
+                <Avatar className="h-12 w-12 border">
+                  <AvatarImage src="/placeholder-user.jpg" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div className="grid gap-1">
+                  <div className="font-semibold">Olivia Davis</div>
+                  <div className="flex items-center gap-1 text-sm font-medium">
+                    <StarIcon className="h-4 w-4 fill-primary" />
+                    4.9
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    This place was amazing! The views were incredible and the
+                    house was very clean. We had a great time.
+                  </div>
+                </div>
               </div>
-              <FormError message={error} />
-              <FormSucess message={success} />
-              <Button type="submit" disabled={isPending}>
-                Save
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+              <div className="flex items-start gap-4">
+                <Avatar className="h-12 w-12 border">
+                  <AvatarImage src="/placeholder-user.jpg" />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+                <div className="grid gap-1">
+                  <div className="font-semibold">John Doe</div>
+                  <div className="flex items-center gap-1 text-sm font-medium">
+                    <StarIcon className="h-4 w-4 fill-primary" />
+                    4.8
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    We had a great time and would definitely stay again!
+                    Gorgeous views and a beautiful home.
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Avatar className="h-12 w-12 border">
+                  <AvatarImage src="/placeholder-user.jpg" />
+                  <AvatarFallback>SM</AvatarFallback>
+                </Avatar>
+                <div className="grid gap-1">
+                  <div className="font-semibold">Sarah Miller</div>
+                  <div className="flex items-center gap-1 text-sm font-medium">
+                    <StarIcon className="h-4 w-4 fill-primary" />
+                    4.7
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Super clean, great location, and amazing views. We had a
+                    great time and wish we could have stayed longer!
+                  </div>
+                </div>
+              </div>
+            </div>
+            <Button variant="outline" className="justify-self-start">
+              View all favourites
+            </Button>
+          </div>
+        </TabsContent>
+        <TabsContent value="settings">
+          <div className="grid gap-6 p-4 sm:p-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile</CardTitle>
+                <CardDescription>
+                  Update your profile information here.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" defaultValue="John Doe" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    rows={3}
+                    defaultValue="I love hosting and meeting new people from around the world!"
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save changes</Button>
+              </CardFooter>
+            </Card>
+            {/* <Card>
+              <CardHeader>
+                <CardTitle>Account</CardTitle>
+                <CardDescription>
+                  Update your account information here.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue="john@example.com"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save changes</Button>
+              </CardFooter>
+            </Card> */}
+            <Settings />
+          </div>
+        </TabsContent>
+      </Tabs>
     </main>
   );
-};
+}
 
-export default SettingsPage;
+function StarIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}

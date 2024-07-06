@@ -1,4 +1,6 @@
-import {cache} from 'react';
+"use server";
+
+import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
@@ -12,7 +14,6 @@ const getFacilities = cache(async () => {
     }
 
     const facilities = await db.facilities.findMany({});
-
     if (!facilities.length) {
       console.log("No facilities found in the database.");
       return [];

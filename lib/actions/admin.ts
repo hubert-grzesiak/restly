@@ -47,40 +47,6 @@ export type State = {
   message?: string | null;
 };
 
-// export const createFacility = async (params: Facilities) => {
-//   const role = await currentRole();
-//   const { name } = params;
-
-//   const validatedFields = CreateFacility.safeParse({
-//     name: name,
-//   });
-
-//   if (!validatedFields.success) {
-//     // Flatten and return errors if validation fails
-//     return {
-//       errors: validatedFields.error.flatten().fieldErrors,
-//       message: "Missing Fields. Failed to Create Facility.",
-//     };
-//   }
-
-//   // Data has been validated at this point
-//   const { name: validatedName } = validatedFields.data;
-
-//   if (role === UserRole.ADMIN) {
-//     try {
-//       await db.facilities.create({
-//         data: {
-//           name: validatedName,
-//         },
-//       });
-//       revalidatePath("/admin/facilities");
-//       return { success: "Facility created" };
-//     } catch (error) {
-//       return { error: "Error creating facility" };
-//     }
-//   }
-//   return { error: "Forbidden Server Power!" };
-// };
 export const createFacility = async ({ name }: { name: string }) => {
   const role = await currentRole();
 

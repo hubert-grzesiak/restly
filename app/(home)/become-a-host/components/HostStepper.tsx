@@ -51,7 +51,7 @@ const HostStepper: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilityValue, setFacilityValue] = useState<string[]>([]);
-
+  console.log(facilities);
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -104,6 +104,7 @@ const HostStepper: React.FC = () => {
   useEffect(() => {
     const fetchFacilities = async () => {
       const facilitiesData = await getFacilities();
+      console.log(facilitiesData);
       if (facilitiesData) {
         setFacilities(facilitiesData);
       }

@@ -61,7 +61,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen`}>
+      <body className={`${inter.className} antialiased`}>
         <SessionProvider session={session}>
           <NextUIProvider>
             <ActiveStatus />

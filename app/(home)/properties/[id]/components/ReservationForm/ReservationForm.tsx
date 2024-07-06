@@ -23,7 +23,6 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useState, useEffect } from "react";
 import { ReservationSchema } from "./ReservationFormSchema";
 import { toast } from "sonner";
-// import { makeReservation } from "@/lib/actions/reservation/makeReservation";
 import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
@@ -121,15 +120,6 @@ const ReservationForm = ({
     setIsSubmitting(true);
     try {
       console.log(values);
-      // const result = await makeReservation({
-      //   objectId: propertyId,
-      //   userId: session.data?.user.id as string,
-      //   guests: values.guests,
-      //   dateFrom: values.dateRange.from,
-      //   dateTo: values.dateRange.to,
-      // });
-
-      // setFormValues(values);
       await checkoutReservation(
         property.prices[0].price || 0,
         session?.data?.user.id || "",
