@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { Form } from "@/components/ui/form";
-import { createReview, editReview } from "@/lib/actions/admin";
+// import { createReview, editReview } from "@/lib/actions/admin";
 import { toast } from "sonner";
 import { Rate } from "antd";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,21 +49,22 @@ const ReviewForm = ({ type, reviewDetails }: Props) => {
     console.log(parsereviewDetails);
     try {
       if (type === "Edit") {
-        await editReview({
-          id: parsereviewDetails.id,
-          review: values.review,
-          rating: values.rating,
-        });
+        // await editReview({
+        //   id: parsereviewDetails.id,
+        //   review: values.review,
+        //   rating: values.rating,
+        // });
+        console.log(values);
         toast.success("Review updated successfully");
 
         router.push(`/admin/reviews`);
       } else {
         // make an async to your API -> create a review
         // contain all form data
-        await createReview({
-          review: values.review,
-          rating: values.rating,
-        });
+        // await createReview({
+        //   review: values.review,
+        //   rating: values.rating,
+        // });
         toast.success("Review created successfully");
         // navigate to home page
         router.push("/admin/reviews");
