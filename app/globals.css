@@ -10,7 +10,7 @@
 
 main {
   min-height: calc(100vh - 198px);
-  margin-top: 122px;
+  padding-top: 122px;
 }
 
 @layer base {
@@ -224,5 +224,10 @@ main {
 
 .background-gradient {
   background: url("https://res.cloudinary.com/dev6yhoh3/image/upload/v1719056892/backgrounds/gradient1_fsy8hj.png");
+  background-size: cover;
+}
+
+.background-login {
+  background: url("https://res.cloudinary.com/dev6yhoh3/image/upload/v1720640221/backgrounds/Iridescent_Kiss_MagicPattern_Wallpaper_sstcfi.jpg");
   background-size: cover;
 }
