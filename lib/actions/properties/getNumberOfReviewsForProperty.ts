@@ -6,7 +6,7 @@ const getReviewsSummaryForUser = cache(async () => {
   try {
     const session = await auth();
 
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       console.log("No user session found.");
       return { numberOfReviews: 0, averageRating: 0 }; // Return default values if no user session is found
     }
