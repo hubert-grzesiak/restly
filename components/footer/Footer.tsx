@@ -1,9 +1,10 @@
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-const Footer = () => {
+const Footer = ({ className }: { className?: string }) => {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-transparent py-6 dark:bg-gray-950">
+    <footer className={cn("bg-transparent py-6 dark:bg-gray-950", className)}>
       <div className="container flex flex-col-reverse items-center px-4 md:flex-row md:justify-between md:px-0">
         <p className="mt-2 px-4 text-sm text-gray-500 dark:text-gray-400">
           © {currentYear} Restly. All rights reserved.

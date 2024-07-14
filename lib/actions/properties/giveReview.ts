@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 const FormSchema = z.object({
   rating: z.number(),
@@ -40,7 +41,6 @@ export const createReview = async ({
 
   if (session?.user?.email) {
     try {
-
       console.log("Creating a review", { body, rating, propertyId });
       // Create the new review
       await db.review.create({
@@ -54,6 +54,8 @@ export const createReview = async ({
       return { success: "Review created" };
     } catch (error) {
       return { error: "Error creating a review" };
+    } finally {
+      revalidatePath("/profile");
     }
   }
   return { error: "Forbidden Server Action!" };
@@ -94,6 +96,8 @@ export async function editReview({
       return { success: "Review updated" };
     } catch (error) {
       return { error: "Error updating a review" };
+    } finally {
+      revalidatePath("/profile");
     }
   }
   return { error: "Forbidden Server Action!" };

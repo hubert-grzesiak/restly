@@ -11,6 +11,7 @@ import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
 import CookieComponent from "@/components/CookieComponent";
 import { Property } from "@prisma/client";
+import { cn } from "@/lib/utils";
 
 interface PropertyCustom extends Property {
   urls: string[];
@@ -22,11 +23,15 @@ export default async function Home() {
   return (
     <>
       <CookieComponent />
-      <main className="flex-1">
+      <div className="flex-1">
         <div className="fixed top-1/2 z-[999] flex items-center justify-center rounded-[32px]">
           <CustomSearch />
         </div>
-        <section className="background-gradient relative m-auto h-screen max-h-[700px] w-full overflow-hidden pt-12 dark:bg-gray-800 md:max-h-full md:py-16 lg:py-20">
+        <section
+          className={cn(
+            "background-gradient relative m-auto h-screen max-h-[700px] w-full overflow-hidden dark:bg-gray-800 md:max-h-full md:py-16 lg:pb-20 lg:pt-[122px]",
+          )}
+        >
           <div className="container z-[20] max-w-[1400px] px-4 md:px-0">
             <div className="grid items-center gap-6 md:grid-cols-2 lg:grid-cols-[1fr_500px]">
               <div className="flex flex-col gap-4">
@@ -238,7 +243,7 @@ export default async function Home() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

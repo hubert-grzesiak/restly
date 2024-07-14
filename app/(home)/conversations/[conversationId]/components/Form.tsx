@@ -47,7 +47,7 @@ const Form = () => {
   // };
 
   return (
-    <div className="dark:bg-dusk dark:border-lightgray flex w-full items-center gap-2 border-t bg-white px-4 py-4 lg:gap-4">
+    <div className="dark:bg-dusk dark:border-lightgray rounded-b-xl flex w-full items-center gap-2 border-t bg-white px-4 py-4 lg:gap-4">
       <CldUploadButton
         options={{ maxFiles: 1 }}
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}

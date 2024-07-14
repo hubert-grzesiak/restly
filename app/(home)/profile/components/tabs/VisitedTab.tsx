@@ -40,7 +40,6 @@ export default async function VisitedTab({
     propertyId: property.property.id,
   });
   const userReview = await getUserReview({ propertyId: property.property.id });
-  console.log("test", property?.property.Review[0]?.body ?? "");
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:px-8">
       <h1 className="mb-8 text-3xl font-bold">{title}</h1>

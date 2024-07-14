@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { HeartIcon } from "@/components/icons";
 import { motion } from "framer-motion";
 import {
-  toggleFavoriteProperty,
-  isPropertyFavorite,
+  toggleFavouriteProperty,
+  isPropertyFavourite,
 } from "@/lib/actions/properties/saveProperty";
 import { toast } from "sonner";
 
@@ -17,31 +17,31 @@ const AddToFavourite = ({ propertyId }: { propertyId: string }) => {
   const [isFavourite, setIsFavourite] = useState(false);
 
   useEffect(() => {
-    const checkFavorite = async () => {
-      const status = await isPropertyFavorite(propertyId);
+    const checkFavourite = async () => {
+      const status = await isPropertyFavourite(propertyId);
       setIsFavourite(status!);
     };
-    checkFavorite();
+    checkFavourite();
   }, [propertyId]); // Only re-run this effect if propertyId changes
 
-  const handleToggleFavorite = async () => {
+  const handleToggleFavourite = async () => {
     if (!session) {
       toast("Please log in to save properties");
     }
 
     try {
-      const newFavouriteStatus = await toggleFavoriteProperty(propertyId);
+      const newFavouriteStatus = await toggleFavouriteProperty(propertyId);
       setIsFavourite(newFavouriteStatus); // Directly use the boolean value returned
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 500); // Duration of animation
     } catch (error) {
-      console.error("Error toggling favorite:", error);
+      console.error("Error toggling favourite:", error);
     }
   };
 
   return (
     <>
-      <Button className="" variant="outline" onClick={handleToggleFavorite}>
+      <Button className="" variant="outline" onClick={handleToggleFavourite}>
         <motion.div
           animate={isFavourite ? { scale: isAnimating ? 1.5 : 1 } : {}}
           transition={{ duration: 0.3 }}

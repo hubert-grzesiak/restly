@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function toggleFavoriteProperty(propertyId: string) {
+export async function toggleFavouriteProperty(propertyId: string) {
   try {
     const session = await auth();
 
@@ -13,38 +13,38 @@ export async function toggleFavoriteProperty(propertyId: string) {
     }
     const userId = session.user.id;
 
-    const favorite = await db.favorite.findFirst({
+    const favourite = await db.favourite.findFirst({
       where: {
         userId,
         propertyId: propertyId,
       },
     });
 
-    if (favorite) {
-      await db.favorite.delete({
+    if (favourite) {
+      await db.favourite.delete({
         where: {
-          id: favorite.id,
+          id: favourite.id,
         },
       });
       revalidatePath("/profile/favourites");
-      return false; // Return false as the item is no longer a favorite
+      return false; // Return false as the item is no longer a favourite
     } else {
-      await db.favorite.create({
+      await db.favourite.create({
         data: {
           userId,
           propertyId: propertyId,
         },
       });
       revalidatePath("/profile/favourites");
-      return true; // Return true as the item is now a favorite
+      return true; // Return true as the item is now a favourite
     }
   } catch (error) {
-    console.error("Error in toggleFavoriteProperty:", error);
+    console.error("Error in toggleFavouriteProperty:", error);
     throw error; // Consider handling this more gracefully in production
   }
 }
 
-export const isPropertyFavorite = async (propertyId: string) => {
+export const isPropertyFavourite = async (propertyId: string) => {
   try {
     const session = await auth();
 
@@ -55,17 +55,17 @@ export const isPropertyFavorite = async (propertyId: string) => {
 
     const userId = session.user.id;
 
-    // Check if the object is already in the user's favorites
-    const favorite = await db.favorite.findFirst({
+    // Check if the object is already in the user's favourites
+    const favourite = await db.favourite.findFirst({
       where: {
         userId,
         propertyId: propertyId,
       },
     });
 
-    return favorite ? true : false;
+    return favourite ? true : false;
   } catch (error) {
-    console.error("Error in isPropertyFavorite:", error);
+    console.error("Error in isPropertyFavourite:", error);
     throw error;
   }
 };

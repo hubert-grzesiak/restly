@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <div
       className={clsx(
-        "h-full min-h-screen lg:block",
+        "custom-height h-full w-full flex-1 lg:block",
         isOpen ? "block" : "hidden",
       )}
     >

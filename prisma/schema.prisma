@@ -34,7 +34,7 @@ model User {
 
   accounts     Account[]
   messages     Message[]
-  Favorite     Favorite[]
+  Favourite     Favourite[]
   reservations Reservation[]
   reviews      Review[]
 }
@@ -181,14 +181,14 @@ model Property {
   prices      Price[]
   facility    Facility[]
   images      Image[]
-  Favorite    Favorite[]
+  Favourite    Favourite[]
   Reservation Reservation[]
   Review      Review[]
 
   geometryId String @unique @db.ObjectId
 }
 
-model Favorite {
+model Favourite {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId     String   @db.ObjectId
   propertyId String   @db.ObjectId

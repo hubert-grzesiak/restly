@@ -12,9 +12,11 @@ export default async function ConversationsLayout({
   const users = await getUsers();
 
   return (
-    <div className="flex h-full">
-      <ConversationList initialItems={conversations} users={users} />
-      {children}
-    </div>
+    <main className="background-login h-full">
+      <div className="mx-auto flex max-w-[1400px] flex-1">
+        <ConversationList initialItems={conversations} users={users} />
+        {children}
+      </div>
+    </main>
   );
 }

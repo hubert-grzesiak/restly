@@ -1,4 +1,4 @@
-import {cache} from 'react';
+import { cache } from "react";
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
@@ -12,7 +12,7 @@ const getFavouritesInfo = cache(async () => {
       return [];
     }
 
-    const favorites = await db.favorite.findMany({
+    const favourites = await db.favourite.findMany({
       where: {
         userId: session.user.id,
       },
@@ -25,20 +25,20 @@ const getFavouritesInfo = cache(async () => {
       },
     });
 
-    if (!favorites.length) {
-      console.log("No favorites found in the database.");
+    if (!favourites.length) {
+      console.log("No favourites found in the database.");
       return [];
     }
 
     // Wyciąganie URLs z powiązanych obrazów
-    const propertiesWithUrls = favorites.map(favorite => ({
-      ...favorite.property,
-      urls: favorite.property.images.map(image => image.urls).flat(), // Pobieranie wszystkich URLs
+    const propertiesWithUrls = favourites.map((favourite) => ({
+      ...favourite.property,
+      urls: favourite.property.images.map((image) => image.urls).flat(), // Pobieranie wszystkich URLs
     }));
 
     return propertiesWithUrls;
   } catch (error) {
-    console.error("Failed to fetch favorites:", error);
+    console.error("Failed to fetch favourites:", error);
     return [];
   }
 });

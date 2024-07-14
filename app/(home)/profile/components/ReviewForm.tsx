@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,14 +28,19 @@ interface Props {
     body: string;
     rating: number;
     id: string;
-  }
+  };
   objectId?: string;
 }
 
-const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => {
-
+const ReviewForm = ({
+  type,
+  property,
+  objectId,
+  userId,
+  userReview,
+}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rating, setRating] = useState(0); // Default rating value
+  const [formKey, setFormKey] = useState(Date.now()); // key to force re-render
 
   const form = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
@@ -44,17 +49,14 @@ const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => 
       rating: userReview?.rating || 0,
     },
   });
-  const { register, setValue } = form;
+  const { register, setValue, reset } = form;
 
   const handleRatingChange = (value: number) => {
-    setRating(value);
     setValue("rating", value); // Update the form value for rating
   };
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof ReviewSchema>) {
     setIsSubmitting(true);
-    console.log(property);
     try {
       if (type === "Edit") {
         await editReview({
@@ -62,7 +64,6 @@ const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => 
           body: values.review,
           rating: values.rating,
         });
-        console.log(values);
         toast.success("Review updated successfully");
       } else {
         await createReview({
@@ -73,6 +74,7 @@ const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => 
         });
         toast.success("Review created successfully");
       }
+      setFormKey(Date.now()); // Update key to force re-render
     } catch (error) {
       console.error("Failed to create review", error);
       toast.error("Failed to create review");
@@ -81,11 +83,19 @@ const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => 
     }
   }
 
+  useEffect(() => {
+    reset({
+      review: userReview?.body || "",
+      rating: userReview?.rating || 0,
+    });
+  }, [formKey, userReview, reset]);
+
   return (
     <div className="mt-4">
       <h3 className="mb-2 text-lg font-bold">Leave a Review</h3>
       <Form {...form}>
         <form
+          key={formKey}
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex w-full flex-col gap-2"
         >
@@ -101,7 +111,7 @@ const ReviewForm = ({ type, property, objectId, userId, userReview }: Props) => 
             className="max-h-[100px] w-full rounded-md border border-muted-foreground/20 p-2 focus:border-primary focus:ring-primary"
             {...register("review", { required: true })}
           />
-          <input type="hidden" {...register("rating")} value={rating} />
+          <input type="hidden" {...register("rating")} />
 
           <Button
             type="submit"

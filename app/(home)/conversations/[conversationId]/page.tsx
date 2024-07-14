@@ -25,7 +25,7 @@ const ConversationId = async ({ params }: { params: IParams }) => {
 
   return (
     <div className="h-full w-full">
-      <div className="flex h-full flex-col">
+      <div className="custom-height flex h-full flex-col rounded-xl bg-white">
         <Header conversation={conversation} />
         <Body initialMessages={messages} />
         <Form />

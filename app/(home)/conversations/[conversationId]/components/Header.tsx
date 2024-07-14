@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
   }, [conversation.isGroup, conversation.users.length, isActive]);
 
   return (
-    <div className="dark:bg-dusk dark:border-lightgray flex w-full translate-y-[6px] items-center justify-between border-b-[1px] bg-white px-4 py-3 shadow-sm sm:px-4 lg:px-6">
+    <div className="dark:bg-dusk dark:border-lightgray flex w-full translate-y-[6px] items-center justify-between rounded-xl border-b-[3px] bg-white px-4 py-3 shadow-2xl sm:px-4 lg:px-6">
       <div className="flex items-center gap-3">
         <Link
           href="/conversations"

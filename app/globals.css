@@ -9,8 +9,14 @@
 }
 
 main {
-  min-height: calc(100vh - 198px);
   padding-top: 122px;
+  padding-bottom: 64px;
+}
+
+@media screen and (min-width: 1024px) {
+  .custom-height {
+    min-height: calc(100vh - 262px);
+  }
 }
 
 @layer base {
