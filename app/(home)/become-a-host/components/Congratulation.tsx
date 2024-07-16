@@ -42,7 +42,7 @@ const Congratulation = () => {
               You have successfully become a host.
             </p>
             <Link
-              href={"/properties"}
+              href={"/profile"}
               className="focus:shadow-outline rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600 focus:outline-none"
             >
               Go to Your Properties

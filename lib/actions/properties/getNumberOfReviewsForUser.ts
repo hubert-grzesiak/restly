@@ -2,20 +2,37 @@ import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-
-const getReviewsSummary = cache(
-  async ({ propertyId }: { propertyId: string }) => {
+const getReviewsSummaryForUser = cache(
+  async ({ userId }: { userId: string }) => {
     try {
       const session = await auth();
 
       if (!session?.user?.email) {
         console.log("No user session found.");
-        return { numberOfReviews: 0, averageRating: 0 }; // Return default values if no user session is found
+        return { numberOfReviews: 0, averageRating: 0 }; 
       }
 
+      // Pobierz wszystkie właściwości należące do użytkownika
+      const userProperties = await db.property.findMany({
+        where: {
+          ownerId: userId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (userProperties.length === 0) {
+        return { numberOfReviews: 0, averageRating: 0 };
+      }
+
+      // Pobierz wszystkie recenzje dla wszystkich właściwości użytkownika
+      const propertyIds = userProperties.map(property => property.id);
       const reviews = await db.review.findMany({
         where: {
-          propertyId: propertyId,
+          propertyId: {
+            in: propertyIds,
+          },
         },
         select: {
           rating: true,
@@ -26,7 +43,9 @@ const getReviewsSummary = cache(
       const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
       const averageRating = numberOfReviews > 0 ? totalRating / numberOfReviews : 0;
 
+      console.log("USER HAS PROPERTIES, average rating:", averageRating);
       return { numberOfReviews, averageRating };
+
     } catch (error) {
       console.error("Failed to fetch reviews summary:", error);
       return { numberOfReviews: 0, averageRating: 0 }; // Return default values in case of an error
@@ -34,4 +53,4 @@ const getReviewsSummary = cache(
   }
 );
 
-export default getReviewsSummary;
+export default getReviewsSummaryForUser;

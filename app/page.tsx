@@ -1,19 +1,15 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  FilterIcon,
-  LocateIcon,
-  SearchIcon,
-  StarIcon,
-} from "@/components/icons";
+import { FilterIcon, LocateIcon, SearchIcon } from "@/components/icons";
 import Link from "next/link";
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import CustomSearch from "@/components/CustomSearch";
 import CookieComponent from "@/components/CookieComponent";
 import { Property } from "@prisma/client";
 import { cn } from "@/lib/utils";
+import PropertyMainCard from "@/components/PropertyMainCard";
 
-interface PropertyCustom extends Property {
+export interface PropertyCustom extends Property {
   urls: string[];
 }
 
@@ -181,64 +177,7 @@ export default async function Home() {
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {properties.map((property: PropertyCustom) => (
-                <div
-                  key={property.id}
-                  className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950"
-                >
-                  <Link className="block" href="#">
-                    <Image
-                      alt={property.name}
-                      className="h-[200px] w-full object-cover"
-                      height={200}
-                      src={property.urls[0] || "/placeholder.svg"}
-                      style={{
-                        aspectRatio: "300/200",
-                        objectFit: "cover",
-                      }}
-                      width={300}
-                    />
-                  </Link>
-                  <div className="p-4">
-                    <h3 className="mb-2 text-lg font-bold tracking-tight">
-                      {property.name}
-                    </h3>
-                    <div className="mb-2 flex items-center gap-2">
-                      <StarIcon className="h-5 w-5 fill-primary" />
-                      <StarIcon className="h-5 w-5 fill-primary" />
-                      <StarIcon className="h-5 w-5 fill-primary" />
-                      <StarIcon className="h-5 w-5 fill-primary" />
-                      <StarIcon className="h-5 w-5 fill-primary" />
-                      {/* <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" />
-                      <StarIcon className="h-5 w-5 fill-muted stroke-muted-foreground" /> */}
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        (
-                        {
-                          // property?.reviewsCount
-                          // ||
-                          0
-                        }
-                        )
-                      </span>
-                    </div>
-                    <p className="mb-4 text-gray-500 dark:text-gray-400">
-                      {property.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">
-                        $
-                        {
-                          // property.pricePerNight ??
-                          0
-                        }
-                      </span>
-                      <Button size="sm" variant="default">
-                        <Link href={`/properties/${property.id}`}>
-                          Book Now
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                <PropertyMainCard property={property} key={property.id} />
               ))}
             </div>
           </div>

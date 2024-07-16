@@ -237,3 +237,9 @@ main {
   background: url("https://res.cloudinary.com/dev6yhoh3/image/upload/v1720640221/backgrounds/Iridescent_Kiss_MagicPattern_Wallpaper_sstcfi.jpg");
   background-size: cover;
 }
+
+@layer components {
+  .tab-button {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow;
+  }
+}

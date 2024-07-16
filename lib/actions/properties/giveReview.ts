@@ -55,7 +55,7 @@ export const createReview = async ({
     } catch (error) {
       return { error: "Error creating a review" };
     } finally {
-      revalidatePath("/profile");
+      revalidatePath("/profile/visited");
     }
   }
   return { error: "Forbidden Server Action!" };
@@ -97,7 +97,7 @@ export async function editReview({
     } catch (error) {
       return { error: "Error updating a review" };
     } finally {
-      revalidatePath("/profile");
+      revalidatePath("/profile/visited");
     }
   }
   return { error: "Forbidden Server Action!" };

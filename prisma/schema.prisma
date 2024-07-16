@@ -34,7 +34,7 @@ model User {
 
   accounts     Account[]
   messages     Message[]
-  Favourite     Favourite[]
+  Favourite    Favourite[]
   reservations Reservation[]
   reviews      Review[]
 }
@@ -177,11 +177,10 @@ model Property {
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
 
-
   prices      Price[]
   facility    Facility[]
   images      Image[]
-  Favourite    Favourite[]
+  Favourite   Favourite[]
   Reservation Reservation[]
   Review      Review[]
 
@@ -211,7 +210,7 @@ model Reservation {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   propertyId String    @db.ObjectId
   userId     String    @db.ObjectId
-  stripeId  String?   @unique
+  stripeId   String?   @unique
   guests     Int
   dateFrom   String
   dateTo     String

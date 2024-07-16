@@ -2,7 +2,7 @@ import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getReviewsSummaryForUser = cache(async () => {
+const getReviewsSummaryForProperty = cache(async ({propertyId}: {propertyId: string}) => {
   try {
     const session = await auth();
 
@@ -13,12 +13,14 @@ const getReviewsSummaryForUser = cache(async () => {
 
     const reviews = await db.review.findMany({
       where: {
-        userId: session?.user?.id,
+        propertyId: propertyId,
       },
       select: {
         rating: true,
       },
     });
+    console.log("averageRating", reviews);
+
 
     const numberOfReviews = reviews.length;
     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
@@ -32,4 +34,4 @@ const getReviewsSummaryForUser = cache(async () => {
   }
 });
 
-export default getReviewsSummaryForUser;
+export default getReviewsSummaryForProperty;

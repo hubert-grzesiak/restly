@@ -49,11 +49,6 @@ export default async function RootLayout({
       ),
     },
     {
-      name: "Dashboard",
-      link: "/dashboard",
-      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
-    },
-    {
       name: "Favourites",
       link: "/profile/favourites",
       icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,

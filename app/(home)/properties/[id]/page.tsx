@@ -62,27 +62,22 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 </p>
                 <div className="mb-6">
                   <p>{property.description}</p>
-                  <p className="mt-4">
-                    Wake up to the sound of crashing waves and enjoy your
-                    morning coffee on the private balcony. Spend your days
-                    exploring the nearby beaches, hiking through the rainforest,
-                    or simply relaxing by the infinity pool. This is the
-                    ultimate Hawaiian getaway.
-                  </p>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  {property.facility.map(
-                    (facility: { name: string }, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <span>{facility.name}</span>
-                      </div>
-                    ),
-                  )}
-                </div>
-                <div className="mt-6 flex items-center justify-between">
+                <div className="mb-6 flex items-center justify-between">
                   <span className="text-2xl font-bold">
                     ${property.prices[0]?.price || "N/A"}/night
                   </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {property.facility.map(
+                    (facility: { name: string }, index: number) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="rounded-lg bg-white/80 px-4 py-2 backdrop-blur-xl">
+                          {facility.name}
+                        </div>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
             </div>
