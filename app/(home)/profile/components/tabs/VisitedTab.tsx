@@ -41,7 +41,7 @@ export default async function VisitedTab({
   });
   const userReview = await getUserReview({ propertyId: property.property.id });
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:px-8">
+    <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 md:px-8">
       <h1 className="mb-8 text-3xl font-bold">{title}</h1>
       <div className="grid gap-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

@@ -33,7 +33,7 @@ const ProfileCard = async () => {
 
       <div className="flex items-center gap-0.5 self-start">
         <StarIcon className="h-5 w-5 fill-orange-300" />
-        {averageRating} ({numberOfReviews})
+        {averageRating.toFixed(2)} ({numberOfReviews})
       </div>
     </header>
   );

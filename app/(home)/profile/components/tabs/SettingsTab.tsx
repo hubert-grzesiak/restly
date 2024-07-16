@@ -48,7 +48,6 @@ const Settings = () => {
     defaultValues: {
       name: user?.name || undefined,
       email: user?.email || undefined,
-      description: user?.description || undefined,
       password: undefined,
       newPassword: undefined,
       role: user?.role || undefined,
@@ -186,24 +185,7 @@ const Settings = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Type something about yourself"
-                          type="text"
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 {user?.isOAuth === false && (
                   <FormField
                     control={form.control}
