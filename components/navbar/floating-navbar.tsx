@@ -55,7 +55,7 @@ const FloatingNav = ({
       }
       // Set shrink state based on the scroll position
       if (scrollYProgress.get() > 0.05 && direction !== 1) {
-        setShrink(true);
+        setShrink(false);
       } else {
         setShrink(false);
       }

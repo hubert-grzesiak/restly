@@ -243,3 +243,73 @@ main {
     @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow;
   }
 }
+
+.searchBar {
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 5rem;
+  height: 7rem;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: content-box;
+  z-index: 90;
+}
+
+.searchBarInner {
+  display: flex;
+  border-radius: 2.5rem;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.searchBarButton {
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: 0px;
+  border-radius: 2.5rem;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Visuelt, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.searchBarButton::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0px;
+}
+
+.customHeight {
+  height: calc(-8rem + 100vh);
+}
+
+.customOverflow {
+  overflow: unset;
+}
+
+.customFlex {
+  flex: 1 1 50%;
+}

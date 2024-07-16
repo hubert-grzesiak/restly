@@ -9,6 +9,8 @@ import ContactHost from "./components/ContactHost";
 // import Map from "./components/Map";
 import ReservationForm from "./components/ReservationForm/ReservationForm";
 import getReviews from "@/lib/actions/properties/getReviews";
+import { StarIcon } from "@/components/icons";
+import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 
 interface PageProps {
   params: { id?: string };
@@ -23,7 +25,11 @@ const Details: React.FC<PageProps> = async ({ params }) => {
 
   const property = await getPropertyInfo({ id });
   const reviews = await getReviews({ propertyId: id });
-
+  const { averageRating, numberOfReviews } = await getReviewsSummaryForProperty(
+    {
+      propertyId: id,
+    },
+  );
   if (!property) {
     return <div>Property not found</div>;
   }
@@ -39,7 +45,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 {user?.id !== property.ownerId && (
                   <ContactHost ownerId={property.ownerId} />
                 )}
-                <AddToFavourite propertyId={property.id} />
+                <AddToFavourite propertyId={property.id} variant="withText" />
               </div>
             </div>
           </div>
@@ -57,6 +63,11 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 width="500"
               />
               <div className="p-6">
+                <div className="flex items-center gap-1 text-sm font-medium">
+                  <StarIcon className="h-6 w-6 fill-orange-400 text-orange-400" />
+                  <span className="text-bold text-lg">{averageRating}</span>
+                  <span>({numberOfReviews})</span>
+                </div>
                 <p className="mb-4 text-gray-500 dark:text-gray-400">
                   {property.city}, {property.country}
                 </p>
