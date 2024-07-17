@@ -270,7 +270,7 @@ main {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.searchBarButton {
+.searchBarButton, .searchBarFirstButton {
   cursor: pointer;
   padding: 1rem 1.5rem;
   background: none;
@@ -302,8 +302,12 @@ main {
   left: 0px;
 }
 
-.customHeight {
-  height: calc(-8rem + 100vh);
+.mainMap {
+  height: calc(-12rem + 100vh);
+  position: sticky;
+  top: 12rem;
+  border: 1px solid black;
+  width: 50%;
 }
 
 .customOverflow {
@@ -312,4 +316,12 @@ main {
 
 .customFlex {
   flex: 1 1 50%;
+}
+
+.listOfItems {
+  display: grid;
+  gap: 1.25rem;
+  grid-auto-flow: row;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(2, 1fr);
 }

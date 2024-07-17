@@ -64,7 +64,7 @@ const FloatingNav = ({
   const user = useCurrentUser();
   return (
     <AnimatePresence mode="wait">
-      <div className={cn("fixed top-0 z-[999] h-[62px] w-full bg-transparent")}>
+      <nav className={cn("top-0 z-[999] h-[84.8px] w-full bg-transparent")}>
         <motion.div
           ref={ref}
           initial={{
@@ -119,7 +119,7 @@ const FloatingNav = ({
             )}
           </div>
         </motion.div>
-      </div>
+      </nav>
     </AnimatePresence>
   );
 };

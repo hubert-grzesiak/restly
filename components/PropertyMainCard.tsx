@@ -18,17 +18,17 @@ const PropertyMainCard = async ({ property }: { property: PropertyCustom }) => {
       key={property.id}
       className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950"
     >
-      <div className="relative">
+      <div className="relative w-auto">
         <Image
           alt={property.name}
-          className="h-[200px] w-full object-cover"
-          height={200}
+          className="rounded-lg"
+          height={250}
+          width={413}
           src={property.urls[0] || "/placeholder.svg"}
           style={{
-            aspectRatio: "300/200",
+            aspectRatio: "413/250",
             objectFit: "cover",
           }}
-          width={300}
         />
         <AddToFavourite
           propertyId={property.id}
