@@ -270,7 +270,8 @@ main {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.searchBarButton, .searchBarFirstButton {
+.searchBarButton,
+.searchBarFirstButton {
   cursor: pointer;
   padding: 1rem 1.5rem;
   background: none;
@@ -308,6 +309,34 @@ main {
   top: 12rem;
   border: 1px solid black;
   width: 50%;
+}
+
+.mainMapButton {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0px;
+  padding: 1rem 1rem 1rem 0px;
+  overflow: hidden;
+}
+
+.mainMapButtonInner {
+  padding: 0px;
+  width: 1rem;
+  height: 8rem;
+  background: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-image: initial;
+  border-left: none;
+  border-radius: 0px 0.25rem 0.25rem 0px;
+}
+
+.mapSvg {
+  width: 100%;
 }
 
 .customOverflow {

@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import Image from "next/image";
 import { StarIcon } from "./icons/StarIcon";
 import { Button } from "./ui/button";
@@ -6,29 +6,32 @@ import Link from "next/link";
 import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import { PropertyCustom } from "@/app/page";
 import AddToFavourite from "@/app/(home)/properties/[id]/components/AddToFavourite";
+import { cn } from "@/lib/utils";
 
-const PropertyMainCard = async ({ property }: { property: PropertyCustom }) => {
-  const { averageRating, numberOfReviews } = await getReviewsSummaryForProperty(
-    {
-      propertyId: property.id,
-    },
-  );
+const PropertyMainCard = ({
+  property,
+  className,
+}: {
+  property: PropertyCustom;
+  className?: string;
+}) => {
+  const { averageRating, numberOfReviews } = getReviewsSummaryForProperty({
+    propertyId: property.id,
+  });
   return (
     <div
       key={property.id}
-      className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950"
+      className={cn(
+        "w-full overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950",
+        className,
+      )}
     >
       <div className="relative w-auto">
-        <Image
+        <img
+          loading="lazy"
           alt={property.name}
-          className="rounded-lg"
-          height={250}
-          width={413}
+          className="w-full rounded-lg"
           src={property.urls[0] || "/placeholder.svg"}
-          style={{
-            aspectRatio: "413/250",
-            objectFit: "cover",
-          }}
         />
         <AddToFavourite
           propertyId={property.id}

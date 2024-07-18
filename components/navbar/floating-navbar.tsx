@@ -64,20 +64,20 @@ const FloatingNav = ({
   const user = useCurrentUser();
   return (
     <AnimatePresence mode="wait">
-      <nav className={cn("top-0 z-[999] h-[84.8px] w-full bg-transparent")}>
+      <nav className={cn("fixed top-0 z-[999] h-[84.8px] w-full bg-white")}>
         <motion.div
           ref={ref}
           initial={{
             opacity: 1,
             y: 0,
           }}
-          animate={{
-            y: visible ? 0 : -100,
-            opacity: visible ? 1 : 0,
-            paddingLeft: shrink ? "16px" : "0px",
-            paddingRight: shrink ? "16px" : "0px",
-            transition: { ...bounceTransition },
-          }}
+          // animate={{
+          //   y: visible ? 0 : -100,
+          //   opacity: visible ? 1 : 0,
+          //   paddingLeft: shrink ? "16px" : "0px",
+          //   paddingRight: shrink ? "16px" : "0px",
+          //   transition: { ...bounceTransition },
+          // }}
           transition={shrink ? { duration: 0.2 } : { ...bounceTransition }}
           className={cn(
             "fixed inset-x-0 z-[10] mx-auto flex border border-transparent bg-transparent py-2 dark:border-white/[0.2] dark:bg-black",
