@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
+// import Image from "next/image";
 import { StarIcon } from "./icons/StarIcon";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
+// import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import { PropertyCustom } from "@/app/page";
 import AddToFavourite from "@/app/(home)/properties/[id]/components/AddToFavourite";
 import { cn } from "@/lib/utils";
@@ -15,9 +15,8 @@ const PropertyMainCard = ({
   property: PropertyCustom;
   className?: string;
 }) => {
-  const { averageRating, numberOfReviews } = getReviewsSummaryForProperty({
-    propertyId: property.id,
-  });
+  const { averageRating, numberOfReviews } = property;
+  console.log(property);
   return (
     <div
       key={property.id}

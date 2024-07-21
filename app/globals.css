@@ -270,8 +270,13 @@ main {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.searchBarButton,
-.searchBarFirstButton {
+.searchBarItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBarButton {
   cursor: pointer;
   padding: 1rem 1.5rem;
   background: none;
@@ -289,9 +294,11 @@ main {
   line-height: 1.5;
   font-size: 0.875rem;
   position: relative;
+  text-align: center;
+  max-width: 140px;
 }
 
-.searchBarButton::before {
+.searchBarItem::before {
   content: "";
   display: block;
   width: 1px;
@@ -302,6 +309,12 @@ main {
   transform: translateY(-50%);
   left: 0px;
 }
+
+.searchBarItem:first-child::before, .searchBarItem:last-child::before {
+  display: none;
+}
+
+
 
 .mainMap {
   height: calc(-12rem + 100vh);
@@ -353,4 +366,62 @@ main {
   grid-auto-flow: row;
   grid-template-rows: auto;
   grid-template-columns: repeat(2, 1fr);
+}
+
+
+
+/* AUTOCOMPLETE COMPONENT*/
+.autoCompleteInputContainer {
+  position: relative;
+}
+
+.autoCompleteInputContainer .addressSuggestions {
+  position: absolute;
+  top: 1.75em;
+  background-color: white;
+  border: 1px solid black;
+  overflow: hidden;
+  border-radius: 4px;
+  color: black;
+  z-index: 999;
+  padding: 0;
+}
+
+.autoCompleteInputContainer .addressSuggestions li {
+  list-style: none;
+  border-bottom: 1px solid black;
+  padding: 0.5em 1em;
+}
+
+.autoCompleteInputContainer .addressSuggestions li:hover {
+  background-color: rgb(22, 66, 128);
+  color: white;
+  cursor: pointer;
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  margin-right: 3em;
+  z-index: 99999 !important;
+}
+
+.form label {
+  margin-bottom: 4px;
+  width: 100%;
+  text-align: left;
+}
+
+
+
+.map {
+  width: 500px;
+  height: 300px;
+  margin: auto 0;
+}
+.marker {
+  width: 50px;
+  height: 50px;
 }

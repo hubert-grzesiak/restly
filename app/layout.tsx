@@ -11,6 +11,7 @@ import ActiveStatus from "@/components/ActiveStatus";
 import Footer from "@/components/footer/Footer";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import CookieComponent from "@/components/CookieComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,6 +61,8 @@ export default async function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <SessionProvider session={session}>
           <NextUIProvider>
+            <CookieComponent />
+
             <ActiveStatus />
             <Toaster />
             <ActiveStatus />
