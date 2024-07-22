@@ -13,6 +13,7 @@ function AutoCompleteInput({
 }: AutoCompleteInputProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const suggestionsRef = useRef<HTMLUListElement>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     handleManualInputChange(event, "streetAndNumber");
@@ -62,8 +63,17 @@ function AutoCompleteInput({
     setSuggestions([]);
   };
 
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (
+      suggestionsRef.current &&
+      !suggestionsRef.current.contains(event.relatedTarget as Node)
+    ) {
+      setSuggestions([]);
+    }
+  };
+
   return (
-    <div>
+    <div onBlur={handleBlur}>
       <div className="autoCompleteInputContainer">
         <Tooltip title={streetAndNumber}>
           <Input
@@ -72,12 +82,16 @@ function AutoCompleteInput({
             placeholder="Address"
             value={streetAndNumber}
             onChange={handleChange}
-            className="truncate rounded-xl border-none shadow-none hover:shadow-sm"
+            autoComplete="off"
+            className="!focus-visible:ring-none border-none pl-7 shadow-none focus-visible:ring-0"
           />
         </Tooltip>
-        <ul className="addressSuggestions">
+        <ul className="addressSuggestions shadow-md" ref={suggestionsRef}>
           {suggestions?.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+            <li
+              key={index}
+              onMouseDown={() => handleSuggestionClick(suggestion)}
+            >
               {suggestion?.place_name}
             </li>
           ))}

@@ -8,6 +8,7 @@ import { PropertyCustom } from "@/app/page";
 import AddToFavourite from "@/app/(home)/properties/[id]/components/AddToFavourite";
 import { cn } from "@/lib/utils";
 
+
 const PropertyMainCard = ({
   property,
   className,

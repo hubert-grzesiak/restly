@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import ReviewForm from "../ReviewForm";
-import { CalendarIcon, StarIcon } from "lucide-react";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@/components/icons";
 import Link from "next/link";
 import getReviewsSummary from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import getUserReview from "@/lib/actions/properties/getUserReview";

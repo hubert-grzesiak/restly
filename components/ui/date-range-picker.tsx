@@ -43,6 +43,8 @@ export interface DateRangePickerProps {
   showCompare?: boolean;
   /** Array of blocked dates */
   blockedDates?: Array<{ from: string; to: string }>;
+  /** Styles for button */
+  buttonStyles?: string;
 }
 
 const formatDate = (date: Date, locale: string = "en-us"): string => {
@@ -114,10 +116,11 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   initialCompareFrom,
   initialCompareTo,
   onUpdate,
-  align = "end",
+  align = "center",
   locale = "en-US",
   showCompare = true,
   blockedDates = [],
+  buttonStyles,
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -328,7 +331,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 
   return (
     <Popover
-      modal={true}
       open={isOpen}
       onOpenChange={(open: boolean) => {
         if (!open) {
@@ -338,7 +340,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       }}
     >
       <PopoverTrigger asChild>
-        <Button size={"lg"} variant="outline">
+        <Button size={"lg"} variant={"outline"} className={buttonStyles}>
           <div className="text-right">
             <div className="py-1">
               <div>{`${formatDate(range.from, locale)}${

@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parseISO, addDays } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "@heroicons/react/24/outline";
 import { Input } from "@/components/ui/input";
 import { IconTrash } from "@tabler/icons-react";
 

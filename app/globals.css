@@ -285,7 +285,6 @@ main {
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-  gap: 0.5rem;
   font-family: Visuelt, sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -310,11 +309,10 @@ main {
   left: 0px;
 }
 
-.searchBarItem:first-child::before, .searchBarItem:last-child::before {
+.searchBarItem:first-child::before,
+.searchBarItem:last-child::before {
   display: none;
 }
-
-
 
 .mainMap {
   height: calc(-12rem + 100vh);
@@ -368,18 +366,16 @@ main {
   grid-template-columns: repeat(2, 1fr);
 }
 
-
-
 /* AUTOCOMPLETE COMPONENT*/
 .autoCompleteInputContainer {
   position: relative;
 }
 
-.autoCompleteInputContainer .addressSuggestions {
+.addressSuggestions {
   position: absolute;
   top: 1.75em;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid #e5e7eb;
   overflow: hidden;
   border-radius: 4px;
   color: black;
@@ -389,16 +385,15 @@ main {
 
 .autoCompleteInputContainer .addressSuggestions li {
   list-style: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #e5e7eb;
   padding: 0.5em 1em;
 }
 
 .autoCompleteInputContainer .addressSuggestions li:hover {
-  background-color: rgb(22, 66, 128);
+  background-color: rgb(132, 182, 243);
   color: white;
   cursor: pointer;
 }
-
 
 .form {
   display: flex;
@@ -413,8 +408,6 @@ main {
   width: 100%;
   text-align: left;
 }
-
-
 
 .map {
   width: 500px;
