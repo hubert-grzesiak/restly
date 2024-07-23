@@ -170,7 +170,7 @@ model Property {
   apartmentNumber  String
   minimumStay      String
   maximumStay      String
-  maxPeople        String
+  maxPeople        Int
   ownerId          String
   checkInTime      String?
   checkOutTime     String?

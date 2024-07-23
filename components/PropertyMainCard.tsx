@@ -8,7 +8,6 @@ import { PropertyCustom } from "@/app/page";
 import AddToFavourite from "@/app/(home)/properties/[id]/components/AddToFavourite";
 import { cn } from "@/lib/utils";
 
-
 const PropertyMainCard = ({
   property,
   className,
@@ -26,11 +25,11 @@ const PropertyMainCard = ({
         className,
       )}
     >
-      <div className="relative w-auto">
+      <div className="relative h-[250px] w-auto">
         <img
           loading="lazy"
           alt={property.name}
-          className="w-full rounded-lg"
+          className="h-full max-h-[250px] w-full shrink rounded-lg object-cover"
           src={property.urls[0] || "/placeholder.svg"}
         />
         <AddToFavourite

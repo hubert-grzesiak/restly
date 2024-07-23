@@ -8,7 +8,7 @@ interface PropertyInterface extends Property {
   geometry: {
     id: string;
     type: string;
-    coordinates: [number,number];
+    coordinates: [number, number];
   } | null;
 }
 
@@ -55,7 +55,7 @@ const Map = ({ property }: { property: PropertyInterface }) => {
   }, [property.geometry, property]);
 
   return (
-    <div className="relative h-[585px] min-w-[700px] rounded-md">
+    <div className="relative rounded-md">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center text-lg">
           Map is loading...

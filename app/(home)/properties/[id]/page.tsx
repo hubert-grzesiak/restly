@@ -6,7 +6,7 @@ import Opinions from "./components/Opinions";
 import AddToFavourite from "./components/AddToFavourite";
 import { currentUser } from "@/lib/actualUserInfo";
 import ContactHost from "./components/ContactHost";
-// import Map from "./components/Map";
+import Map from "./components/Map";
 import ReservationForm from "./components/ReservationForm/ReservationForm";
 import getReviews from "@/lib/actions/properties/getReviews";
 import { StarIcon } from "@/components/icons";

@@ -11,7 +11,15 @@ import Buttons from "./Buttons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DateRangePicker } from "../ui/date-range-picker";
 
-const Searchbar = ({ route }: { route: string }) => {
+const Searchbar = ({
+  route,
+  dateRange,
+  setDateRange,
+}: {
+  route: string;
+  dateRange: { from: string; to: string };
+  setDateRange: (dateRange: { from: string; to: string }) => void;
+}) => {
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
     kids: 0,
@@ -46,6 +54,10 @@ const Searchbar = ({ route }: { route: string }) => {
     if (address.streetAndNumber) {
       searchParams.set("q", address.streetAndNumber);
     }
+    if (dateRange.from && dateRange.to) {
+      searchParams.set("from", dateRange.from);
+      searchParams.set("to", dateRange.to);
+    }
 
     searchParams.set("numberOfGuests", JSON.stringify(numberOfGuests));
 
@@ -70,7 +82,10 @@ const Searchbar = ({ route }: { route: string }) => {
             <div className="searchBarItem">
               <DateRangePicker
                 buttonStyles="border-none shadow-none outline-none"
+                initialDateFrom={dateRange.from}
+                initialDateTo={dateRange.to}
                 showCompare={false}
+                onUpdate={(values) => setDateRange(values.range)}
               />
             </div>
             <div className="searchBarItem">

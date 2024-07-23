@@ -5,9 +5,9 @@ import { useState, useEffect, FC } from "react";
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 interface MapProps {
-  longitude: number;
-  latitude: number;
-  updateCoordinates: (latitude: number, longitude: number) => void;
+  longitude?: number;
+  latitude?: number;
+  updateCoordinates?: (latitude: number, longitude: number) => void;
 }
 
 const Map: FC<MapProps> = ({ longitude, latitude, updateCoordinates }) => {

@@ -210,14 +210,11 @@ const ReservationForm = ({
                       <SelectValue placeholder="Select guests" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from(
-                        { length: parseInt(property.maxPeople) },
-                        (_, i) => (
-                          <SelectItem key={i} value={(i + 1).toString()}>
-                            {i + 1} guests
-                          </SelectItem>
-                        ),
-                      )}
+                      {Array.from({ length: property.maxPeople }, (_, i) => (
+                        <SelectItem key={i} value={(i + 1).toString()}>
+                          {i + 1} guests
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

@@ -51,7 +51,6 @@ const HostStepper: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [facilityValue, setFacilityValue] = useState<string[]>([]);
-  console.log(facilities);
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -67,7 +66,7 @@ const HostStepper: React.FC = () => {
         apartmentNumber: "",
         minimumStay: "",
         maximumStay: "",
-        maxPeople: "",
+        maxPeople: 0,
       },
       facility: [],
       calendar: {
@@ -92,6 +91,7 @@ const HostStepper: React.FC = () => {
   const {
     control,
     formState: { errors },
+    register,
   } = form;
   const { fields, append, remove } = useFieldArray({
     name: "calendar.prices",
@@ -117,6 +117,7 @@ const HostStepper: React.FC = () => {
   };
 
   const onSubmit = async (data: FormSchemaType) => {
+    console.log("FORM DATA: ", data);
     setIsSubmitting(true);
     try {
       const formData = new FormData();
@@ -126,6 +127,7 @@ const HostStepper: React.FC = () => {
         }
       });
       formData.append("data", JSON.stringify(data));
+      console.log("FORM DATA: ", formData);
       await createObject(formData);
 
       toast.success("Object created successfully");
@@ -368,19 +370,20 @@ const HostStepper: React.FC = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="object.maxPeople"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Maximum Number of People</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
+                  <FormItem>
+                    <FormLabel>Maximum Number of People</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...register("object.maxPeople", {
+                          valueAsNumber: true,
+                        })}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => setSteps(steps - 1)}
@@ -396,7 +399,6 @@ const HostStepper: React.FC = () => {
                           "object.numberOfBedrooms",
                           "object.minimumStay",
                           "object.maximumStay",
-                          "object.maxPeople",
                         ]);
                         if (isValid) {
                           setSteps(steps + 1);

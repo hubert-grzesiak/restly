@@ -10,10 +10,10 @@ export const FormSchema = z.object({
     numberOfBedrooms: z.string().min(1, "Number of Bedrooms is required"),
     postalCode: z.string().min(1, "Postal Code is required"),
     houseNumber: z.string().min(1, "House Number is required"),
-    apartmentNumber: z.string().min(1, "Apartment Number is required"),
+    apartmentNumber: z.string(),
     minimumStay: z.string().min(1, "Minimum Stay is required"),
     maximumStay: z.string().min(1, "Maximum Stay is required"),
-    maxPeople: z.string().min(1, "Maximum Number of People is required"),
+    maxPeople: z.number().min(1, "Max People must be at least 1"),
   }),
   facility: z.array(
     z.object({
