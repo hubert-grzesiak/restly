@@ -31,9 +31,11 @@ export default async function RootLayout({
 }) {
   const navItems = [
     {
-      name: "Profile",
-      link: "/profile",
-      icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      name: "Become a host",
+      link: "/become-a-host",
+      icon: (
+        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
+      ),
     },
     {
       name: "Conversations",
@@ -43,16 +45,9 @@ export default async function RootLayout({
       ),
     },
     {
-      name: "Become a host",
-      link: "/become-a-host",
-      icon: (
-        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
-      ),
-    },
-    {
-      name: "Favourites",
-      link: "/profile/favourites",
-      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      name: "Profile",
+      link: "/profile",
+      icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
   ];
   const session = await auth();

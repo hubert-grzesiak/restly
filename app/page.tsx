@@ -10,6 +10,7 @@ export interface PropertyCustom extends Property {
   urls: string[];
 }
 
+
 export default async function Home({ searchParams }: SearchParamsProps) {
   const parsedNumberOfGuests = searchParams.numberOfGuests
     ? JSON.parse(searchParams.numberOfGuests)
@@ -24,7 +25,9 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   });
   return (
     <div className="relative pt-[6rem]">
-      <MainSection properties={properties} />
+      <MainSection
+        properties={properties}
+      />
     </div>
   );
 }

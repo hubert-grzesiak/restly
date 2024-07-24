@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Import Mapbox GL CSS
 import { Property } from "@prisma/client";
+import { cn } from "@/lib/utils";
 interface PropertyInterface extends Property {
   geometry: {
     id: string;
@@ -12,7 +13,13 @@ interface PropertyInterface extends Property {
   } | null;
 }
 
-const Map = ({ property }: { property: PropertyInterface }) => {
+const Map = ({
+  property,
+  className,
+}: {
+  property: PropertyInterface;
+  className: string;
+}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Ensure the token is set correctly
@@ -55,7 +62,7 @@ const Map = ({ property }: { property: PropertyInterface }) => {
   }, [property.geometry, property]);
 
   return (
-    <div className="relative rounded-md">
+    <div className={cn("relative h-full rounded-md", className)}>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center text-lg">
           Map is loading...

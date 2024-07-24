@@ -21,7 +21,7 @@ const PropertyMainCard = ({
     <div
       key={property.id}
       className={cn(
-        "w-full overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-950",
+        "w-full overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-950",
         className,
       )}
     >
@@ -29,7 +29,7 @@ const PropertyMainCard = ({
         <img
           loading="lazy"
           alt={property.name}
-          className="h-full max-h-[250px] w-full shrink rounded-lg object-cover"
+          className="h-full max-h-[250px] w-full shrink rounded-t-lg object-cover"
           src={property.urls[0] || "/placeholder.svg"}
         />
         <AddToFavourite
@@ -39,14 +39,17 @@ const PropertyMainCard = ({
         />
       </div>
       <div className="p-4">
-        <h3 className="mb-2 text-lg font-bold tracking-tight">
-          {property.name}
-        </h3>
-        <div className="flex items-center gap-1 text-sm font-medium">
-          <StarIcon className="h-6 w-6 fill-orange-400 text-orange-400" />
-          <span className="text-bold text-lg">{averageRating}</span>
-          <span>({numberOfReviews})</span>
+        <div className="flex justify-between">
+          <h3 className="mb-1 text-lg font-bold tracking-tight">
+            {property.name}
+          </h3>
+          <div className="flex items-center gap-1 text-sm font-medium">
+            <StarIcon className="h-6 w-6 fill-orange-400 text-orange-400" />
+            <span className="text-bold text-lg">{averageRating}</span>
+            <span>({numberOfReviews})</span>
+          </div>
         </div>
+
         <p className="mb-4 text-gray-500 dark:text-gray-400">
           {property.city}, {property.country}
         </p>

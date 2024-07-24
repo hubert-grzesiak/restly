@@ -173,7 +173,7 @@ const ReservationForm = ({
                 control={form.control}
                 name="dateRange"
                 render={() => (
-                  <FormItem className="flex">
+                  <FormItem className="flex flex-col">
                     <FormLabel htmlFor="dateRange">Date Range</FormLabel>
                     <FormControl>
                       <DateRangePicker
@@ -181,7 +181,8 @@ const ReservationForm = ({
                         initialDateTo={dateRange.to}
                         showCompare={false}
                         onUpdate={(values) => setDateRange(values.range)}
-                        blockedDates={blockedDates} // przekazanie zablokowanych dat
+                        blockedDates={blockedDates}
+                        buttonStyles="h-[36px] text-left pl-3 pr-4"
                       />
                     </FormControl>
                     <FormMessage>
