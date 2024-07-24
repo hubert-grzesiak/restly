@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "CRUD | Facilities",
   description: "A platform for booking and hosting stays around the world.",
   icons: {
-    icon: "/icon.png",
+    icon: "/public/favicon-32x32.png",
   },
 };
 
@@ -13,5 +13,5 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="w-full mx-auto max-w-[1400px] pt-10">{children}</div>;
+  return <div className="mx-auto w-full max-w-[1400px] pt-10">{children}</div>;
 }

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Restly",
   description: "A platform for booking and hosting stays around the world.",
   icons: {
-    icon: "/icon.png",
+    icon: "/favicon-32x32.png",
   },
 };
 
