@@ -17,6 +17,11 @@ const getConversationById = cache(async (conversationId: string) => {
       },
       include: {
         users: true,
+        property: {
+          include: {
+            images: true,
+          },
+        },
       },
     });
 

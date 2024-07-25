@@ -77,15 +77,18 @@ export default function Opinions({ reviews, name, avatarSrc }) {
     <div className="mx-auto mt-20">
       <h2 className="mb-4 text-2xl font-bold">User Reviews</h2>
       <div className="grid gap-6">
-        {reviews.map((review, index) => (
-          <UserReview
-            key={index}
-            name={name}
-            rating={review.rating}
-            body={review.body}
-            avatarSrc={avatarSrc}
-          />
-        ))}
+        {reviews.map((review, index) => {
+          console.log("review: ", review);
+          return (
+            <UserReview
+              key={index}
+              name={review.user.name}
+              rating={review.rating}
+              body={review.body}
+              avatarSrc={review.user.image}
+            />
+          );
+        })}
       </div>
     </div>
   );

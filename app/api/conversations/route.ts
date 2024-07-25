@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-
 import { db } from "@/lib/db";
 import { pusherEvents, pusherServer } from "@/lib/pusher";
 import { User } from "@prisma/client";
@@ -10,10 +9,11 @@ export async function POST(request: Request) {
   if (!session?.user?.email) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
   try {
     const currentUser = session?.user;
     const body = await request.json();
-    const { userId, isGroup, members, name } = body;
+    const { userId, isGroup, members, name, propertyId } = body;
 
     if (!currentUser?.id || !currentUser?.email) {
       return new NextResponse("Unauthorized", { status: 400 });
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       const newConversation = await db.conversation.create({
         data: {
           name,
-          isGroup,
+          propertyId,
           users: {
             connect: [
               ...members.map((member: { value: string }) => ({
@@ -44,16 +44,21 @@ export async function POST(request: Request) {
         },
       });
 
-      // Update all connections with new conversation
+      // Notify users about the new conversation
       newConversation.users.forEach((user: User) => {
         if (user.email) {
-          pusherServer.trigger(user.email, pusherEvents.NEW_CONVERSATION, newConversation);
+          pusherServer.trigger(
+            user.email,
+            pusherEvents.NEW_CONVERSATION,
+            newConversation,
+          );
         }
       });
 
       return NextResponse.json(newConversation);
     }
 
+    // Check for existing conversation between the current user and the other user
     const existingConversations = await db.conversation.findMany({
       where: {
         OR: [
@@ -71,23 +76,15 @@ export async function POST(request: Request) {
       },
     });
 
-    const singleConversation = existingConversations[0];
-
-    if (singleConversation) {
-      return NextResponse.json(singleConversation);
+    if (existingConversations.length > 0) {
+      return NextResponse.json(existingConversations[0]);
     }
 
     const newConversation = await db.conversation.create({
       data: {
+        propertyId, // Ensure propertyId is included
         users: {
-          connect: [
-            {
-              id: currentUser.id,
-            },
-            {
-              id: userId,
-            },
-          ],
+          connect: [{ id: currentUser.id }, { id: userId }],
         },
       },
       include: {
@@ -95,15 +92,20 @@ export async function POST(request: Request) {
       },
     });
 
-    // Update all connections with new conversation
-    newConversation.users.map((user: User) => {
+    // Notify users about the new conversation
+    newConversation.users.forEach((user: User) => {
       if (user.email) {
-        pusherServer.trigger(user.email, pusherEvents.NEW_CONVERSATION, newConversation);
+        pusherServer.trigger(
+          user.email,
+          pusherEvents.NEW_CONVERSATION,
+          newConversation,
+        );
       }
     });
 
     return NextResponse.json(newConversation);
   } catch (error) {
+    console.error("Error creating conversation:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -44,7 +44,10 @@ const Details: React.FC<PageProps> = async ({ params }) => {
               <h1 className="mb-4 text-3xl font-bold">{property.name}</h1>
               <div className="flex gap-2">
                 {user?.id !== property.ownerId && (
-                  <ContactHost ownerId={property.ownerId} />
+                  <ContactHost
+                    ownerId={property.ownerId}
+                    propertyId={property.id}
+                  />
                 )}
                 <AddToFavourite propertyId={property.id} variant="withText" />
               </div>

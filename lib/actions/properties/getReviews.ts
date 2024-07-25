@@ -2,7 +2,7 @@ import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getReviews = cache(async ({ propertyId }: {propertyId: string}) => {
+const getReviews = cache(async ({ propertyId }: { propertyId: string }) => {
   try {
     const session = await auth();
 
@@ -15,13 +15,15 @@ const getReviews = cache(async ({ propertyId }: {propertyId: string}) => {
       where: {
         propertyId: propertyId,
       },
+      include: {
+        user: true,
+      },
     });
 
     if (!reviews.length) {
       console.log("No facilities found in the database.");
       return [];
     }
-
 
     return reviews;
   } catch (error) {

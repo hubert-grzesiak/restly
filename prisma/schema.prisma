@@ -99,13 +99,13 @@ model Conversation {
   createdAt     DateTime  @default(now())
   lastMessageAt DateTime? @default(now())
   name          String?
-  isGroup       Boolean?
-
+  propertyId    String @db.ObjectId
   messageIds String[]  @db.ObjectId
   messages   Message[]
 
   userIds String[] @db.ObjectId
   users   User[]   @relation(fields: [userIds], references: [id])
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Message {
@@ -176,6 +176,8 @@ model Property {
   checkOutTime     String?
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
+  conversations    Conversation[] 
+
 
   prices      Price[]
   facility    Facility[]
