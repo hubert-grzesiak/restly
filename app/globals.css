@@ -318,7 +318,7 @@ main {
   height: calc(-12rem + 100vh);
   position: sticky;
   top: 12rem;
-  border: 1px solid black;
+  border: 1px solid rgba(94, 58, 14, 0.42);
   width: 50%;
 }
 

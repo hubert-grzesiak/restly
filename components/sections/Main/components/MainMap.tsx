@@ -34,7 +34,7 @@ const MainMap = ({
     if (!mapboxgl.accessToken) {
       return;
     }
-    const defaultCenter = properties[0].geometry?.coordinates || [0, 0];
+    const defaultCenter = properties[0]?.geometry?.coordinates || [0, 0];
 
     const map = new mapboxgl.Map({
       container: "map", // container ID

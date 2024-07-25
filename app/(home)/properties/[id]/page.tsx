@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import getPropertyInfo from "@/lib/actions/properties/getPropertyInfo";
 
 import Opinions from "./components/Opinions";
@@ -11,7 +10,8 @@ import ReservationForm from "./components/ReservationForm/ReservationForm";
 import getReviews from "@/lib/actions/properties/getReviews";
 import { StarIcon } from "@/components/icons";
 import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
-
+import Image from "next/image";
+import ImagesSection from "./components/ImagesSection";
 interface PageProps {
   params: { id?: string };
 }
@@ -75,7 +75,8 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 <div className="mb-6">
                   <p>{property.description}</p>
                 </div>
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-6">
+                  from{" "}
                   <span className="text-2xl font-bold">
                     ${property.prices[0]?.price || "N/A"}/night
                   </span>
@@ -84,7 +85,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                   {property.facility.map(
                     (facility: { name: string }, index: number) => (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="rounded-lg bg-white/80 px-4 py-2 backdrop-blur-xl">
+                        <div className="rounded-lg bg-white/80 px-4 py-2 shadow-md backdrop-blur-xl">
                           {facility.name}
                         </div>
                       </div>
@@ -94,20 +95,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
               </div>
             </div>
             <div className="mx-6 mt-4 grid grid-cols-2 gap-4 pb-4 md:grid-cols-4">
-              {property.urls.slice(1, 5).map((url: string, index: number) => (
-                <Image
-                  key={index}
-                  alt={`Property Image ${index + 1}`}
-                  className="w-full rounded-lg object-cover"
-                  height="150"
-                  src={url || "/placeholder.svg"}
-                  style={{
-                    aspectRatio: "250/150",
-                    objectFit: "cover",
-                  }}
-                  width="250"
-                />
-              ))}
+              <ImagesSection property={property} />
             </div>
           </div>
         </section>

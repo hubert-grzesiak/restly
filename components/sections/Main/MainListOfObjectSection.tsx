@@ -12,7 +12,7 @@ const MainListOfObjectSection = ({
   setIsMapHidden: (value: boolean) => void;
 }) => {
   return (
-    <div className="customFlex w-1/2 border border-black px-[3.5rem]">
+    <div className="customFlex w-1/2 px-[3.5rem]">
       <div className="pt-9">
         <h2 className="text-[22px] font-medium leading-[26px]">
           {properties.length} found

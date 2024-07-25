@@ -44,7 +44,7 @@ const ReservationForm = ({
   property: PropertyAdditionals;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  console.log("ReservationForm -> property", property);
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -223,52 +223,23 @@ const ReservationForm = ({
               </FormItem>
             )}
           />
-          <div className="mt-[20px] flex items-center justify-center">
-            {/* <Checkout
-              price={property.prices[0].price || 0}
-              buyerId={session?.data?.user.id || ""}
-              property={property}
-              formValues={
-                formValues || {
-                  objectId: "",
-                  userId: "",
-                  dateFrom: "",
-                  dateTo: "",
-                  guests: 0,
-                  dateRange: { from: "", to: "" },
-                }
-              }
-              disabled={isSubmitting}
-            /> */}
-          </div>
+          <div className="mt-[20px] flex items-center justify-center"></div>
           <Button
             type="submit"
             className="w-full"
             size="lg"
-            disabled={isSubmitting}
+            disabled={
+              isSubmitting || property.ownerId === session.data?.user.id
+            }
           >
-            {isSubmitting ? "Reserving..." : "Reserve"}
+            {property.ownerId === session.data?.user.id
+              ? "It's your property!"
+              : isSubmitting
+                ? "Reserving..."
+                : "Reserve"}
           </Button>
         </form>
       </Form>
-      {/* <div className="mt-[20px] flex items-center justify-center">
-        <Checkout
-          price={property.prices[0].price || 0}
-          buyerId={session?.data?.user.id || ""}
-          property={property}
-          formValues={
-            formValues || {
-              objectId: "",
-              userId: "",
-              dateFrom: "",
-              dateTo: "",
-              guests: 0,
-              dateRange: { from: "", to: "" },
-            }
-          }
-          disabled={isSubmitting}
-        />
-      </div> */}
     </>
   );
 };
