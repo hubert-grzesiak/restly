@@ -93,3 +93,57 @@ export function DeleteFacility({ id }: { id: string }) {
     </div>
   );
 }
+
+export function ReportReview({ id }: { id: string }) {
+  const [isReporting, setIsReporting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsReporting(true);
+    try {
+      await deleteFacility(id);
+      toast.success("Review reported successfully");
+      // Możesz dodać tutaj dowolną logikę, np. przekierowanie po pomyślnym usunięciu
+    } catch (error) {
+      console.error("Failed to report review", error);
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="rounded-md border p-2">
+            <span>Report review</span>
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure you want to delete this facility?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              facility.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleDelete}
+                disabled={isReporting}
+                className={`rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 ${
+                  isReporting ? "opacity-50" : ""
+                }`}
+              >
+                {isReporting ? "Reporting..." : "Report"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

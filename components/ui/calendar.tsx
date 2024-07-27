@@ -16,6 +16,9 @@ function Calendar({
   disabledDates = [],
   ...props
 }: CalendarProps & { disabledDates?: Date[] }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Ensure we are working with the start of the day
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -64,9 +67,15 @@ function Calendar({
         IconLeft: () => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: () => <ChevronRightIcon className="h-4 w-4" />,
       }}
-      modifiers={{
-        disabled: disabledDates,
-      }}
+      disabled={[
+        {
+          before: today,
+        },
+        ...disabledDates.map((date) => ({
+          from: date,
+          to: date,
+        })),
+      ]}
       {...props}
     />
   );

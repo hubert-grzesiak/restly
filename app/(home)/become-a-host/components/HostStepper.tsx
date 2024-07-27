@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { FormSchema } from "./HostForm.schema";
 import getFacilities from "@/lib/actions/host/getFacilities";
 import { Textarea } from "@/components/ui/textarea";
-import { motion } from "framer-motion";
 import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
@@ -39,6 +38,7 @@ import {
   IconLocation,
   IconPlus,
 } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
 
 type FormSchemaType = TypeOf<typeof FormSchema>;
 
@@ -183,33 +183,43 @@ const HostStepper: React.FC = () => {
       <div className="mt-12 w-full max-w-[600px] rounded-xl bg-white shadow-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <motion.div
-              key={steps}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              exit={{ opacity: 0 }}
-            >
+            <div key={steps}>
               {steps === 0 && (
                 <div className="flex flex-col gap-2 p-8">
                   <h2 className="text-lg font-bold">Location</h2>
 
                   <FormItem className="flex flex-col">
-                    <FormLabel>Country</FormLabel>
+                    <FormLabel
+                      className={cn(
+                        "text-sm font-medium",
+                        errors.object?.country && "text-red-500",
+                      )}
+                    >
+                      Country
+                    </FormLabel>
                     <FormControl>
                       <Controller
                         control={form.control}
                         name="object.country"
-                        render={({ field }) => (
-                          <ComboboxDemo
-                            items={countries}
-                            value={field.value}
-                            onChange={field.onChange}
-                            searchPlaceholder="country"
-                            selectPlaceholder="country"
-                            className="w-full"
-                          />
-                        )}
+                        render={({ field }) => {
+                          return (
+                            <>
+                              <ComboboxDemo
+                                items={countries}
+                                value={field.value}
+                                onChange={field.onChange}
+                                searchPlaceholder="country"
+                                selectPlaceholder="country"
+                                className="w-full"
+                              />
+                              {errors.object?.country && (
+                                <p className="text-[12.8px] text-sm font-medium text-red-500">
+                                  {errors.object?.country.message}
+                                </p>
+                              )}
+                            </>
+                          );
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -449,7 +459,6 @@ const HostStepper: React.FC = () => {
                         return (
                           <PriceItem
                             key={field.id}
-                            // control={control}
                             remove={remove}
                             index={index}
                           />
@@ -587,7 +596,7 @@ const HostStepper: React.FC = () => {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           </form>
         </Form>
       </div>

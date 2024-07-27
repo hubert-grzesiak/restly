@@ -1,21 +1,15 @@
-import { Button } from "@/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import {
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenu,
-} from "@/components/ui/dropdown-menu";
+import OpinionDropdown from "./OpinionDropdown";
+import { ReportReview } from "@/components/facilities/buttons";
 
 type StarIconProps = React.SVGProps<SVGSVGElement>;
-
-type MoveHorizontalIconProps = React.SVGProps<SVGSVGElement>;
 
 type UserReviewProps = {
   name: string;
   rating: number;
   body: string;
   avatarSrc?: string;
+  reviewId: string;
 };
 
 const UserReview: React.FC<UserReviewProps> = ({
@@ -23,6 +17,7 @@ const UserReview: React.FC<UserReviewProps> = ({
   rating,
   body,
   avatarSrc,
+  reviewId,
 }) => (
   <div className="relative rounded-lg bg-white p-6 shadow-md dark:bg-gray-950">
     <div className="flex items-start gap-4">
@@ -56,23 +51,12 @@ const UserReview: React.FC<UserReviewProps> = ({
       </div>
     </div>
     <div className="absolute right-4 top-4">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="rounded-full" size="icon" variant="ghost">
-            <MoveHorizontalIcon className="h-5 w-5" />
-            <span className="sr-only">More options</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ReportReview id={reviewId} />
     </div>
   </div>
 );
 
-export default function Opinions({ reviews, name, avatarSrc }) {
+export default function Opinions({ reviews }) {
   return (
     <div className="mx-auto mt-20">
       <h2 className="mb-4 text-2xl font-bold">User Reviews</h2>
@@ -86,6 +70,7 @@ export default function Opinions({ reviews, name, avatarSrc }) {
               rating={review.rating}
               body={review.body}
               avatarSrc={review.user.image}
+              reviewId={review.id}
             />
           );
         })}
@@ -93,20 +78,6 @@ export default function Opinions({ reviews, name, avatarSrc }) {
     </div>
   );
 }
-
-const MoveHorizontalIcon: React.FC<MoveHorizontalIconProps> = (props) => (
-  <svg
-    {...props}
-    width="25px"
-    height="25px"
-    viewBox="0 0 16 16"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="#000000"
-    className="bi bi-three-dots-vertical"
-  >
-    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-  </svg>
-);
 
 const StarIcon: React.FC<StarIconProps> = (props) => (
   <svg

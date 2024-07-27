@@ -115,7 +115,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
             <Map property={property} className="h-[500px]" />
           </div>
         </section>
-        <Opinions reviews={reviews} name={user?.name} avatarSrc={user?.image} />
+        <Opinions reviews={reviews} />
       </div>
     </main>
   );

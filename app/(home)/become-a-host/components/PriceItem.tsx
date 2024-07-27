@@ -29,6 +29,7 @@ type FieldType = ControllerRenderProps<FieldValues, FieldPath<FieldValues>>;
 
 const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
   const { register, control } = useFormContext();
+  const today = new Date();
 
   const handleDateChange = (date: Date | string | number, field: FieldType) => {
     if (typeof date === "string" || typeof date === "number") {
@@ -61,9 +62,6 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
           mode="single"
           selected={field.value ? parseISO(field.value) : undefined}
           onSelect={(date) => handleDateChange(date ?? "", field)}
-          disabled={(date) =>
-            date > new Date() || date < new Date("1900-01-01")
-          }
           initialFocus
         />
       </PopoverContent>
@@ -97,7 +95,7 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col justify-center gap-1.5">
           <label>Price</label>
           <Input
             type="number"
