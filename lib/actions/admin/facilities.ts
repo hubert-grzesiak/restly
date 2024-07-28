@@ -1,7 +1,7 @@
 "use server";
 
 import { currentRole } from "@/lib/actualUserInfo";
-import { amenities } from "../consts";
+import { amenities } from "../../consts";
 import { Facilities, UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
 import { z } from "zod";

@@ -1,14 +1,13 @@
 import Pagination from "@/components/facilities/pagination";
 import Search from "@/components/ui/search";
-import Table from "@/components/facilities/table";
+import Table from "@/components/reportedReviews/table";
 import { FacilitiesTableSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
-import { getFacilitiesAmount } from "@/lib/actions/admin/facilities";
+import { getReportedReviewsAmount } from "@/lib/actions/admin/reportedReviews";
 import { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Facilities",
+  title: "Reviews",
 };
 
 export default async function Page({
@@ -22,15 +21,15 @@ export default async function Page({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPagesResult = await getFacilitiesAmount();
+  const totalPagesResult = await getReportedReviewsAmount();
 
   if (typeof totalPagesResult === "object" && "error" in totalPagesResult) {
     // Handle error case
     console.error(totalPagesResult.error);
     return (
       <div className="mx-auto w-full max-w-[1000px]">
-        <h1 className="text-2xl">Facilities</h1>
-        <p>Error loading facilities: {totalPagesResult.error}</p>
+        <h1 className="text-2xl">Reviews</h1>
+        <p>Error loading reviews: {totalPagesResult.error}</p>
       </div>
     );
   }
@@ -40,16 +39,13 @@ export default async function Page({
   return (
     <div className="mx-auto mt-4 w-full max-w-[1400px]">
       <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl">Facilities</h1>
+        <h1 className="text-2xl">Reviews</h1>
       </div>
+      {
+        
+      }
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search Facilities..." />
-        <Link
-          href="/admin/facilities/create"
-          className="rounded-md bg-green-500 px-4 py-2 font-bold text-white"
-        >
-          Create facility
-        </Link>
+        <Search placeholder="Search Reviews..." />
       </div>
       <Suspense
         key={query + currentPage}

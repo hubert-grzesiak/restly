@@ -1,5 +1,5 @@
 import { UpdateFacility, DeleteFacility } from "./buttons";
-import { fetchFilteredFacilities } from "@/lib/actions/admin";
+import { fetchFilteredFacilities } from "@/lib/actions/admin/facilities";
 export default async function FacilitiesTable({
   query,
   currentPage,
@@ -17,7 +17,8 @@ export default async function FacilitiesTable({
             {facilitys?.map((facility) => (
               <div
                 key={facility.id}
-                className="mb-2 w-full rounded-md bg-white p-4">
+                className="mb-2 w-full rounded-md bg-white p-4"
+              >
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p>{facility.name}</p>
@@ -46,7 +47,8 @@ export default async function FacilitiesTable({
               {facilitys?.map((facility) => (
                 <tr
                   key={facility.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
+                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                >
                   <td className="whitespace-nowrap px-3 py-3">
                     {facility.name}
                   </td>

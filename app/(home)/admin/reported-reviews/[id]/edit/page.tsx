@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Edit Facility",
+  title: "Edit status of the Review",
 };
 
 export default async function Page({ params }: { params: { id: string } }) {

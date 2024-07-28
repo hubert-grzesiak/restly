@@ -2,17 +2,17 @@
 
 import { useMemo } from "react";
 import { HiChevronLeft } from "react-icons/hi";
-import Link from "next/link";
 import useOtherUser from "@/hooks/useOtherUser";
 import { Conversation, User } from "@prisma/client";
 import Avatar from "@/components/Avatar";
 import useActiveList from "@/hooks/useActiveList";
-import { Image } from "antd";
-
+import Image from "next/image";
+import Link from "next/link";
 interface HeaderProps {
   conversation: Conversation & {
     users: User[];
     property: {
+      id: string;
       name: string;
       city: string;
       images: {
@@ -57,7 +57,10 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-2 justify-self-end px-4 py-2 shadow-md">
+      <Link
+        href={`/properties/${property.id}`}
+        className="flex items-center gap-2 justify-self-end px-4 py-2 shadow-md"
+      >
         <div>
           <div>{property.name}</div>
           <div>{property.city}</div>
@@ -66,8 +69,10 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           src={imageUrl}
           alt={property.name || "Property Image"}
           className="h-full w-full max-w-[150px] rounded-lg object-cover"
+          width={150}
+          height={150}
         />
-      </div>
+      </Link>
     </div>
   );
 };

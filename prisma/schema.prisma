@@ -224,7 +224,6 @@ model Reservation {
 
   @@index([propertyId, dateFrom, dateTo], name: "reservation_date_range_index")
 }
-
 model Review {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   propertyId String   @db.ObjectId
@@ -233,8 +232,19 @@ model Review {
   body       String
   createdAt  DateTime @default(now())
 
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reportedReviews ReportedReview[] @relation("ReviewReportedReviews")
 
   @@index([propertyId, userId], name: "unique_review")
+}
+
+model ReportedReview {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  reviewId     String   @db.ObjectId @map("review_id")
+  reportedAt   DateTime @default(now())
+  status       String   @default("Pending")
+
+  review       Review   @relation("ReviewReportedReviews", fields: [reviewId], references: [id])
 }

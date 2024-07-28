@@ -1,6 +1,5 @@
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import OpinionDropdown from "./OpinionDropdown";
 import { ReportReview } from "@/components/facilities/buttons";
+import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 
 type StarIconProps = React.SVGProps<SVGSVGElement>;
 
@@ -51,7 +50,7 @@ const UserReview: React.FC<UserReviewProps> = ({
       </div>
     </div>
     <div className="absolute right-4 top-4">
-      <ReportReview id={reviewId} />
+      <ReportReview reviewId={reviewId} />
     </div>
   </div>
 );
