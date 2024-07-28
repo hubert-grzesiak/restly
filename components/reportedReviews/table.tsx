@@ -1,5 +1,11 @@
 import { fetchFilteredReportedReviews } from "@/lib/actions/admin/reportedReviews";
-import { UpdateFacility, DeleteFacility } from "./buttons";
+import {
+  UpdateReviewStatus,
+  DeleteReview,
+  DeleteFacility,
+  UpdateFacility,
+} from "./buttons";
+import ReviewStatus from "./status";
 export default async function FacilitiesTable({
   query,
   currentPage,
@@ -48,6 +54,9 @@ export default async function FacilitiesTable({
                   <th scope="col" className="p-3 font-medium">
                     Body
                   </th>
+                  <th scope="col" className="p-3 font-medium">
+                    Status
+                  </th>
                   <th scope="col" className="relative py-3 pl-6 pr-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -60,15 +69,21 @@ export default async function FacilitiesTable({
                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                   >
                     <td className="whitespace-nowrap px-3 py-3">
-                      {review.review.userId}
+                      {review.review.user.email}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {review.review.body}
                     </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      <ReviewStatus status={review.status} />
+                    </td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
-                        <UpdateFacility id={review.id} />
-                        <DeleteFacility id={review.id} />
+                        <UpdateReviewStatus id={review.id} />
+                        <DeleteReview
+                          reportedReviewId={review.id}
+                          reviewId={review.review.id}
+                        />
                       </div>
                     </td>
                   </tr>

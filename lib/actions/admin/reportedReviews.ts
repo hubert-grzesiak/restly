@@ -32,18 +32,37 @@ export const getReportedReviewsAmount = async (): Promise<
   return { error: "Forbidden Server Action!", count: 0 };
 };
 
-export const deleteReportedReview = async (id: string) => {
+export const deleteReportedReview = async ({
+  reportedReviewId,
+  reviewId,
+}: {
+  reportedReviewId: string;
+  reviewId: string;
+}) => {
   const role = await currentRole();
-
   if (role === UserRole.ADMIN) {
     try {
       await db.reportedReview.delete({
-        where: { id: String(id) },
+        where: { id: String(reportedReviewId) },
       });
-      revalidatePath("/admin/reported-reviews");
+
+      // Attempt to delete the review from the review table
+      const reviewDeleted = await db.review.delete({
+        where: { id: String(reviewId) },
+      });
+
+      if (!reviewDeleted) {
+        console.error(
+          `Review with ID ${reviewId} could not be deleted or was not found.`,
+        );
+      }
+
       return { success: "Reported review deleted" };
     } catch (error) {
+      console.error("Error deleting reported review or review", error);
       return { error: "Error deleting reported review" };
+    } finally {
+      revalidatePath("/admin/reported-reviews");
     }
   }
   return { error: "Forbidden Server Action!" };
@@ -64,7 +83,11 @@ export async function fetchFilteredReportedReviews(
         OR: [{ status: { contains: query } }],
       },
       include: {
-        review: true,
+        review: {
+          include: {
+            user: true,
+          },
+        },
       },
       take: ITEMS_PER_PAGE,
       skip: offset,
@@ -106,4 +129,27 @@ export async function fetchReportedReviewById(id: string) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch reported review.");
   }
+}
+
+export async function updateStatusOfReview({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) {
+  const role = await currentRole();
+
+  if (role === UserRole.ADMIN && status === "ok") {
+    try {
+      await db.reportedReview.delete({
+        where: { id },
+      });
+      revalidatePath("/admin/reported-reviews");
+      return { success: "Status of review updated" };
+    } catch (error) {
+      return { error: "Error updating status of review" };
+    }
+  }
+  return { error: "Forbidden Server Action!" };
 }

@@ -21,6 +21,7 @@ export default async function reportReview({ reviewId }: { reviewId: string }) {
         data: {
           reviewId: reviewId,
           reportedAt: new Date(),
+          reportedById: session.user.id as string,
           status: "Pending",
         },
       });

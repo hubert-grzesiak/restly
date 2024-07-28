@@ -110,7 +110,6 @@ export function ReportReview({ reviewId }: { reviewId: string }) {
     try {
       await reportOpinion({ reviewId });
       toast.success("Review reported successfully");
-      // Możesz dodać tutaj dowolną logikę, np. przekierowanie po pomyślnym usunięciu
     } catch (error) {
       console.error("Failed to report review", error);
     } finally {

@@ -1,9 +1,8 @@
 import Breadcrumbs from "@/components/facilities/breadcrumbs";
-import FacilityForm from "@/components/facilities/forms/create-form";
-
-import { fetchFacilityById } from "@/lib/actions/admin/facilities";
+import EditReviewStatusForm from "@/components/reportedReviews/forms/edit-form";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { fetchReportedReviewById } from "@/lib/actions/admin/reportedReviews";
 
 export const metadata: Metadata = {
   title: "Edit status of the Review",
@@ -12,7 +11,7 @@ export const metadata: Metadata = {
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
 
-  const result = await fetchFacilityById(id);
+  const result = await fetchReportedReviewById(id);
 
   if (!result) {
     return notFound();
@@ -22,15 +21,15 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Facilities", href: "/admin/facilities" },
+          { label: "Reported reviews", href: "/admin/reported-reviews" },
           {
-            label: "Edit Facility",
-            href: `/admin/facilities/${id}/edit`,
+            label: "Edit Status of the Review",
+            href: `/admin/reported-reviews/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <FacilityForm type="Edit" facilityDetails={JSON.stringify(result)} />
+      <EditReviewStatusForm review={result} />
     </main>
   );
 }

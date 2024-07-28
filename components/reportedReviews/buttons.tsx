@@ -24,6 +24,7 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import reportOpinion from "@/lib/actions/properties/reportOpinion";
+import { deleteReportedReview } from "@/lib/actions/admin/reportedReviews";
 export function CreateFacility() {
   return (
     <Link
@@ -178,3 +179,74 @@ const MoveHorizontalIcon: React.FC<MoveHorizontalIconProps> = (props) => (
     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
   </svg>
 );
+
+export function UpdateReviewStatus({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/admin/reported-reviews/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <PencilIcon className="w-5" />
+    </Link>
+  );
+}
+
+export function DeleteReview({
+  reportedReviewId,
+  reviewId,
+}: {
+  reportedReviewId: string;
+  reviewId: string;
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteReportedReview({ reportedReviewId, reviewId });
+      toast.success("Review deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete review", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="rounded-md border bg-red-500 p-2 hover:bg-red-600">
+            <span className="sr-only">Delete</span>
+            <TrashIcon className="w-5 text-white" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure you want to delete this review?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              review.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className={`rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 ${
+                  isDeleting ? "opacity-50" : ""
+                }`}
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

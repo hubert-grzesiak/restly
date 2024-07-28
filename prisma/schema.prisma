@@ -245,6 +245,7 @@ model ReportedReview {
   reviewId     String   @db.ObjectId @map("review_id")
   reportedAt   DateTime @default(now())
   status       String   @default("Pending")
+  reportedById String   @db.ObjectId
 
   review       Review   @relation("ReviewReportedReviews", fields: [reviewId], references: [id])
-}
+  }
