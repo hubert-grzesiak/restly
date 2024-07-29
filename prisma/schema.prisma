@@ -139,8 +139,6 @@ model Facility {
 model Image {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   public_id   String?
-  description String
-  isMain      Boolean
   urls        String[]
   propertyId  String   @db.ObjectId
   property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
@@ -245,7 +243,7 @@ model ReportedReview {
   reviewId     String   @db.ObjectId @map("review_id")
   reportedAt   DateTime @default(now())
   status       String   @default("Pending")
-  reportedById String   @db.ObjectId
+  reportedBy   String  
 
   review       Review   @relation("ReviewReportedReviews", fields: [reviewId], references: [id])
   }

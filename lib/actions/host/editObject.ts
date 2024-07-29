@@ -10,6 +10,7 @@ import os from "os";
 import { db } from "@/lib/db";
 import { TypeOf } from "zod";
 import sharp from "sharp";
+import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME!,
@@ -29,7 +30,7 @@ interface SavedFile {
   ext: string;
 }
 
-export const createObject = async (formData: FormData) => {
+export const editObject = async (id: string, formData: FormData) => {
   try {
     const session = await auth();
 
@@ -39,13 +40,17 @@ export const createObject = async (formData: FormData) => {
 
     const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
     const files = formData.getAll("files") as FileWithType[];
-    const newFiles = await savePhotosLocal(files);
-    const photos = await uploadPhotosCloudinary(newFiles);
-    await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
 
-    const newPhotos = photos.map((photo) => photo.secure_url);
+    // Process new files if any
+    let newPhotos: string[] = [];
+    if (files.length > 0) {
+      const newFiles = await savePhotosLocal(files);
+      const photos = await uploadPhotosCloudinary(newFiles);
+      await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
+      newPhotos = photos.map((photo) => photo.secure_url);
+    }
 
-    // MAPBOX
+    // Geocoding
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
     const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
@@ -60,15 +65,22 @@ export const createObject = async (formData: FormData) => {
     if (!geometry) {
       throw new Error("Geocoding failed, no geometry found.");
     }
-    console.log(geometry);
+    console.log("facilities", data.facility);
 
-    const newObject = await db.property.create({
+    // Ensure facilities are unique
+    const uniqueFacilities = Array.from(
+      new Set(data.facility.map((f) => f.name)),
+    ).map((name) => ({ name }));
+
+    // Update object in the database
+    const updatedObject = await db.property.update({
+      where: { id },
       data: {
         country: data.object.country,
         city: data.object.city,
         street: data.object.street,
         geometry: {
-          create: {
+          update: {
             type: geometry.type,
             coordinates: geometry.coordinates,
           },
@@ -86,6 +98,7 @@ export const createObject = async (formData: FormData) => {
         checkOutTime: data.calendar.checkOutTime,
         ownerId: session?.user?.id ?? "",
         prices: {
+          deleteMany: {},
           create: data.calendar.prices.map((price) => ({
             from: price.from,
             to: price.to,
@@ -93,9 +106,8 @@ export const createObject = async (formData: FormData) => {
           })),
         },
         facility: {
-          create: data.facility.map((facility) => ({
-            name: facility.name,
-          })),
+          deleteMany: {},
+          create: uniqueFacilities,
         },
         images: {
           create: {
@@ -105,10 +117,12 @@ export const createObject = async (formData: FormData) => {
       },
     });
 
-    return newObject;
+    return updatedObject;
   } catch (error) {
-    console.error("Error creating object:", error);
+    console.error("Error updating object:", error);
     return null;
+  } finally {
+    revalidatePath(`/properties/${id}`);
   }
 };
 

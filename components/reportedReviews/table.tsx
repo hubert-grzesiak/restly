@@ -52,6 +52,9 @@ export default async function FacilitiesTable({
                     User
                   </th>
                   <th scope="col" className="p-3 font-medium">
+                    Reported by
+                  </th>
+                  <th scope="col" className="p-3 font-medium">
                     Body
                   </th>
                   <th scope="col" className="p-3 font-medium">
@@ -70,6 +73,9 @@ export default async function FacilitiesTable({
                   >
                     <td className="whitespace-nowrap px-3 py-3">
                       {review.review.user.email}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {review.reportedBy}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {review.review.body}

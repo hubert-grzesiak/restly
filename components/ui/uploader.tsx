@@ -1,10 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload, Button } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+type FileType = Blob | File;
+
+// Helper function to convert URLs to UploadFile objects
+const urlToUploadFile = (url: string, index: number): UploadFile => ({
+  uid: String(index), // unique identifier for each file
+  name: `image${index}`, // name for display
+  status: "done", // status for antd Upload
+  url: url, // the URL of the image
+});
 
 const getBase64 = (file: FileType): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -14,12 +22,22 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const Uploader: React.FC<{ onFilesChange?: (files: UploadFile[]) => void }> = ({
-  onFilesChange,
-}) => {
+const Uploader: React.FC<{
+  onFilesChange?: (files: UploadFile[]) => void;
+  defaultFiles?: string[]; // array of URLs
+}> = ({ onFilesChange, defaultFiles = [] }) => {
+  // Convert URLs to UploadFile objects
+  const initialFiles = defaultFiles.map((url, index) =>
+    urlToUploadFile(url, index),
+  );
+
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>(initialFiles);
+
+  useEffect(() => {
+    setFileList(initialFiles);
+  }, [defaultFiles]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -56,15 +74,19 @@ const Uploader: React.FC<{ onFilesChange?: (files: UploadFile[]) => void }> = ({
           <div
             style={{
               border: currFileList.indexOf(file) === 0 ? "relative" : "none",
-            }}>
+            }}
+          >
             {currFileList.indexOf(file) === 0 && (
-              <div className="absolute translate-x-[-8px] translate-y-[-3px] bg-red-500 z-10 rounded-md flex items-center justify-center px-2 py-[2px] text-[8px] font-semibold text-white -rotate-[20deg]">
+              <div className="absolute z-10 flex translate-x-[-8px] translate-y-[-3px] -rotate-[20deg] items-center justify-center rounded-md bg-red-500 px-2 py-[2px] text-[8px] font-semibold text-white">
                 Main
               </div>
             )}
-            {originNode}
+            <div style={{ width: 100, height: 100, overflow: "hidden" }}>
+              {originNode}
+            </div>
           </div>
-        )}>
+        )}
+      >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
       {previewImage && (

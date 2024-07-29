@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -13,12 +13,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { FormSchema } from "@/app/(home)/become-a-host/components/HostForm.schema";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { FormSchema } from "./HostForm.schema";
-import getFacilities from "@/lib/actions/host/getFacilities";
 import { Textarea } from "@/components/ui/textarea";
-import { createObject } from "@/lib/actions/host/createObject";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { countries } from "@/lib/consts";
 import { Select } from "antd";
@@ -27,60 +25,71 @@ import { TypeOf } from "zod";
 
 import Uploader from "@/components/ui/uploader";
 
-import Congratulation from "./Congratulation";
-import PriceItem from "./PriceItem";
+import PriceItem from "@/app/(home)/become-a-host/components/PriceItem";
 
 import { cn } from "@/lib/utils";
 import Stepper from "@/components/Stepper";
+import { Property } from "@prisma/client";
+import { editObject } from "@/lib/actions/host/editObject";
+import { useRouter } from "next/navigation";
 
 type FormSchemaType = TypeOf<typeof FormSchema>;
 
-const HostStepper: React.FC = () => {
+interface Properties extends Property {
+  facility: { id: string; name: string }[];
+  urls: string[];
+  prices: { from: string; to: string; price: number }[];
+}
+
+const EditForm = ({
+  property,
+  facilities,
+}: {
+  property: Properties;
+  facilities: { label: string; value: string }[];
+}) => {
+  const router = useRouter();
   const [steps, setSteps] = useState<number>(0);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [facilities, setFacilities] = useState<
-    { label: string; value: string }[]
-  >([]);
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [files, setFiles] = useState<UploadFile[]>([]);
-  const [facilityValue, setFacilityValue] = useState<string[]>([]);
+  const [facilityValue, setFacilityValue] = useState<string[]>(
+    property.facility.map((facility) => facility.name),
+  );
   const form = useForm<FormSchemaType>({
-    resolver: zodResolver(FormSchema),
+    // resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
-        country: "",
-        city: "",
-        street: "",
-        name: "",
-        description: "",
-        numberOfBedrooms: "",
-        postalCode: "",
-        houseNumber: "",
-        apartmentNumber: "",
-        minimumStay: "",
-        maximumStay: "",
-        maxPeople: 0,
+        country: property.country,
+        city: property.city,
+        street: property.street,
+        postalCode: property.postalCode,
+        houseNumber: property.houseNumber,
+        apartmentNumber: property.apartmentNumber,
+        name: property.name,
+        description: property.description,
+        numberOfBedrooms: property.numberOfBedrooms,
+        minimumStay: property.minimumStay,
+        maximumStay: property.maximumStay,
+        maxPeople: property.maxPeople,
       },
-      facility: [],
       calendar: {
-        checkInTime: "",
-        checkOutTime: "",
-        prices: [
-          {
-            from: "",
-            to: "",
-            price: 0,
-          },
-        ],
+        checkInTime: property.checkInTime ?? "",
+        checkOutTime: property.checkOutTime ?? "",
+        prices: property.prices.map((price) => ({
+          from: price.from,
+          to: price.to,
+          price: price.price,
+        })),
       },
+      facility: property.facility.map((facility) => ({
+        name: facility.name,
+      })),
       image: {
-        description: "",
-        isMain: false,
-        urls: [],
+        urls: property.urls.map((url) => url),
       },
     },
   });
-
   const {
     control,
     formState: { errors },
@@ -94,23 +103,12 @@ const HostStepper: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    const fetchFacilities = async () => {
-      const facilitiesData = await getFacilities();
-      console.log(facilitiesData);
-      if (facilitiesData) {
-        setFacilities(facilitiesData);
-      }
-    };
-    fetchFacilities();
-  }, []);
-
   const onFilesChange = (newFiles: UploadFile[]) => {
     setFiles(newFiles);
+    console.log("FILES: ", newFiles);
   };
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log("FORM DATA: ", data);
     setIsSubmitting(true);
     try {
       const formData = new FormData();
@@ -119,12 +117,12 @@ const HostStepper: React.FC = () => {
           formData.append("files", file.originFileObj);
         }
       });
-      formData.append("data", JSON.stringify(data));
-      console.log("FORM DATA: ", formData);
-      await createObject(formData);
+      console.log("FORM DATA: ", formData.getAll("files"));
 
-      toast.success("Object created successfully");
-      setIsSubmitted(true);
+      formData.append("data", JSON.stringify(data));
+      await editObject(property.id, formData);
+      router.push(`/properties/${property.id}`);
+      toast.success("Object edited successfully");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -136,10 +134,10 @@ const HostStepper: React.FC = () => {
     }
   };
 
-  return !isSubmitted ? (
+  return (
     <>
       <h1 className="mb-8 mt-5 text-3xl font-bold tracking-tight md:text-4xl">
-        Become a Host
+        Edit the property
       </h1>
       <div className="w-full rounded-xl bg-white p-4">
         <Stepper steps={steps} />
@@ -492,6 +490,7 @@ const HostStepper: React.FC = () => {
                               field.onChange(value.map((name) => ({ name })));
                             }}
                             filterOption
+                            defaultValue={facilityValue}
                             style={{ width: "100%" }}
                             placeholder="Please select"
                             options={facilities.map((facility) => ({
@@ -513,10 +512,10 @@ const HostStepper: React.FC = () => {
                     </Button>
                     <Button
                       onClick={async () => {
-                        const isValid = await form.trigger("facility");
-                        if (isValid) {
-                          setSteps(steps + 1);
-                        }
+                        // const isValid = await form.trigger("facility");
+                        // if (isValid) {
+                        setSteps(steps + 1);
+                        // }
                       }}
                       className="mt-4 max-w-[320px] text-center"
                     >
@@ -535,7 +534,10 @@ const HostStepper: React.FC = () => {
                     render={() => (
                       <FormItem>
                         <FormControl>
-                          <Uploader onFilesChange={onFilesChange} />
+                          <Uploader
+                            onFilesChange={onFilesChange}
+                            defaultFiles={property.urls}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -565,9 +567,7 @@ const HostStepper: React.FC = () => {
         </Form>
       </div>
     </>
-  ) : (
-    <Congratulation />
   );
 };
 
-export default HostStepper;
+export default EditForm;

@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { toast } from "sonner";
 
 // Funkcja do zgłaszania opinii
 export default async function reportReview({ reviewId }: { reviewId: string }) {
@@ -17,11 +18,22 @@ export default async function reportReview({ reviewId }: { reviewId: string }) {
         return { error: "Review not found" };
       }
 
+      // Sprawdzenie, czy opinia nie została już zgłoszona
+      const reportedReview = await db.reportedReview.findFirst({
+        where: {
+          reviewId: reviewId,
+        },
+      });
+
+      if (reportedReview) {
+        toast.error("Review already reported");
+        return { error: "Review already reported" };
+      }
       await db.reportedReview.create({
         data: {
           reviewId: reviewId,
           reportedAt: new Date(),
-          reportedById: session.user.id as string,
+          reportedBy: session.user.email as string,
           status: "Pending",
         },
       });

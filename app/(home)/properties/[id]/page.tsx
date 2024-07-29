@@ -12,6 +12,7 @@ import { StarIcon } from "@/components/icons";
 import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import Image from "next/image";
 import ImagesSection from "./components/ImagesSection";
+import { Button } from "@/components/ui/button";
 interface PageProps {
   params: { id?: string };
 }
@@ -48,6 +49,16 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                     ownerId={property.ownerId}
                     propertyId={property.id}
                   />
+                )}
+                {user?.id === property.ownerId && (
+                  <Button
+                    variant={"outline"}
+                    href={`
+                  /properties/${property.id}/edit
+                `}
+                  >
+                    Edit
+                  </Button>
                 )}
                 <AddToFavourite propertyId={property.id} variant="withText" />
               </div>
