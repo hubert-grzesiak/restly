@@ -99,19 +99,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   buttonStyles,
   prices = [],
 }): JSX.Element => {
-  console.log("date-range-picker -> prices", prices);
-
-  const findPriceForDate = (date: Date) => {
-    for (const priceRange of prices) {
-      const fromDate = new Date(priceRange.from);
-      const toDate = new Date(priceRange.to);
-      if (date >= fromDate && date <= toDate) {
-        return priceRange.price;
-      }
-    }
-    return null;
-  };
-
   const [isOpen, setIsOpen] = useState(false);
 
   const blockedDatesArray = getBlockedDates(blockedDates);
@@ -417,20 +404,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
           >
             Update
           </Button>
-        </div>
-        <div>
-          {range.from && (
-            <div>
-              <span>From: {formatDate(range.from)}</span>
-              <span>Price: {findPriceForDate(range.from)}</span>
-            </div>
-          )}
-          {range.to && (
-            <div>
-              <span>To: {formatDate(range.to)}</span>
-              <span>Price: {findPriceForDate(range.to)}</span>
-            </div>
-          )}
         </div>
       </PopoverContent>
     </Popover>

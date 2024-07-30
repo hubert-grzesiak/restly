@@ -44,6 +44,7 @@ const ReservationForm = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [prices, setPrices] = useState(property.prices);
+
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -138,20 +139,15 @@ const ReservationForm = ({
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
-      console.log(values);
-      await checkoutReservation(
-        property.prices[0].price || 0,
-        session?.data?.user.id || "",
-        property,
-        values,
-      );
+      console.log("ReservationForm -> values", values);
+      // await checkoutReservation(
+      //   property.prices[0].price || 0,
+      //   session?.data?.user.id || "",
+      //   property,
+      //   values,
+      // );
 
       console.log(values);
-      // if (result.success) {
-      //   toast.success(result.message);
-      // } else {
-      //   toast.error(result.message);
-      // }
     } catch (error: unknown) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
@@ -159,8 +155,6 @@ const ReservationForm = ({
       setIsSubmitting(false);
     }
   }
-
-  // console.log("Checkout -> price", price, buyerId, property, formValues);
 
   return (
     <>
@@ -227,6 +221,10 @@ const ReservationForm = ({
               </FormItem>
             )}
           />
+          <div className="flex justify-between">
+            <div>{/* NUMBER OF DAYS */}</div>
+            <div>{/* PRICE */}</div>
+          </div>
           <div className="mt-[20px] flex items-center justify-center"></div>
           <Button
             type="submit"
