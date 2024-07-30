@@ -6,20 +6,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Calendar } from "./calendar";
 import { DateInput } from "./date-input";
 import { Label } from "./label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./select";
 import { Switch } from "./switch";
-import {
-  ChevronUpIcon,
-  ChevronDownIcon,
-  CheckIcon,
-} from "@radix-ui/react-icons";
-import { cn } from "@/lib/utils";
+import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 
 export interface DateRangePickerProps {
   /** Click handler for applying the updates from DateRangePicker. */
@@ -45,6 +33,7 @@ export interface DateRangePickerProps {
   blockedDates?: Array<{ from: string; to: string }>;
   /** Styles for button */
   buttonStyles?: string;
+  prices?: { from: string; to: string; price: number }[];
 }
 
 const formatDate = (date: Date, locale: string = "en-us"): string => {
@@ -94,19 +83,6 @@ interface DateRange {
   to: Date | undefined;
 }
 
-interface Preset {
-  name: string;
-  label: string;
-}
-
-// Define presets
-const PRESETS: Preset[] = [
-  { name: "today", label: "Today" },
-  { name: "tomorrow", label: "Tomorrow" },
-  { name: "next7", label: "Next 7 days" },
-  { name: "next14", label: "Next 14 days" },
-];
-
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> & {
   filePath: string;
@@ -121,7 +97,21 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   showCompare = true,
   blockedDates = [],
   buttonStyles,
+  prices = [],
 }): JSX.Element => {
+  console.log("date-range-picker -> prices", prices);
+
+  const findPriceForDate = (date: Date) => {
+    for (const priceRange of prices) {
+      const fromDate = new Date(priceRange.from);
+      const toDate = new Date(priceRange.to);
+      if (date >= fromDate && date <= toDate) {
+        return priceRange.price;
+      }
+    }
+    return null;
+  };
+
   const [isOpen, setIsOpen] = useState(false);
 
   const blockedDatesArray = getBlockedDates(blockedDates);
@@ -150,10 +140,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   const openedRangeRef = useRef<DateRange | undefined>();
   const openedRangeCompareRef = useRef<DateRange | undefined>();
 
-  const [selectedPreset, setSelectedPreset] = useState<string | undefined>(
-    undefined,
-  );
-
   const [isSmallScreen, setIsSmallScreen] = useState(
     typeof window !== "undefined" ? window.innerWidth < 960 : false,
   );
@@ -170,86 +156,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const getPresetRange = (presetName: string): DateRange => {
-    const preset = PRESETS.find(({ name }) => name === presetName);
-    if (!preset) throw new Error(`Unknown date range preset: ${presetName}`);
-    const from = new Date();
-    const to = new Date();
-
-    switch (preset.name) {
-      case "today":
-        from.setHours(0, 0, 0, 0);
-        to.setHours(23, 59, 59, 999);
-        break;
-      case "tomorrow":
-        from.setDate(from.getDate() + 1);
-        from.setHours(0, 0, 0, 0);
-        to.setDate(to.getDate() + 1);
-        to.setHours(23, 59, 59, 999);
-        break;
-      case "next7":
-        to.setDate(to.getDate() + 7);
-        to.setHours(23, 59, 59, 999);
-        break;
-      case "next14":
-        to.setDate(to.getDate() + 14);
-        to.setHours(23, 59, 59, 999);
-        break;
-    }
-
-    return { from, to };
-  };
-
-  const setPreset = (preset: string): void => {
-    const range = getPresetRange(preset);
-    setRange(range);
-    if (rangeCompare) {
-      const rangeCompare = {
-        from: new Date(
-          range.from.getFullYear() - 1,
-          range.from.getMonth(),
-          range.from.getDate(),
-        ),
-        to: range.to
-          ? new Date(
-              range.to.getFullYear() - 1,
-              range.to.getMonth(),
-              range.to.getDate(),
-            )
-          : undefined,
-      };
-      setRangeCompare(rangeCompare);
-    }
-  };
-
-  const checkPreset = (): void => {
-    for (const preset of PRESETS) {
-      const presetRange = getPresetRange(preset.name);
-
-      const normalizedRangeFrom = new Date(range.from);
-      normalizedRangeFrom.setHours(0, 0, 0, 0);
-      const normalizedPresetFrom = new Date(
-        presetRange.from.setHours(0, 0, 0, 0),
-      );
-
-      const normalizedRangeTo = new Date(range.to ?? 0);
-      normalizedRangeTo.setHours(0, 0, 0, 0);
-      const normalizedPresetTo = new Date(
-        presetRange.to?.setHours(0, 0, 0, 0) ?? 0,
-      );
-
-      if (
-        normalizedRangeFrom.getTime() === normalizedPresetFrom.getTime() &&
-        normalizedRangeTo.getTime() === normalizedPresetTo.getTime()
-      ) {
-        setSelectedPreset(preset.name);
-        return;
-      }
-    }
-
-    setSelectedPreset(undefined);
-  };
 
   const resetValues = (): void => {
     setRange({
@@ -283,35 +189,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         : undefined,
     );
   };
-
-  useEffect(() => {
-    checkPreset();
-  }, [range]);
-
-  const PresetButton = ({
-    preset,
-    label,
-    isSelected,
-  }: {
-    preset: string;
-    label: string;
-    isSelected: boolean;
-  }): JSX.Element => (
-    <Button
-      className={cn(isSelected && "pointer-events-none")}
-      variant="ghost"
-      onClick={() => {
-        setPreset(preset);
-      }}
-    >
-      <>
-        <span className={cn("pr-2 opacity-0", isSelected && "opacity-70")}>
-          <CheckIcon width={18} height={18} />
-        </span>
-        {label}
-      </>
-    </Button>
-  );
 
   // Helper function to check if two date ranges are equal
   const areRangesEqual = (a?: DateRange, b?: DateRange): boolean => {
@@ -371,7 +248,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         <div className="flex py-2">
           <div className="flex">
             <div className="flex flex-col">
-              <div className="flex flex-col items-center justify-end gap-2 px-3 pb-4 lg:flex-row lg:items-start lg:pb-0">
+              <div className="flex flex-col items-center justify-center gap-2 px-3 pb-4 lg:flex-row lg:items-start lg:pb-0">
                 {showCompare && (
                   <div className="flex items-center space-x-2 py-1 pr-4">
                     <Switch
@@ -482,25 +359,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                   )}
                 </div>
               </div>
-              {isSmallScreen && (
-                <Select
-                  defaultValue={selectedPreset}
-                  onValueChange={(value) => {
-                    setPreset(value);
-                  }}
-                >
-                  <SelectTrigger className="mx-auto mb-2 w-[180px]">
-                    <SelectValue placeholder="Select..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRESETS.map((preset) => (
-                      <SelectItem key={preset.name} value={preset.name}>
-                        {preset.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+
               <div>
                 <Calendar
                   mode="range"
@@ -512,6 +371,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                   selected={range}
                   numberOfMonths={isSmallScreen ? 1 : 2}
                   defaultMonth={new Date()}
+                  prices={prices}
                   disabledDates={[
                     ...blockedDatesArray,
                     ...getBlockedDates([
@@ -522,20 +382,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               </div>
             </div>
           </div>
-          {!isSmallScreen && (
-            <div className="flex flex-col items-end gap-1 pb-6 pl-6 pr-2">
-              <div className="flex w-full flex-col items-end gap-1 pb-6 pl-6 pr-2">
-                {PRESETS.map((preset) => (
-                  <PresetButton
-                    key={preset.name}
-                    preset={preset.name}
-                    label={preset.label}
-                    isSelected={selectedPreset === preset.name}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
         <div className="flex justify-end gap-2 py-2 pr-4">
           <Button
@@ -571,6 +417,20 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
           >
             Update
           </Button>
+        </div>
+        <div>
+          {range.from && (
+            <div>
+              <span>From: {formatDate(range.from)}</span>
+              <span>Price: {findPriceForDate(range.from)}</span>
+            </div>
+          )}
+          {range.to && (
+            <div>
+              <span>To: {formatDate(range.to)}</span>
+              <span>Price: {findPriceForDate(range.to)}</span>
+            </div>
+          )}
         </div>
       </PopoverContent>
     </Popover>

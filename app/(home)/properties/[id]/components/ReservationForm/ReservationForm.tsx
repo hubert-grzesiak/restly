@@ -26,11 +26,10 @@ import { toast } from "sonner";
 import { getReservations } from "@/lib/actions/reservation/getReservations";
 import { useSession } from "next-auth/react";
 import * as z from "zod";
-// import Checkout from "@/components/Checkout";
 import { Property } from "@prisma/client";
 import { checkoutReservation } from "@/lib/actions/reservation/transaction.action";
 import { Button } from "@/components/ui/button";
-// import { result } from "lodash";
+import { getPricesForPropertyCalendar } from "@/lib/actions/reservation/getPricesForPropertyCalendar";
 
 interface PropertyAdditionals extends Property {
   prices: Array<{ price: number }>;
@@ -44,7 +43,7 @@ const ReservationForm = ({
   property: PropertyAdditionals;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  console.log("ReservationForm -> property", property);
+  const [prices, setPrices] = useState(property.prices);
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -54,6 +53,7 @@ const ReservationForm = ({
     Array<{ from: string; to: string }>
   >([]);
 
+  console.log("ReservationForm -> blockedDates", blockedDates);
   const form = useForm<z.infer<typeof ReservationSchema>>({
     // resolver: zodResolver(ReservationSchema),
     defaultValues: {
@@ -76,6 +76,14 @@ const ReservationForm = ({
 
   useEffect(() => {
     loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+    const query = new URLSearchParams(window.location.search);
+    if (query.get("success")) {
+      toast("Reservation placed!");
+    }
+
+    if (query.get("canceled")) {
+      toast("Reservation cancelled!");
+    }
   }, []);
 
   const isDateBlocked = (
@@ -105,6 +113,7 @@ const ReservationForm = ({
 
     async function fetchReservations() {
       const result = await getReservations(propertyId);
+      console.log("ReservationForm -> result", result);
       if (result.success && result.reservations) {
         setBlockedDates(result.reservations);
         setDateRange(getNextAvailableDateRange(result.reservations));
@@ -113,9 +122,19 @@ const ReservationForm = ({
       }
     }
 
+    async function fetchPrices() {
+      const result = await getPricesForPropertyCalendar(propertyId);
+      console.log("ReservationForm -> result", result);
+      if (result.success && result.prices) {
+        setPrices(result.prices);
+      } else {
+        console.error(result.message);
+      }
+    }
+    fetchPrices();
     fetchReservations();
   }, [propertyId]);
-
+  console.log("ReservationForm -> prices", prices);
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
@@ -143,22 +162,6 @@ const ReservationForm = ({
 
   // console.log("Checkout -> price", price, buyerId, property, formValues);
 
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success")) {
-      toast("Reservation placed!");
-    }
-
-    if (query.get("canceled")) {
-      toast("Reservation cancelled!");
-    }
-  }, [toast]);
-
-  // const onCheckout = async () => {
-  //   await checkoutReservation(price, buyerId, property, formValues);
-  // };
-
   return (
     <>
       <Form {...form}>
@@ -182,6 +185,7 @@ const ReservationForm = ({
                         showCompare={false}
                         onUpdate={(values) => setDateRange(values.range)}
                         blockedDates={blockedDates}
+                        prices={prices}
                         buttonStyles="h-[36px] text-left pl-3 pr-4"
                       />
                     </FormControl>

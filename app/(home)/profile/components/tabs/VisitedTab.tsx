@@ -47,15 +47,15 @@ export default async function VisitedTab({
       <div className="grid gap-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Link
-            className="relative overflow-hidden rounded-lg shadow-lg"
+            className="relative h-full max-h-[276px] overflow-hidden rounded-lg shadow-lg"
             href={`/properties/${property.property.id}`}
           >
             <Image
               src={imageUrl}
               alt={"property?.imageAlt"}
-              width={600}
-              height={400}
-              className="w-full object-cover"
+              width={400}
+              height={200}
+              className="max-h-[200px] w-full max-w-[452px] object-cover"
             />
             <div className="p-4">
               <p className="font-bold">{property?.property.name}</p>
