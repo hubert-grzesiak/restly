@@ -61,7 +61,6 @@ export default function Opinions({ reviews }) {
       <h2 className="mb-4 text-2xl font-bold">User Reviews</h2>
       <div className="grid gap-6">
         {reviews.map((review, index) => {
-          console.log("review: ", review);
           return (
             <UserReview
               key={index}

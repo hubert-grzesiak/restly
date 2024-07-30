@@ -56,6 +56,7 @@ const EditForm = ({
   const [facilityValue, setFacilityValue] = useState<string[]>(
     property.facility.map((facility) => facility.name),
   );
+
   const form = useForm<FormSchemaType>({
     // resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -120,7 +121,13 @@ const EditForm = ({
       console.log("FORM DATA: ", formData.getAll("files"));
 
       formData.append("data", JSON.stringify(data));
-      await editObject(property.id, formData);
+      console.log(
+        "files.urls",
+        files.map((file) => file.url),
+      );
+      const filesUrls = files ? files.map((file) => file.url) : [];
+      console.log("FILES URLS: ", filesUrls);
+      await editObject(property.id, formData, filesUrls);
       router.push(`/properties/${property.id}`);
       toast.success("Object edited successfully");
     } catch (error: unknown) {

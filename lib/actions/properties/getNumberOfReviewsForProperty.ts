@@ -12,7 +12,6 @@ const getReviewsSummaryForProperty = cache(
           rating: true,
         },
       });
-      console.log("averageRating", reviews);
 
       const numberOfReviews = reviews.length;
       const totalRating = reviews.reduce(

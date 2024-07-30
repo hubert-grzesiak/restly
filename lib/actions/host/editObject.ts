@@ -30,14 +30,18 @@ interface SavedFile {
   ext: string;
 }
 
-export const editObject = async (id: string, formData: FormData) => {
+export const editObject = async (
+  id: string,
+  formData: FormData,
+  urls: string[],
+) => {
   try {
     const session = await auth();
 
     if (!session?.user?.email) {
       throw new Error("User not authenticated");
     }
-
+    console.log("Server action urls: ", ...urls);
     const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
     const files = formData.getAll("files") as FileWithType[];
 
@@ -49,6 +53,14 @@ export const editObject = async (id: string, formData: FormData) => {
       await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
       newPhotos = photos.map((photo) => photo.secure_url);
     }
+    // Filter out undefined values from the URLs array
+    const validUrls = urls.filter(Boolean);
+
+    // Combine existing and new photo URLs
+    const combinedPhotos = [...validUrls, ...newPhotos];
+
+    // Log the combined photos for debugging
+    console.log("Server action combinedPhotos: ", combinedPhotos);
 
     // Geocoding
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
@@ -65,13 +77,17 @@ export const editObject = async (id: string, formData: FormData) => {
     if (!geometry) {
       throw new Error("Geocoding failed, no geometry found.");
     }
-    console.log("facilities", data.facility);
 
     // Ensure facilities are unique
     const uniqueFacilities = Array.from(
       new Set(data.facility.map((f) => f.name)),
     ).map((name) => ({ name }));
 
+    await db.image.deleteMany({
+      where: {
+        propertyId: id,
+      },
+    });
     // Update object in the database
     const updatedObject = await db.property.update({
       where: { id },
@@ -111,7 +127,7 @@ export const editObject = async (id: string, formData: FormData) => {
         },
         images: {
           create: {
-            urls: newPhotos,
+            urls: combinedPhotos,
           },
         },
       },
