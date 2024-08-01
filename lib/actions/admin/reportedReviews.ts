@@ -42,6 +42,17 @@ export const deleteReportedReview = async ({
   const role = await currentRole();
   if (role === UserRole.ADMIN) {
     try {
+      const userOfReview = await db.review.findUnique({
+        where: { id: String(reviewId) },
+        select: { userId: true },
+      });
+
+      if (!userOfReview) {
+        return { error: "User of the review not found" };
+      }
+
+      const userId = userOfReview.userId;
+
       await db.reportedReview.delete({
         where: { id: String(reportedReviewId) },
       });
@@ -51,13 +62,27 @@ export const deleteReportedReview = async ({
         where: { id: String(reviewId) },
       });
 
-      if (!reviewDeleted) {
+      if (reviewDeleted) {
+        // Increase user's reputation by 1
+        const updatedUser = await db.user.update({
+          where: { id: userId },
+          data: { reputation: { increment: 1 } },
+        });
+
+        // Check if the user should be blocked
+        if (updatedUser.reputation >= 5) {
+          await db.user.update({
+            where: { id: userId },
+            data: { role: UserRole.BLOCKED },
+          });
+        }
+      } else {
         console.error(
           `Review with ID ${reviewId} could not be deleted or was not found.`,
         );
       }
 
-      return { success: "Reported review deleted" };
+      return { success: "Reported review deleted and user reputation updated" };
     } catch (error) {
       console.error("Error deleting reported review or review", error);
       return { error: "Error deleting reported review" };

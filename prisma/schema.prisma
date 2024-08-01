@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   ADMIN
   USER
+  BLOCKED
 }
 
 model User {
@@ -19,6 +20,7 @@ model User {
   emailVerified           DateTime?
   image                   String?
   password                String?
+  reputation              Int                    @default(0)
   role                    UserRole               @default(USER)
   isTwoFactorEnabled      Boolean                @default(false)
   twoFactorConfirmation   TwoFactorConfirmation?
