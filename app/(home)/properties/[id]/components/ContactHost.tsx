@@ -9,9 +9,11 @@ import { SendIcon } from "@/components/icons";
 const ContactHost = ({
   ownerId,
   propertyId,
+  variant,
 }: {
   ownerId: string;
   propertyId: string;
+  variant?: "small";
 }) => {
   const router = useRouter();
 
@@ -31,8 +33,8 @@ const ContactHost = ({
   return (
     <Button variant={"outline"} onClick={handleClick}>
       <div className="flex items-center justify-center gap-2">
-        <SendIcon />
-        <span>Contact Host</span>
+        <SendIcon className="h-4 w-4 md:h-5 md:w-5" />
+        {variant != "small" && <span>Contact Host</span>}
       </div>
     </Button>
   );

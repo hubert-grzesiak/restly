@@ -6,7 +6,12 @@ import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import FloatingNav from "@/components/navbar/floating-navbar";
-import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
+import {
+  IconComet,
+  IconHome,
+  IconMessage,
+  IconUser,
+} from "@tabler/icons-react";
 import ActiveStatus from "@/components/ActiveStatus";
 import Footer from "@/components/footer/Footer";
 import { auth } from "@/lib/auth";
@@ -33,21 +38,19 @@ export default async function RootLayout({
     {
       name: "Become a host",
       link: "/become-a-host",
-      icon: (
-        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
-      ),
+      icon: <IconHome className="h-5 w-5 text-neutral-500 dark:text-white" />,
     },
     {
       name: "Conversations",
       link: "/conversations",
       icon: (
-        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
+        <IconMessage className="h-5 w-5 text-neutral-500 dark:text-white" />
       ),
     },
     {
       name: "Profile",
       link: "/profile",
-      icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      icon: <IconUser className="h-5 w-5 text-neutral-500 dark:text-white" />,
     },
   ];
   const session = await auth();

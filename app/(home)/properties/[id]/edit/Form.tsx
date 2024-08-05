@@ -52,7 +52,9 @@ const EditForm = ({
   const [steps, setSteps] = useState<number>(0);
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [files, setFiles] = useState<UploadFile[] | { url?: string }[]>(
+    property.urls.map((url) => ({ url })),
+  );
   const [facilityValue, setFacilityValue] = useState<string[]>(
     property.facility.map((facility) => facility.name),
   );

@@ -1,7 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function toggleFavouriteProperty(propertyId: string) {
@@ -26,7 +25,6 @@ export async function toggleFavouriteProperty(propertyId: string) {
           id: favourite.id,
         },
       });
-      revalidatePath("/profile/favourites");
       return false; // Return false as the item is no longer a favourite
     } else {
       await db.favourite.create({
@@ -35,7 +33,6 @@ export async function toggleFavouriteProperty(propertyId: string) {
           propertyId: propertyId,
         },
       });
-      revalidatePath("/profile/favourites");
       return true; // Return true as the item is now a favourite
     }
   } catch (error) {

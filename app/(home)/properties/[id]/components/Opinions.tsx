@@ -34,17 +34,17 @@ const UserReview: React.FC<UserReviewProps> = ({
       </Avatar>
       <div className="grid gap-2">
         <div className="flex items-center gap-2">
-          <div className="font-semibold">{name}</div>
+          <div className="text-sm font-semibold md:text-base">{name}</div>
           <div className="flex items-center gap-0.5">
             {Array.from({ length: 5 }, (_, i) => (
               <StarIcon
                 key={i}
-                className={`h-5 w-5 ${i < rating ? "fill-orange-400 text-orange-400" : "fill-muted stroke-muted-foreground"}`}
+                className={`h-4 w-4 md:h-5 md:w-5 ${i < rating ? "fill-orange-400 text-orange-400" : "fill-muted stroke-muted-foreground"}`}
               />
             ))}
           </div>
         </div>
-        <p className="text-sm leading-loose text-gray-500 dark:text-gray-400">
+        <p className="text-xs leading-loose text-gray-500 dark:text-gray-400 md:text-sm">
           {body}
         </p>
       </div>
@@ -58,7 +58,7 @@ const UserReview: React.FC<UserReviewProps> = ({
 export default function Opinions({ reviews }) {
   return (
     <div className="mx-auto mt-20">
-      <h2 className="mb-4 text-2xl font-bold">User Reviews</h2>
+      <h2 className="mb-4 text-lg font-bold md:text-2xl">User Reviews</h2>
       <div className="grid gap-6">
         {reviews.map((review, index) => {
           return (

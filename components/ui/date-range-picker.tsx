@@ -26,7 +26,6 @@ export interface DateRangePickerProps {
   /** Alignment of popover */
   align?: "start" | "center" | "end";
   /** Option for locale */
-  locale?: string;
   /** Option for showing compare feature */
   showCompare?: boolean;
   /** Array of blocked dates */
@@ -36,11 +35,10 @@ export interface DateRangePickerProps {
   prices?: { from: string; to: string; price: number }[];
 }
 
-const formatDate = (date: Date, locale: string = "en-us"): string => {
+const formatDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString();
-  console.log(locale);
   return `${day}.${month}.${year}`;
 };
 
@@ -87,14 +85,17 @@ interface DateRange {
 export const DateRangePicker: FC<DateRangePickerProps> & {
   filePath: string;
 } = ({
-  initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
-  initialDateTo,
+  initialDateFrom = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 1),
+  ),
+  initialDateTo = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 3),
+  ),
   initialCompareFrom,
   initialCompareTo,
   onUpdate,
   align = "center",
-  locale = "en-US",
-  showCompare = true,
+  showCompare = false,
   blockedDates = [],
   buttonStyles,
   prices = [],
@@ -191,15 +192,12 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       openedRangeRef.current = range;
       openedRangeCompareRef.current = rangeCompare;
     }
-  }, [isOpen]);
+  }, []);
 
   return (
     <Popover
       open={isOpen}
       onOpenChange={(open: boolean) => {
-        if (!open) {
-          resetValues();
-        }
         setIsOpen(open);
       }}
     >
@@ -207,16 +205,16 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         <Button size={"lg"} variant={"outline"} className={buttonStyles}>
           <div className="w-full">
             <div className="py-1">
-              <div>{`${formatDate(range.from, locale)}${
-                range.to != null ? " - " + formatDate(range.to, locale) : ""
+              <div>{`${formatDate(range.from)}${
+                range.to != null ? " - " + formatDate(range.to) : ""
               }`}</div>
             </div>
             {rangeCompare != null && (
               <div className="-mt-1 text-xs opacity-60">
                 <>
-                  vs. {formatDate(rangeCompare.from, locale)}
+                  vs. {formatDate(rangeCompare.from)}
                   {rangeCompare.to != null
-                    ? ` - ${formatDate(rangeCompare.to, locale)}`
+                    ? ` - ${formatDate(rangeCompare.to)}`
                     : ""}
                 </>
               </div>
@@ -389,13 +387,13 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               ) {
                 onUpdate?.({
                   range: {
-                    from: formatDate(range.from, locale),
-                    to: formatDate(range.to!, locale),
+                    from: formatDate(range.from),
+                    to: formatDate(range.to!),
                   },
                   rangeCompare: rangeCompare
                     ? {
-                        from: formatDate(rangeCompare.from, locale),
-                        to: formatDate(rangeCompare.to!, locale),
+                        from: formatDate(rangeCompare.from),
+                        to: formatDate(rangeCompare.to!),
                       }
                     : undefined,
                 });

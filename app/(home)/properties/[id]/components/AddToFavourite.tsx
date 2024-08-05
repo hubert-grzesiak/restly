@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 interface AddToFavouriteProps extends ComponentPropsWithoutRef<"button"> {
   propertyId: string;
   className?: string;
-  variant?: "withText" | "iconOnly";
+  variant?: "withText" | "iconOnly" | "smallScreen";
 }
 
 const AddToFavourite = ({
@@ -80,7 +80,7 @@ const AddToFavourite = ({
           (isFavourite ? (
             <span className="ml-2">Saved</span>
           ) : (
-            <span className="ml-2">Saved</span>
+            <span className="ml-2">Save</span>
           ))}
       </Button>
     </>

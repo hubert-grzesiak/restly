@@ -29,7 +29,6 @@ type FieldType = ControllerRenderProps<FieldValues, FieldPath<FieldValues>>;
 
 const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
   const { register, control } = useFormContext();
-  const today = new Date();
 
   const handleDateChange = (date: Date | string | number, field: FieldType) => {
     if (typeof date === "string" || typeof date === "number") {
@@ -45,7 +44,7 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[200px] pl-3 text-left font-normal",
+            "pl-3 text-left font-normal md:w-[200px]",
             !field.value && "text-muted-foreground",
           )}
         >
@@ -69,15 +68,15 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
   );
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex gap-1">
+    <div className="flex flex-col gap-1 rounded-md border p-2">
+      <div className="flex flex-col gap-1 md:flex-row">
         <div className="flex flex-col gap-1.5">
           <Controller
             name={`calendar.prices.${index}.from`}
             control={control}
             render={({ field }) => (
               <>
-                <label>Date from</label>
+                <label className="text-xs">Date from</label>
                 {renderDateButton(field)}
               </>
             )}
@@ -89,14 +88,14 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
             control={control}
             render={({ field }) => (
               <>
-                <label>Date to</label>
+                <label className="text-xs">Date to</label>
                 {renderDateButton(field)}
               </>
             )}
           />
         </div>
         <div className="flex flex-col justify-center gap-1.5">
-          <label>Price</label>
+          <label className="text-xs">Price</label>
           <Input
             type="number"
             placeholder="Price"
@@ -108,7 +107,7 @@ const PriceItem: React.FC<PriceItemProps> = ({ index, remove }) => {
         <button
           type="button"
           onClick={() => remove(index)}
-          className="max-h-[36px] translate-x-[6px] translate-y-[20px]"
+          className="mt-2 max-h-[36px] self-end md:mt-0 md:translate-x-[6px] md:translate-y-[20px] md:self-auto"
         >
           <IconTrash className="text-red-500" />
         </button>

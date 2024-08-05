@@ -80,7 +80,7 @@ const FloatingNav = ({
           // }}
           transition={shrink ? { duration: 0.2 } : { ...bounceTransition }}
           className={cn(
-            "fixed inset-x-0 z-[10] mx-auto flex border border-transparent bg-transparent py-2 dark:border-white/[0.2] dark:bg-black",
+            "fixed inset-x-0 z-[10] mx-auto flex border border-transparent bg-transparent px-2 py-2 dark:border-white/[0.2] dark:bg-black md:px-4",
             className,
             shrink
               ? "top-5 max-w-fit items-center justify-center rounded-full bg-[rgba(255,255,255,0.95)] shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] backdrop:blur-lg"
@@ -90,11 +90,11 @@ const FloatingNav = ({
           {shrink === false && (
             <Link className="flex items-center gap-2" href="/">
               <MyLogo className="h-10 w-10" />
-              <span className="text-lg font-bold">Restly</span>
+              <span className="hidden text-lg font-bold md:block">Restly</span>
             </Link>
           )}
 
-          <div className={cn("flex space-x-4")}>
+          <div className={cn("flex items-center space-x-4")}>
             {navItems.map((navItem: NavItem, idx: number) => (
               <Link
                 key={`link=${idx}`}
@@ -108,14 +108,23 @@ const FloatingNav = ({
               </Link>
             ))}
             {shrink === false && (
-              <div className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white">
-                {user != null ? (
-                  <LogoutButton>Logout</LogoutButton>
-                ) : (
-                  <LoginButton>Login</LoginButton>
-                )}
-                <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-              </div>
+              <>
+                <div className="text-sm md:hidden">
+                  {user != null ? (
+                    <LogoutButton>Logout</LogoutButton>
+                  ) : (
+                    <LoginButton>Login</LoginButton>
+                  )}
+                </div>
+                <div className="relative hidden rounded-full border border-neutral-200 px-2 py-1 text-xs font-medium text-black dark:border-white/[0.2] dark:text-white md:block md:px-4 md:py-2 md:text-sm">
+                  {user != null ? (
+                    <LogoutButton>Logout</LogoutButton>
+                  ) : (
+                    <LoginButton>Login</LoginButton>
+                  )}
+                  <span className="absolute inset-x-0 -bottom-px mx-auto hidden h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent md:block" />
+                </div>
+              </>
             )}
           </div>
         </motion.div>

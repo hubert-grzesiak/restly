@@ -386,7 +386,7 @@ const HostStepper: React.FC = () => {
                 </div>
               )}
               {steps === 2 && (
-                <div className="rounded-xl p-8 shadow-lg">
+                <div className="rounded-xl p-4 shadow-lg md:p-8">
                   <h2 className="text-lg font-bold">Calendar</h2>
 
                   <Controller
@@ -416,8 +416,8 @@ const HostStepper: React.FC = () => {
                     )}
                   />
 
-                  <div className="mt-[10px] rounded-md border p-4">
-                    <FormLabel>Prices by Month</FormLabel>
+                  <div className="mt-[10px]">
+                    <FormLabel className="mb-2">Prices by Month</FormLabel>
                     <div className="flex flex-col gap-2">
                       {fields.map((field, index) => {
                         return (

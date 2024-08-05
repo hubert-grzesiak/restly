@@ -59,18 +59,18 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
       </div>
       <Link
         href={`/properties/${property.id}`}
-        className="flex items-center gap-2 justify-self-end px-4 py-2 shadow-md"
+        className="flex flex-col-reverse items-center gap-2 justify-self-end border px-4 py-2 md:flex-row"
       >
         <div>
-          <div>{property.name}</div>
-          <div>{property.city}</div>
+          <p className="text-sm md:text-base">{property.name}</p>
+          <p className="text-sm md:text-base">{property.city}</p>
         </div>
         <Image
           src={imageUrl}
           alt={property.name || "Property Image"}
-          className="h-full w-full max-w-[150px] rounded-lg object-cover"
+          className="h-[40px] w-[80px] rounded-lg object-cover md:h-[80px] md:w-[150px]"
           width={150}
-          height={150}
+          height={1}
         />
       </Link>
     </div>

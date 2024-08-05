@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { ReservationSchema } from "./ReservationFormSchema";
 import { toast } from "sonner";
 import { getReservations } from "@/lib/actions/reservation/getReservations";
@@ -44,7 +44,6 @@ const ReservationForm = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [prices, setPrices] = useState(property.prices);
-
   const session = useSession();
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
@@ -54,7 +53,6 @@ const ReservationForm = ({
     Array<{ from: string; to: string }>
   >([]);
 
-  console.log("ReservationForm -> blockedDates", blockedDates);
   const form = useForm<z.infer<typeof ReservationSchema>>({
     // resolver: zodResolver(ReservationSchema),
     defaultValues: {
@@ -97,7 +95,10 @@ const ReservationForm = ({
       return date >= fromDate && date <= toDate;
     });
   };
-
+  const convertDate = (dateString: string) => {
+    const [day, month, year] = dateString.split(".");
+    return `${year}-${month}-${day}`;
+  };
   useEffect(() => {
     const getNextAvailableDateRange = (
       blockedDates: Array<{ from: string; to: string }>,
@@ -112,9 +113,10 @@ const ReservationForm = ({
       return { from, to };
     };
 
+    // Przekształcenie dat na obiekty Date
+
     async function fetchReservations() {
       const result = await getReservations(propertyId);
-      console.log("ReservationForm -> result", result);
       if (result.success && result.reservations) {
         setBlockedDates(result.reservations);
         setDateRange(getNextAvailableDateRange(result.reservations));
@@ -125,7 +127,6 @@ const ReservationForm = ({
 
     async function fetchPrices() {
       const result = await getPricesForPropertyCalendar(propertyId);
-      console.log("ReservationForm -> result", result);
       if (result.success && result.prices) {
         setPrices(result.prices);
       } else {
@@ -135,19 +136,66 @@ const ReservationForm = ({
     fetchPrices();
     fetchReservations();
   }, [propertyId]);
-  console.log("ReservationForm -> prices", prices);
+
+  const calculateTotalDays = (from: Date, to: Date): number => {
+    const dateFrom = new Date(from);
+    const dateTo = new Date(to);
+    // Subtract one day to exclude the end date
+    dateTo.setDate(dateTo.getDate() - 1);
+    const timeDifference = dateTo.getTime() - dateFrom.getTime();
+    const totalDays = timeDifference / (1000 * 3600 * 24) + 1;
+   
+    return totalDays;
+  };
+
+  const calculateTotalPrice = (
+    from: Date,
+    to: Date,
+    prices: Array<{ from: string; to: string; price: number }>,
+  ): number => {
+    let totalPrice = 0;
+    const dateFrom = new Date(from);
+    const dateTo = new Date(to);
+    // Subtract one day to exclude the end date
+    dateFrom.setDate(dateFrom.getDate() - 1);
+    dateTo.setDate(dateTo.getDate() - 1);
+
+    prices.forEach(({ from, to, price }) => {
+      const priceFrom = new Date(from.split(".").reverse().join("-"));
+      const priceTo = new Date(to.split(".").reverse().join("-"));
+
+      if (dateFrom <= priceTo && dateTo >= priceFrom) {
+        const effectiveFrom = dateFrom >= priceFrom ? dateFrom : priceFrom;
+        const effectiveTo = dateTo < priceTo ? dateTo : priceTo;
+        const days = calculateTotalDays(
+          effectiveFrom.toISOString().split("T")[0],
+          effectiveTo.toISOString().split("T")[0],
+        );
+      
+        totalPrice += days * price;
+      }
+    });
+
+    return totalPrice;
+  };
+
+  const newFromDate = new Date(convertDate(dateRange.from));
+  const newToDate = new Date(convertDate(dateRange.to));
+
+  const totalDays = calculateTotalDays(newFromDate, newToDate);
+  const calculatedPrice = calculateTotalPrice(newFromDate, newToDate, prices);
+  const totalPrice = calculatedPrice * 1.05;
+  
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
-      console.log("ReservationForm -> values", values);
-      // await checkoutReservation(
-      //   property.prices[0].price || 0,
-      //   session?.data?.user.id || "",
-      //   property,
-      //   values,
-      // );
+      await checkoutReservation(
+        property.prices[0].price || 0,
+        session?.data?.user.id || "",
+        property,
+        values,
+      );
 
-      console.log(values);
     } catch (error: unknown) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
@@ -174,9 +222,6 @@ const ReservationForm = ({
                     <FormLabel htmlFor="dateRange">Date Range</FormLabel>
                     <FormControl>
                       <DateRangePicker
-                        initialDateFrom={dateRange.from}
-                        initialDateTo={dateRange.to}
-                        showCompare={false}
                         onUpdate={(values) => setDateRange(values.range)}
                         blockedDates={blockedDates}
                         prices={prices}
@@ -221,11 +266,35 @@ const ReservationForm = ({
               </FormItem>
             )}
           />
-          <div className="flex justify-between">
-            <div>{/* NUMBER OF DAYS */}</div>
-            <div>{/* PRICE */}</div>
-          </div>
-          <div className="mt-[20px] flex items-center justify-center"></div>
+          {
+            <Suspense fallback={<h2>🌀 Loading...</h2>}>
+              <div className="mb-2 mt-4 flex flex-col gap-2 border-b-1 border-t-1 pb-4 pt-4">
+                <div className="flex justify-between">
+                  <span>Number of days:</span>
+                  <span>{totalDays}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Price:</span>
+                  <span>{calculatedPrice ? `$${calculatedPrice}` : "-"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Service fee:</span>
+                  <span>
+                    {totalPrice
+                      ? `$${(calculatedPrice * 0.05).toFixed(2)}`
+                      : "-"}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between pb-4">
+                <span>Total: </span>
+                <span className="font-bold">
+                  {totalPrice ? `$${totalPrice.toFixed(2)}` : "-"}
+                </span>
+              </div>
+            </Suspense>
+          }
+
           <Button
             type="submit"
             className="w-full"

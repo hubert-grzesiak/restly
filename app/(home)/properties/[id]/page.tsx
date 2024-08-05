@@ -10,9 +10,15 @@ import ReservationForm from "./components/ReservationForm/ReservationForm";
 import getReviews from "@/lib/actions/properties/getReviews";
 import { StarIcon } from "@/components/icons";
 import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
-import Image from "next/image";
+import { Image } from "antd";
 import ImagesSection from "./components/ImagesSection";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+
 interface PageProps {
   params: { id?: string };
 }
@@ -37,18 +43,46 @@ const Details: React.FC<PageProps> = async ({ params }) => {
 
   return (
     <main className="w-full pt-100">
-      <div className="mx-auto mb-10 w-full max-w-[1400px] px-4">
+      <div className="mx-auto mb-10 w-full max-w-[1400px] px-2 md:px-4">
         <section className="rounded-xl bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] shadow-xl">
           <div className="absolute left-0 right-0 top-0 m-auto h-[310px] w-[310px] rounded-full bg-fuchsia-400 opacity-20 blur-[100px]" />
-          <div className="w-full px-6 py-6 dark:bg-gray-800">
-            <div className="flex justify-between px-4 md:px-0">
-              <h1 className="mb-4 text-3xl font-bold">{property.name}</h1>
+          <Carousel className="md:hidden">
+            <CarouselContent>
+              {property.urls.map((url) => (
+                <CarouselItem key={url}>
+                  <Image
+                    alt="Property Image"
+                    className="object-cover object-center"
+                    src={url}
+                    height={300}
+                    width={"100%"}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+          <div className="w-full px-6 pb-4 pt-6 dark:bg-gray-800 md:py-6">
+            <div className="flex justify-between">
+              <h1 className="mb-4 text-xl font-bold md:text-3xl">
+                {property.name}
+              </h1>
               <div className="flex gap-2">
                 {user?.id !== property.ownerId && (
-                  <ContactHost
-                    ownerId={property.ownerId}
-                    propertyId={property.id}
-                  />
+                  <>
+                    <div className="md:hidden">
+                      <ContactHost
+                        ownerId={property.ownerId}
+                        propertyId={property.id}
+                        variant="small"
+                      />
+                    </div>
+                    <div className="hidden md:block">
+                      <ContactHost
+                        ownerId={property.ownerId}
+                        propertyId={property.id}
+                      />
+                    </div>
+                  </>
                 )}
                 {user?.id === property.ownerId && (
                   <Button
@@ -60,24 +94,30 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                     Edit
                   </Button>
                 )}
-                <AddToFavourite propertyId={property.id} variant="withText" />
+                <div className="hidden md:block">
+                  <AddToFavourite propertyId={property.id} variant="withText" />
+                </div>
+                <div className="md:hidden">
+                  <AddToFavourite
+                    propertyId={property.id}
+                    variant={"smallScreen"}
+                  />
+                </div>
               </div>
             </div>
           </div>
           <div className="overflow-hidden rounded-b-xl">
-            <div className="flex flex-row items-center px-6">
-              <Image
-                alt="Property Image"
-                className="h-[300px] w-[500px] rounded-lg object-contain"
-                height="300"
-                src={property.urls[0] || "/placeholder.svg"}
-                style={{
-                  aspectRatio: "500/300",
-                  objectFit: "cover",
-                }}
-                width="500"
-              />
-              <div className="p-6">
+            <div className="flex-col items-center md:flex md:flex-row md:px-6">
+              <div className="hidden md:block">
+                <Image
+                  alt="Property Image"
+                  className="rounded-lg object-cover"
+                  height={300}
+                  width={500}
+                  src={property.urls[0] || "/placeholder.svg"}
+                />
+              </div>
+              <div className="px-6 pb-6 md:p-6">
                 <div className="flex items-center gap-1 text-sm font-medium">
                   <StarIcon className="h-6 w-6 fill-orange-400 text-orange-400" />
                   <span className="text-bold text-lg">{averageRating}</span>
@@ -89,11 +129,9 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 <div className="mb-6">
                   <p>{property.description}</p>
                 </div>
-                <div className="mb-6">
-                  from{" "}
-                  <span className="text-2xl font-bold">
-                    ${property.prices[0]?.price || "N/A"}/night
-                  </span>
+                <div className="flex gap-2">
+                  <span>Number of bedrooms: </span>
+                  <span>{property.numberOfBedrooms}</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {property.facility.map(
@@ -108,22 +146,22 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 </div>
               </div>
             </div>
-            <div className="mx-6 mt-4 grid grid-cols-2 gap-4 pb-4 md:grid-cols-4">
+            <div className="mx-6 mt-4 hidden grid-cols-2 gap-4 pb-4 md:grid md:grid-cols-4">
               <ImagesSection property={property} />
             </div>
           </div>
         </section>
-        <section className="mt-6 flex w-full flex-col items-start justify-between gap-6 md:flex-row">
+        <section className="mt-6 flex w-full flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="relative flex-1 rounded-lg bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] p-6 shadow-lg">
-            <h2 className="mb-4 text-2xl font-bold">Reservation</h2>
+            <h2 className="mb-4 text-lg font-bold md:text-2xl">Reservation</h2>
             <div className="rounded-md bg-white p-4">
               <ReservationForm propertyId={property.id} property={property} />
             </div>
           </div>
-          <div className="relative w-full max-w-[900px] rounded-lg bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] p-6 shadow-md">
+          <div className="relative w-full max-w-[900px] rounded-lg bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] shadow-md md:p-6">
             <div className="absolute left-0 right-0 top-0 m-auto h-[150px] w-[150px] rounded-full bg-fuchsia-400 opacity-20 blur-[100px]" />
-            <h2 className="mb-4 text-2xl font-bold">Location</h2>
-            <Map property={property} className="h-[500px]" />
+            <h2 className="mb-4 text-lg font-bold md:text-2xl">Location</h2>
+            <Map property={property} className="h-[300px] md:h-[500px]" />
           </div>
         </section>
         <Opinions reviews={reviews} />

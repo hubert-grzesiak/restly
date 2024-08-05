@@ -43,29 +43,29 @@ export async function checkoutReservation(
   if (fromDate === toDate) {
     numberOfDays = 1;
   } else {
-    numberOfDays =
-      Math.round(
-        (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
-      ) + 1;
+    numberOfDays = Math.round(
+      (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
   }
   const newPrice = price * numberOfDays;
 
   console.log("Price for all days:", newPrice);
   console.log("Number of days:", numberOfDays);
-
+  const totalPrice = newPrice + newPrice * 0.05;
+  console.log("Total price with tax:", totalPrice);
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
           currency: "pln",
-          unit_amount: newPrice * 100,
+          unit_amount: totalPrice * 100,
           product_data: {
             name: property.name, // Nazwa nieruchomości
             description: `
               Reservation for: ${property.name}
               Location: ${property.city}, ${property.country}
               Stay Duration: ${formValues?.dateRange.from} to ${formValues?.dateRange.to} (${numberOfDays} days)
-              Total Price: ${(price * numberOfDays).toFixed(2)} PLN
+              Total Price: ${totalPrice} PLN
               For ${formValues?.guests} guests.
             `, // Szczegółowy opis rezerwacji
           },
@@ -80,7 +80,7 @@ export async function checkoutReservation(
       country: property.country,
       dateFrom: formValues?.dateRange.from,
       dateTo: formValues?.dateRange.to,
-      price: newPrice,
+      price: totalPrice,
     },
     mode: "payment",
     custom_fields: [],
@@ -118,29 +118,3 @@ export async function createReservation(reservation: ReservationResponse) {
     throw new Error("Failed to create reservation.");
   }
 }
-// export async function createReservation(reservation: ReservationResponse) {
-//   try {
-//     // const session = await auth();
-//     // if (!session?.user?.email) {
-//     //   console.log("No user session found.");
-//     //   return { success: false, message: "No user session found." };
-//     // }
-
-//     // if (!reservation.userId) {
-//     //   console.log("No user ID found.");
-//     //   return { success: false, message: "No user ID found." };
-//     // }
-
-//     const newReservation = await db.reservation.create({
-//       data: {
-//         ...reservation,
-//         userId: reservation.userId,
-//       },
-//     });
-
-//     return JSON.parse(JSON.stringify(newReservation));
-//   } catch (error) {
-//     console.error("Failed to create reservation", error);
-//     return { success: false, message: "Failed to create reservation." };
-//   }
-// }

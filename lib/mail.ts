@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { ContactFormProps } from "@/app/(info)/contact/ContactForm";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -33,4 +34,18 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     subject: "2FA Code",
     html: `<p>Your 2FA code: ${token}</p>`,
   });
+};
+
+export const sendContactEmail = async (data: ContactFormProps) => {
+  try {
+    await resend.emails.send({
+      from: "hubertgrzesiak.com",
+      to: "hubertgrzesiak.dev@gmail.com",
+      subject: `${data.subject}, from ${data.name} <${data.email}>`,
+      html: `<p>${data.message}</p>`,
+    });
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Failed to send email:", error);
+  }
 };

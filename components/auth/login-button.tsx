@@ -33,7 +33,10 @@ const LoginButton = ({
   }
 
   return (
-    <span onClick={onClick} className="cursor-pointer">
+    <span
+      onClick={onClick}
+      className="flex cursor-pointer items-center justify-center"
+    >
       {children}
     </span>
   );

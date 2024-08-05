@@ -123,7 +123,9 @@ export function ReportReview({ reviewId }: { reviewId: string }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="rounded-full" size="icon" variant="ghost">
-              <MoveHorizontalIcon className="h-5 w-5" />
+              <div className="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4 [&>svg]:md:h-5 [&>svg]:md:w-5">
+                <MoveHorizontalIcon />
+              </div>
               <span className="sr-only">More options</span>
             </Button>
           </DropdownMenuTrigger>
