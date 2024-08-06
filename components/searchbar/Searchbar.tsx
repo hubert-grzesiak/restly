@@ -81,7 +81,7 @@ const Searchbar = ({
             </div>
             <div className="searchBarItem">
               <DateRangePicker
-                buttonStyles="border-none shadow-none outline-none"
+                buttonStyles="border-none shadow-none outline-none md:px-8 px-2"
                 initialDateFrom={dateRange.from}
                 initialDateTo={dateRange.to}
                 showCompare={false}
@@ -105,8 +105,8 @@ const Searchbar = ({
                     </div>
                   )}
                 </PopoverTrigger>
-                <PopoverContent className="h-[300px]">
-                  <div className="flex h-full gap-6 p-4">
+                <PopoverContent className="h-[300px] p-2 md:p-4">
+                  <div className="!md:p-4 flex h-full flex-col gap-6 !p-2 md:flex-col">
                     <div className="row-span-3 h-full">
                       <div className="relative h-full">
                         <div className="z-10 flex w-full justify-center bg-white/80 text-lg font-medium backdrop-blur-lg">
@@ -114,7 +114,7 @@ const Searchbar = ({
                             Select number of guests
                           </span>
                         </div>
-                        <div className="relative h-[200px] w-[200px]">
+                        <div className="relative hidden md:block md:h-[200px] md:w-[200px]">
                           <img
                             src="https://res.cloudinary.com/dev6yhoh3/image/upload/v1721644740/restly/states/Guests_nlqfin.png"
                             alt="guests"
@@ -123,7 +123,7 @@ const Searchbar = ({
                         </div>
                       </div>
                     </div>
-                    <div className="flex w-full min-w-[250px] flex-col">
+                    <div className="flex w-full min-w-[150px] flex-col md:min-w-[250px]">
                       <div className="border-b-1 py-3">
                         <p className="font-bold">Adults</p>
                         <div className="flex justify-between">

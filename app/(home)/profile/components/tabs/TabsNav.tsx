@@ -15,6 +15,13 @@ const TabsNav = () => {
         Your properties
       </Link>
       <Link
+        href="/profile/deleted-properties"
+        className="tab-button"
+        data-state={pathname === "/profile/deleted-properties" && `active`}
+      >
+        Deleted properties
+      </Link>
+      <Link
         href="/profile/favourites"
         className="tab-button"
         data-state={pathname === "/profile/favourites" && `active`}

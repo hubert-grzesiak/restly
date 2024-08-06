@@ -244,6 +244,8 @@ main {
   }
 }
 
+/* =========SEARCHBAR START ========= */
+
 .searchBar {
   display: flex;
   -webkit-box-pack: center;
@@ -313,6 +315,23 @@ main {
 .searchBarItem:last-child::before {
   display: none;
 }
+
+@media screen and (max-width: 768px) {
+  .searchBarInner {
+    margin-bottom: 0.5rem;
+  }
+  .searchBarButton {
+    padding: 0.5rem 0.75rem;
+    letter-spacing: 0.01em;
+    line-height: 0.75;
+    font-size: 0.6rem;
+    position: relative;
+    text-align: center;
+    max-width: 80px;
+  }
+}
+
+/* =========SEARCHBAR END ========= */
 
 .mainMap {
   height: calc(-12rem + 100vh);

@@ -102,13 +102,23 @@ interface ReservationResponse {
 }
 export async function createReservation(reservation: ReservationResponse) {
   try {
-    const newReservation = await db.reservation.create({
-      data: {
-        ...reservation,
+    const isSoftDeleted = await db.property.findUnique({
+      where: { id: reservation.propertyId },
+      select: {
+        softDeleted: true,
       },
     });
-    console.log(JSON.parse(JSON.stringify(newReservation)));
-    return JSON.parse(JSON.stringify(newReservation));
+    if (isSoftDeleted?.softDeleted) {
+      const newReservation = await db.reservation.create({
+        data: {
+          ...reservation,
+        },
+      });
+      console.log(JSON.parse(JSON.stringify(newReservation)));
+      return JSON.parse(JSON.stringify(newReservation));
+    } else {
+      throw new Error("Property is not available for reservation.");
+    }
   } catch (error) {
     console.error("Failed to create reservation:", {
       reservation,

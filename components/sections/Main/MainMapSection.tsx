@@ -6,7 +6,7 @@ import MainMap from "./components/MainMap";
 import { Property } from "@prisma/client";
 
 interface PropertyInterface extends Property {
-  geometry: {
+  geometry?: {
     id: string;
     type: string;
     coordinates: [number, number];
@@ -23,7 +23,7 @@ const MainMapSection = ({
   properties: PropertyInterface;
 }) => {
   return (
-    <div className={cn("mainMap", isMapHidden && "!w-[30px]")}>
+    <div className={cn("mainMap hidden md:block", isMapHidden && "!w-[30px]")}>
       <aside className="relative h-full w-full">
         <div className="absolute left-0 top-0 h-full w-full">
           <MainMap properties={properties} isMapHidden={isMapHidden} />

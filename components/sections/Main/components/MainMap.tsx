@@ -71,7 +71,7 @@ const MainMap = ({
     <div
       className={cn(
         "relative h-full rounded-md",
-        isMapHidden ? "w-[30px]" : "w-full min-w-[700px]",
+        isMapHidden ? "w-[30px]" : "w-full min-w-[300px] lg:min-w-[700px]",
       )}
     >
       {isLoading && (

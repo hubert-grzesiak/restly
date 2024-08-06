@@ -21,7 +21,7 @@ const PropertyMainCard = ({
     <div
       key={property.id}
       className={cn(
-        "w-full overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-950",
+        "w-full min-w-[300px] overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-950",
         className,
       )}
     >
@@ -55,7 +55,7 @@ const PropertyMainCard = ({
         </p>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold">
-            ${property.prices[0]?.price || 0}
+            ${property?.prices[0]?.price || 0}
           </span>
           <Button size="sm" variant="default">
             <Link href={`/properties/${property.id}`}>Book Now</Link>

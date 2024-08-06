@@ -24,6 +24,9 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import reportOpinion from "@/lib/actions/properties/reportOpinion";
+import { deleteProperty } from "@/lib/actions/properties/deleteProperty";
+import { useRouter } from "next/navigation";
+import { restoreProperty } from "@/lib/actions/properties/restoreProperty";
 export function CreateFacility() {
   return (
     <Link
@@ -164,6 +167,110 @@ export function ReportReview({ reviewId }: { reviewId: string }) {
     </div>
   );
 }
+
+export function DeleteProperty({ id }: { id: string }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteProperty(id);
+      router.push("/profile");
+      toast.success("Property deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete property", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="rounded-md border bg-red-500 p-2 hover:bg-red-600">
+            <span className="sr-only">Delete</span>
+            <TrashIcon className="w-5 text-white" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure you want to delete this property?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              property.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className={`rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 ${
+                  isDeleting ? "opacity-50" : ""
+                }`}
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+export function RestoreProperty({ id }: { id: string }) {
+  const [isRestoring, setIsRestoring] = useState(false);
+  const handleRestore = async () => {
+    setIsRestoring(true);
+    try {
+      await restoreProperty(id);
+      toast.success("Property restored successfully");
+    } catch (error) {
+      console.error("Failed to restore property", error);
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant={"outline"}>Restore</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure you want to restore this property?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Property will be restored and visible to other users.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleRestore}
+                disabled={isRestoring}
+                className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
+                  isRestoring ? "opacity-50" : ""
+                }`}
+              >
+                {isRestoring ? "Restoring..." : "Restore"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
 type MoveHorizontalIconProps = React.SVGProps<SVGSVGElement>;
 
 const MoveHorizontalIcon: React.FC<MoveHorizontalIconProps> = (props) => (

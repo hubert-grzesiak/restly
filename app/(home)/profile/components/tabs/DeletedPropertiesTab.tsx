@@ -7,9 +7,9 @@ export interface PropertyWithUrls extends Property {
   facility?: Facility[];
   urls: string[];
 }
-const YourPropertiesTab = async () => {
+const DeletedPropertiesTab = async () => {
   const result: PropertyWithUrls[] = await getPropertiesInfo({
-    softDeleted: false,
+    softDeleted: true,
   });
   return (
     <div className="grid gap-4 p-4 sm:p-6">
@@ -33,4 +33,4 @@ const YourPropertiesTab = async () => {
   );
 };
 
-export default YourPropertiesTab;
+export default DeletedPropertiesTab;

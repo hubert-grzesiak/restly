@@ -144,7 +144,7 @@ const ReservationForm = ({
     dateTo.setDate(dateTo.getDate() - 1);
     const timeDifference = dateTo.getTime() - dateFrom.getTime();
     const totalDays = timeDifference / (1000 * 3600 * 24) + 1;
-   
+
     return totalDays;
   };
 
@@ -171,7 +171,7 @@ const ReservationForm = ({
           effectiveFrom.toISOString().split("T")[0],
           effectiveTo.toISOString().split("T")[0],
         );
-      
+
         totalPrice += days * price;
       }
     });
@@ -185,7 +185,7 @@ const ReservationForm = ({
   const totalDays = calculateTotalDays(newFromDate, newToDate);
   const calculatedPrice = calculateTotalPrice(newFromDate, newToDate, prices);
   const totalPrice = calculatedPrice * 1.05;
-  
+
   async function onSubmit(values: z.infer<typeof ReservationSchema>) {
     setIsSubmitting(true);
     try {
@@ -195,7 +195,6 @@ const ReservationForm = ({
         property,
         values,
       );
-
     } catch (error: unknown) {
       console.error("Failed to create reservation", error);
       toast.error("Failed to create reservation.");
@@ -300,14 +299,18 @@ const ReservationForm = ({
             className="w-full"
             size="lg"
             disabled={
-              isSubmitting || property.ownerId === session.data?.user.id
+              property.softDeleted ||
+              isSubmitting ||
+              property.ownerId === session.data?.user.id
             }
           >
-            {property.ownerId === session.data?.user.id
-              ? "It's your property!"
-              : isSubmitting
-                ? "Reserving..."
-                : "Reserve"}
+            {property.softDeleted
+              ? "This property is no longer available"
+              : property.ownerId === session.data?.user.id
+                ? "It's your property!"
+                : isSubmitting
+                  ? "Reserving..."
+                  : "Reserve"}
           </Button>
         </form>
       </Form>

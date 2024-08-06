@@ -177,6 +177,7 @@ model Property {
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
   conversations    Conversation[] 
+  softDeleted       Boolean? @default(false)
 
 
   prices      Price[]

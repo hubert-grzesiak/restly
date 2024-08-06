@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 
 export interface GetPropertiesParams {
+  currentPage?: number;
   searchQuery?: string;
   numberOfGuests?: {
     adults?: number;
@@ -12,7 +13,7 @@ export interface GetPropertiesParams {
 }
 
 export default async function getAllProperties(params: GetPropertiesParams) {
-  const { searchQuery, numberOfGuests, from, to } = params;
+  const { searchQuery, numberOfGuests, from, to, currentPage } = params;
 
   // Define the query object
   const query: any = {};
@@ -34,6 +35,7 @@ export default async function getAllProperties(params: GetPropertiesParams) {
     query.maxPeople = {
       gte: totalGuests,
     };
+    query.softDeleted = false;
 
     if (numberOfGuests.kids || numberOfGuests.animals) {
       query.facility = {
@@ -63,10 +65,17 @@ export default async function getAllProperties(params: GetPropertiesParams) {
   }
 
   console.log("Constructed query:", JSON.stringify(query, null, 2));
+  const ITEMS_PER_PAGE = 24;
+  const offset = ((currentPage ?? 1) - 1) * ITEMS_PER_PAGE;
 
   try {
+    const propertiesCount = await db.property.count({
+      where: { softDeleted: false },
+    });
     const properties = await db.property.findMany({
       where: query,
+      take: ITEMS_PER_PAGE,
+      skip: offset,
       include: {
         images: true,
         prices: true,
@@ -93,7 +102,7 @@ export default async function getAllProperties(params: GetPropertiesParams) {
     );
 
     console.log("propertiesWithReviews", propertiesWithReviews);
-    return propertiesWithReviews;
+    return { propertiesWithReviews, propertiesCount };
   } catch (error) {
     console.error("Failed to fetch properties:", error);
     throw error;

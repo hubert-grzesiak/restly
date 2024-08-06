@@ -18,6 +18,10 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import {
+  DeleteProperty,
+  RestoreProperty,
+} from "@/components/facilities/buttons";
 
 interface PageProps {
   params: { id?: string };
@@ -44,6 +48,11 @@ const Details: React.FC<PageProps> = async ({ params }) => {
   return (
     <main className="w-full pt-100">
       <div className="mx-auto mb-10 w-full max-w-[1400px] px-2 md:px-4">
+        {property.softDeleted && (
+          <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-900">
+            This property is no longer available
+          </div>
+        )}
         <section className="rounded-xl bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] shadow-xl">
           <div className="absolute left-0 right-0 top-0 m-auto h-[310px] w-[310px] rounded-full bg-fuchsia-400 opacity-20 blur-[100px]" />
           <Carousel className="md:hidden">
@@ -84,6 +93,12 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                     </div>
                   </>
                 )}
+                {user?.id === property.ownerId &&
+                  (!property.softDeleted ? (
+                    <DeleteProperty id={property.id} />
+                  ) : (
+                    <RestoreProperty id={property.id} />
+                  ))}
                 {user?.id === property.ownerId && (
                   <Button
                     variant={"outline"}

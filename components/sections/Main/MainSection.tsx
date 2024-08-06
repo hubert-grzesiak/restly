@@ -4,13 +4,16 @@ import MainListOfObjectSection from "@/components/sections/Main/MainListOfObject
 import { PropertyCustom } from "@/app/page";
 import { useState } from "react";
 import Searchbar from "@/components/searchbar/Searchbar";
+import Pagination from "@/components/facilities/pagination";
 
-const MainSection = ({ properties }: PropertyCustom) => {
+const MainSection = ({ properties, propertiesCount }: PropertyCustom) => {
   const [isMapHidden, setIsMapHidden] = useState(false);
   const [dateRange, setDateRange] = useState({
     from: new Date().toISOString().split("T")[0],
     to: new Date().toISOString().split("T")[0],
   });
+  const totalPages = Math.ceil(propertiesCount / 24);
+
   return (
     <>
       <Searchbar route="/" dateRange={dateRange} setDateRange={setDateRange} />
@@ -19,6 +22,7 @@ const MainSection = ({ properties }: PropertyCustom) => {
         <MainListOfObjectSection
           properties={properties}
           isMapHidden={isMapHidden}
+          propertiesCount={propertiesCount}
         />
 
         <MainMapSection
@@ -27,6 +31,9 @@ const MainSection = ({ properties }: PropertyCustom) => {
           properties={properties}
         />
       </section>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
     </>
   );
 };
