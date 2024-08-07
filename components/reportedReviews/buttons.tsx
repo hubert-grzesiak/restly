@@ -1,7 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+  NoSymbolIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { deleteFacility } from "@/lib/actions/admin/facilities";
 import {
@@ -24,7 +29,10 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import reportOpinion from "@/lib/actions/properties/reportOpinion";
-import { deleteReportedReview } from "@/lib/actions/admin/reportedReviews";
+import {
+  banUser,
+  deleteReportedReview,
+} from "@/lib/actions/admin/reportedReviews";
 export function CreateFacility() {
   return (
     <Link
@@ -180,10 +188,16 @@ const MoveHorizontalIcon: React.FC<MoveHorizontalIconProps> = (props) => (
   </svg>
 );
 
-export function UpdateReviewStatus({ id }: { id: string }) {
+export function UpdateReviewStatus({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) {
   return (
     <Link
-      href={`/admin/reported-reviews/${id}/edit`}
+      href={`/admin/reported-reviews/${id}/edit?userId=${userId}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -242,6 +256,59 @@ export function DeleteReview({
                 }`}
               >
                 {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+export function BanUser({ userId, reviewId }: { userId: string, reviewId: string }) {
+  const [isBanning, setIsBanning] = useState(false);
+
+  const handleBan = async () => {
+    setIsBanning(true);
+    try {
+      await banUser({ userId, reviewId: reviewId });
+      toast.success("User banned successfully");
+    } catch (error) {
+      console.error("Failed to ban the user", error);
+    } finally {
+      setIsBanning(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="rounded-md border bg-red-900 p-2 hover:bg-red-800">
+            <span className="sr-only">Ban</span>
+            <NoSymbolIcon className="w-5 text-white" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure you want to ban this user?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently ban this user.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleBan}
+                disabled={isBanning}
+                className={`rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 ${
+                  isBanning ? "opacity-50" : ""
+                }`}
+              >
+                {isBanning ? "Banning..." : "Ban"}
               </button>
             </AlertDialogAction>
           </AlertDialogFooter>

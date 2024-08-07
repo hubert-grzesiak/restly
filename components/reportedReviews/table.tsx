@@ -4,8 +4,19 @@ import {
   DeleteReview,
   DeleteFacility,
   UpdateFacility,
+  BanUser,
 } from "./buttons";
 import ReviewStatus from "./status";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 export default async function FacilitiesTable({
   query,
   currentPage,
@@ -45,57 +56,58 @@ export default async function FacilitiesTable({
                 </div>
               ))}
             </div>
-            <table className="hidden min-w-full text-gray-900 md:table">
-              <thead className="rounded-lg text-left text-sm font-normal">
-                <tr>
-                  <th scope="col" className="p-3 font-medium">
-                    User
-                  </th>
-                  <th scope="col" className="p-3 font-medium">
-                    Reported by
-                  </th>
-                  <th scope="col" className="p-3 font-medium">
-                    Body
-                  </th>
-                  <th scope="col" className="p-3 font-medium">
-                    Status
-                  </th>
-                  <th scope="col" className="relative py-3 pl-6 pr-3">
+            <Table className="hidden min-w-full text-gray-900 md:table">
+              <TableCaption>Reported Reviews</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>User</TableHead>
+                  <TableHead>Reported by</TableHead>
+                  <TableHead>Body</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Negative Reputation</TableHead>
+                  <TableHead>
                     <span className="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {reportedReviews?.map((review) => (
-                  <tr
+                  <TableRow
                     key={review.id}
-                    className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                    className="border-b last:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                   >
-                    <td className="whitespace-nowrap px-3 py-3">
+                    <TableCell className="whitespace-nowrap p-3">
                       {review.review.user.email}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-3">
                       {review.reportedBy}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-3">
                       {review.review.body}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-3">
                       <ReviewStatus status={review.status} />
-                    </td>
-                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-3">
+                      {review.review.user?.reputation}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-3">
                       <div className="flex justify-end gap-3">
-                        <UpdateReviewStatus id={review.id} />
+                        <UpdateReviewStatus
+                          id={review.id}
+                          userId={review.review.userId}
+                        />
                         <DeleteReview
                           reportedReviewId={review.id}
                           reviewId={review.review.id}
                         />
+                        <BanUser userId={review.review.userId}  reviewId={review.id}/>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

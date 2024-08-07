@@ -446,8 +446,3 @@ main {
   height: 100%;
   width: 40px;
 }
-
-th {
-  display: block;
-  width: 48px !important;
-}

@@ -106,7 +106,7 @@ const Searchbar = ({
                   )}
                 </PopoverTrigger>
                 <PopoverContent className="h-[300px] p-2 md:p-4">
-                  <div className="!md:p-4 flex h-full flex-col gap-6 !p-2 md:flex-col">
+                  <div className="!md:p-4 flex h-full flex-col gap-6 !p-2 md:flex-row">
                     <div className="row-span-3 h-full">
                       <div className="relative h-full">
                         <div className="z-10 flex w-full justify-center bg-white/80 text-lg font-medium backdrop-blur-lg">

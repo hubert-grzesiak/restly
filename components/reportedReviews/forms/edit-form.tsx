@@ -19,6 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { updateStatusOfReview } from "@/lib/actions/admin/reportedReviews";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 const ReviewStatusSchema = z.object({
   status: z.enum(["Pending", "ok"], {
@@ -38,7 +39,9 @@ interface Props {
 const EditReviewStatus = ({ review }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+  console.log("userId", userId);
   const form = useForm<z.infer<typeof ReviewStatusSchema>>({
     resolver: zodResolver(ReviewStatusSchema),
     defaultValues: {
@@ -49,7 +52,11 @@ const EditReviewStatus = ({ review }: Props) => {
   async function onSubmit(values: z.infer<typeof ReviewStatusSchema>) {
     setIsSubmitting(true);
     try {
-      await updateStatusOfReview({ id: review.id, status: values.status });
+      await updateStatusOfReview({
+        id: review.id,
+        status: values.status,
+        userId,
+      });
       toast.success("Review status updated successfully");
       router.push(`/admin/reported-reviews`);
     } catch (error) {

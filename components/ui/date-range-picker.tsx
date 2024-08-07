@@ -89,7 +89,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
     new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 1),
   ),
   initialDateTo = new Date(
-    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 3),
+    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 2),
   ),
   initialCompareFrom,
   initialCompareTo,

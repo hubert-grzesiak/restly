@@ -21,6 +21,7 @@ model User {
   image                   String?
   password                String?
   reputation              Int                    @default(0)
+  shadowbanned            Boolean                @default(false)
   role                    UserRole               @default(USER)
   isTwoFactorEnabled      Boolean                @default(false)
   twoFactorConfirmation   TwoFactorConfirmation?

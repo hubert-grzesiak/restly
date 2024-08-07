@@ -38,6 +38,13 @@ export default async function reportReview({ reviewId }: { reviewId: string }) {
         },
       });
 
+      await db.user.update({
+        where: { id: review.userId },
+        data: {
+          reputation: { increment: 1 },
+        },
+      });
+
       return { success: true };
     } catch (error) {
       console.error("Error reporting the review:", error);

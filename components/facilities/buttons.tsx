@@ -199,8 +199,7 @@ export function DeleteProperty({ id }: { id: string }) {
               Are you absolutely sure you want to delete this property?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this
-              property.
+              This action will delete this property.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

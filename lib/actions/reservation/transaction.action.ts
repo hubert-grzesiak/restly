@@ -7,6 +7,7 @@ import { Property } from "@prisma/client";
 
 import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
+import { auth } from "@/lib/auth";
 // import { auth } from "@/lib/auth";
 
 /**
@@ -24,71 +25,77 @@ export async function checkoutReservation(
   property: Property,
   formValues: z.infer<typeof ReservationSchema>,
 ) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const sessionAuth = await auth();
 
-  // Funkcja do konwersji daty w formacie dd.mm.yyyy na yyyy-mm-dd
-  const convertDate = (dateString: string) => {
-    const [day, month, year] = dateString.split(".");
-    return `${year}-${month}-${day}`;
-  };
+  if (sessionAuth?.user?.email) {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-  // Przekształcenie dat na obiekty Date
-  const fromDate = new Date(convertDate(formValues.dateRange.from));
-  const toDate = new Date(convertDate(formValues.dateRange.to));
+    // Funkcja do konwersji daty w formacie dd.mm.yyyy na yyyy-mm-dd
+    const convertDate = (dateString: string) => {
+      const [day, month, year] = dateString.split(".");
+      return `${year}-${month}-${day}`;
+    };
 
-  console.log("From date:", fromDate);
+    // Przekształcenie dat na obiekty Date
+    const fromDate = new Date(convertDate(formValues.dateRange.from));
+    const toDate = new Date(convertDate(formValues.dateRange.to));
 
-  let numberOfDays;
+    console.log("From date:", fromDate);
 
-  if (fromDate === toDate) {
-    numberOfDays = 1;
-  } else {
-    numberOfDays = Math.round(
-      (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
-    );
-  }
-  const newPrice = price * numberOfDays;
+    let numberOfDays;
 
-  console.log("Price for all days:", newPrice);
-  console.log("Number of days:", numberOfDays);
-  const totalPrice = newPrice + newPrice * 0.05;
-  console.log("Total price with tax:", totalPrice);
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: "pln",
-          unit_amount: totalPrice * 100,
-          product_data: {
-            name: property.name, // Nazwa nieruchomości
-            description: `
+    if (fromDate === toDate) {
+      numberOfDays = 1;
+    } else {
+      numberOfDays = Math.round(
+        (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+    }
+    const newPrice = price * numberOfDays;
+
+    console.log("Price for all days:", newPrice);
+    console.log("Number of days:", numberOfDays);
+    const totalPrice = newPrice + newPrice * 0.05;
+    console.log("Total price with tax:", totalPrice);
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: "pln",
+            unit_amount: totalPrice * 100,
+            product_data: {
+              name: property.name, // Nazwa nieruchomości
+              description: `
               Reservation for: ${property.name}
               Location: ${property.city}, ${property.country}
               Stay Duration: ${formValues?.dateRange.from} to ${formValues?.dateRange.to} (${numberOfDays} days)
               Total Price: ${totalPrice} PLN
               For ${formValues?.guests} guests.
             `, // Szczegółowy opis rezerwacji
+            },
           },
+          quantity: 1,
         },
-        quantity: 1,
+      ],
+      metadata: {
+        propertyId: property.id,
+        userId: buyerId,
+        city: property.city,
+        country: property.country,
+        dateFrom: formValues?.dateRange.from,
+        dateTo: formValues?.dateRange.to,
+        price: totalPrice,
       },
-    ],
-    metadata: {
-      propertyId: property.id,
-      userId: buyerId,
-      city: property.city,
-      country: property.country,
-      dateFrom: formValues?.dateRange.from,
-      dateTo: formValues?.dateRange.to,
-      price: totalPrice,
-    },
-    mode: "payment",
-    custom_fields: [],
-    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/profile`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
-  });
+      mode: "payment",
+      custom_fields: [],
+      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/visited`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
+    });
 
-  redirect(session.url!);
+    redirect(session.url!);
+  } else {
+    redirect("/auth/login");
+  }
 }
 
 interface ReservationResponse {

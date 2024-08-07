@@ -159,9 +159,11 @@ export async function fetchReportedReviewById(id: string) {
 export async function updateStatusOfReview({
   id,
   status,
+  userId,
 }: {
   id: string;
   status: string;
+  userId: string;
 }) {
   const role = await currentRole();
 
@@ -170,10 +172,41 @@ export async function updateStatusOfReview({
       await db.reportedReview.delete({
         where: { id },
       });
+      await db.user.update({
+        where: { id: userId },
+        data: { reputation: { decrement: 1 } },
+      });
       revalidatePath("/admin/reported-reviews");
       return { success: "Status of review updated" };
     } catch (error) {
       return { error: "Error updating status of review" };
+    }
+  }
+  return { error: "Forbidden Server Action!" };
+}
+
+export async function banUser({
+  userId,
+  reviewId,
+}: {
+  userId: string;
+  reviewId: string;
+}) {
+  const role = await currentRole();
+
+  if (role === UserRole.ADMIN) {
+    try {
+      await db.user.update({
+        where: { id: userId },
+        data: { shadowbanned: true },
+      });
+      await db.reportedReview.delete({
+        where: { id: reviewId },
+      });
+      revalidatePath("/admin/reported-reviews");
+      return { success: "User banned" };
+    } catch (error) {
+      return { error: "Error banning user" };
     }
   }
   return { error: "Forbidden Server Action!" };
