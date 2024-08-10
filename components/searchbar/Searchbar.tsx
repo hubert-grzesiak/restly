@@ -3,12 +3,10 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import AutoCompleteInput from "../AutoCompleteInput";
-import DataModal from "./DataModal";
 
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import Buttons from "./Buttons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { DateRangePicker } from "../ui/date-range-picker";
 
 const Searchbar = ({
@@ -28,8 +26,6 @@ const Searchbar = ({
 
   console.log(numberOfGuests);
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const [address, setAddress] = useState({
     streetAndNumber: "",
@@ -41,8 +37,20 @@ const Searchbar = ({
     longitude: 0,
   });
 
-  const handleManualInputChange = (event, stateProperty) => {
-    const newAddress = { ...address };
+  const handleManualInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    stateProperty: string,
+  ) => {
+    const newAddress: {
+      streetAndNumber: string;
+      place: string;
+      region: string;
+      postcode: string;
+      country: string;
+      latitude: number;
+      longitude: number;
+      [key: string]: string | number;
+    } = { ...address };
     newAddress[stateProperty] = event.target.value;
 
     setAddress(newAddress);

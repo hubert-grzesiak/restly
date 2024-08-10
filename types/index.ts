@@ -30,7 +30,14 @@ export interface Suggestion {
 }
 
 export interface AutoCompleteInputProps {
-  handleManualInputChange: (event: React.ChangeEvent<HTMLInputElement>, identifier: string) => void;
+  handleManualInputChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    identifier: string,
+  ) => void;
   setAddress: (address: Address) => void;
   streetAndNumber: string;
+}
+
+export interface PropertyWithUrls {
+  urls: string[];
 }

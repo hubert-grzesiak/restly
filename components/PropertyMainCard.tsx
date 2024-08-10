@@ -3,16 +3,25 @@
 import { StarIcon } from "./icons/StarIcon";
 import { Button } from "./ui/button";
 import Link from "next/link";
-// import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
-import { PropertyCustom } from "@/app/page";
 import AddToFavourite from "@/app/(home)/properties/[id]/components/AddToFavourite";
 import { cn } from "@/lib/utils";
+
+interface PropertyInterface {
+  id: string;
+  name: string;
+  city: string;
+  country: string;
+  urls: string[];
+  prices: { from: string; to: string; price: number }[];
+  averageRating: number;
+  numberOfReviews: number;
+}
 
 const PropertyMainCard = ({
   property,
   className,
 }: {
-  property: PropertyCustom;
+  property: PropertyInterface;
   className?: string;
 }) => {
   const { averageRating, numberOfReviews } = property;

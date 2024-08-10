@@ -32,7 +32,7 @@ const getPropertiesInfo = cache(
       // Extracting URLs from related images
       const propertiesWithUrls = properties.map((property) => ({
         ...property,
-        urls: property.images.map((image) => image.urls).flat(), // Getting all URLs
+        urls: property.images.map((image) => image.urls).flat(),
       }));
 
       return propertiesWithUrls;

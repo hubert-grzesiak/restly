@@ -6,13 +6,14 @@ import { StarIcon } from "@/components/icons";
 import Link from "next/link";
 import getReviewsSummary from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import getUserReview from "@/lib/actions/properties/getUserReview";
+
 interface VisitedTabProps {
-  title: string;
+  title?: string;
   userId: string;
   property: Place;
 }
 
-interface Place {
+export interface Place {
   dateFrom: string;
   dateTo: string;
   rating?: number;
@@ -25,9 +26,9 @@ interface Place {
       urls: string[];
     }[];
     Review: {
-      rating: number;
       body: string;
-    };
+      rating: number;
+    }[];
   };
 }
 
@@ -40,7 +41,16 @@ export default async function VisitedTab({
   const { numberOfReviews, averageRating } = await getReviewsSummary({
     propertyId: property.property.id,
   });
-  const userReview = await getUserReview({ propertyId: property.property.id });
+
+  let userReview = await getUserReview({
+    propertyId: property.property.id,
+  });
+
+  // ensure userReview is either null or a single object, not an array
+  if (Array.isArray(userReview)) {
+    userReview = userReview.length > 0 ? userReview[0] : null;
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 md:px-8">
       <h1 className="mb-8 text-3xl font-bold">{title}</h1>
@@ -73,7 +83,7 @@ export default async function VisitedTab({
             <div className="mb-4 flex items-center text-sm text-muted-foreground">
               <StarIcon className="mr-1 h-4 w-4 fill-primary" />
               <span>
-                {numberOfReviews == 0 ? (
+                {numberOfReviews === 0 ? (
                   <p>0 (0 reviews)</p>
                 ) : (
                   <p>
@@ -83,22 +93,13 @@ export default async function VisitedTab({
               </span>
             </div>
 
-            {userReview != null ? (
-              <ReviewForm
-                type="Edit"
-                property={property}
-                objectId={property.property.id}
-                userId={userId}
-                userReview={userReview}
-              />
-            ) : (
-              <ReviewForm
-                property={property}
-                objectId={property.property.id}
-                userId={userId}
-                userReview={userReview}
-              />
-            )}
+            <ReviewForm
+              type={userReview ? "Edit" : "Add"}
+              property={property.property}
+              objectId={property.property.id}
+              userId={userId}
+              userReview={userReview}
+            />
           </div>
         </div>
       </div>

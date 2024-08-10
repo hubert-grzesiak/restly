@@ -1,14 +1,14 @@
 "use client";
-import { PropertyCustom } from "@/app/page";
 import PropertyMainCard from "@/components/PropertyMainCard";
 import { cn } from "@/lib/utils";
+import { PropertyInterface } from "./components/MainMap";
 
 const MainListOfObjectSection = ({
   properties,
   isMapHidden,
   propertiesCount,
 }: {
-  properties: PropertyCustom[];
+  properties: PropertyInterface[];
   isMapHidden: boolean;
   propertiesCount: number;
 }) => {
@@ -26,7 +26,7 @@ const MainListOfObjectSection = ({
             "grid-cols-1 md:grid-cols-2 min-[1100px]:grid-cols-3 2xl:grid-cols-4",
         )}
       >
-        {properties.map((property: PropertyCustom) => (
+        {properties.map((property) => (
           <PropertyMainCard property={property} key={property.id} />
         ))}
       </div>

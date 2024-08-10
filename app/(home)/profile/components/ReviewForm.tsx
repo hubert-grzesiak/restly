@@ -9,36 +9,32 @@ import { toast } from "sonner";
 import { Rate } from "antd";
 import { Textarea } from "@/components/ui/textarea";
 import { createReview, editReview } from "@/lib/actions/properties/giveReview";
+import { Review } from "@prisma/client";
 
 const ReviewSchema = z.object({
-  review: z.string().nonempty("Review is required"),
+  review: z.string().min(1, "Review is required"),
   rating: z.number().min(0).max(5, "Rating must be between 0 and 5"),
 });
 
 interface Props {
   type?: string;
   userId?: string;
-  property?: {
+  property: {
+    id: string;
+    name: string;
+    images: {
+      urls: string[];
+    }[];
     Review: {
       body: string;
       rating: number;
     }[];
-  }[];
-  userReview: {
-    body: string;
-    rating: number;
-    id: string;
   };
+  userReview: Review | null;
   objectId?: string;
 }
 
-const ReviewForm = ({
-  type,
-  property,
-  objectId,
-  userId,
-  userReview,
-}: Props) => {
+const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formKey, setFormKey] = useState(Date.now()); // key to force re-render
 
@@ -60,7 +56,7 @@ const ReviewForm = ({
     try {
       if (type === "Edit") {
         await editReview({
-          id: userReview.id ?? "",
+          id: userReview?.id ?? "",
           body: values.review,
           rating: values.rating,
         });

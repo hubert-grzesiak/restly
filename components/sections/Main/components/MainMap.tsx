@@ -6,12 +6,20 @@ import "mapbox-gl/dist/mapbox-gl.css"; // Import Mapbox GL CSS
 import { Property } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
-interface PropertyInterface extends Property {
+export interface PropertyInterface extends Property {
   geometry: {
     id: string;
     type: string;
     coordinates: [number, number];
   } | null;
+  prices: {
+    from: string;
+    to: string;
+    price: number;
+  }[];
+  urls: string[];
+  averageRating: number;
+  numberOfReviews: number;
 }
 
 const MainMap = ({

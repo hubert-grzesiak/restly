@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 
 export default async function page() {
   const session = await auth();
-  const userId = session?.user.id;
+  const userId = session?.user.id ?? "";
   const result = await getVisitedProperties({ userId: session?.user.id ?? "" });
   console.log(result);
   return (

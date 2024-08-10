@@ -33,7 +33,7 @@ function Calendar({
   };
 
   // Custom component to render each day with price information
-  const CustomDayContent: React.FC<DayContentProps> = ({ date }) => {
+  const CustomDayContent = ({ date }: DayContentProps): JSX.Element => {
     const price = findPriceForDate(date);
     return (
       <div className="flex flex-col items-center p-1">

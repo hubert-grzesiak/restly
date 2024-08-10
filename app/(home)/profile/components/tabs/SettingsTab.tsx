@@ -9,17 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { SettingsSchema } from "@/schemas";
-import { UserRole } from "@prisma/client";
 
 import { settings } from "@/lib/actions/auth/settings";
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {

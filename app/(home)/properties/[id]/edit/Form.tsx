@@ -52,15 +52,15 @@ const EditForm = ({
   const [steps, setSteps] = useState<number>(0);
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [files, setFiles] = useState<UploadFile[] | { url?: string }[]>(
-    property.urls.map((url) => ({ url })),
-  );
+  const [files, setFiles] = useState<
+    UploadFile[] | { url?: string; originFileObj?: string }[]
+  >(property.urls.map((url) => ({ url })));
   const [facilityValue, setFacilityValue] = useState<string[]>(
     property.facility.map((facility) => facility.name),
   );
 
   const form = useForm<FormSchemaType>({
-    // resolver: zodResolver(FormSchema),
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
         country: property.country,
@@ -127,9 +127,15 @@ const EditForm = ({
         "files.urls",
         files.map((file) => file.url),
       );
-      const filesUrls = files ? files.map((file) => file.url) : [];
+      const filesUrls =
+        (files &&
+          files
+            .map((file) => file.url)
+            .filter((url): url is string => url !== undefined)) ??
+        [];
       console.log("FILES URLS: ", filesUrls);
       await editObject(property.id, formData, filesUrls);
+
       router.push(`/properties/${property.id}`);
       toast.success("Object edited successfully");
     } catch (error: unknown) {

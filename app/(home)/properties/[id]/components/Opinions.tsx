@@ -1,14 +1,17 @@
 import { ReportReview } from "@/components/facilities/buttons";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
+import { User } from "@prisma/client";
 
 type StarIconProps = React.SVGProps<SVGSVGElement>;
 
-type UserReviewProps = {
-  name: string;
+export type UserReviewProps = {
+  id: string;
+  name?: string;
   rating: number;
   body: string;
   avatarSrc?: string;
-  reviewId: string;
+  reviewId?: string;
+  user: User;
 };
 
 const UserReview: React.FC<UserReviewProps> = ({
@@ -26,7 +29,7 @@ const UserReview: React.FC<UserReviewProps> = ({
           src={avatarSrc || "/placeholder-user.jpg"}
         />
         <AvatarFallback>
-          {name
+          {name!
             .split(" ")
             .map((n) => n[0])
             .join("")}
@@ -50,27 +53,18 @@ const UserReview: React.FC<UserReviewProps> = ({
       </div>
     </div>
     <div className="absolute right-4 top-4">
-      <ReportReview reviewId={reviewId} />
+      <ReportReview reviewId={reviewId!} />
     </div>
   </div>
 );
 
-export default function Opinions({ reviews }) {
+export default function Opinions({ reviews }: { reviews: UserReviewProps[] }) {
   return (
     <div className="mx-auto mt-20">
       <h2 className="mb-4 text-lg font-bold md:text-2xl">User Reviews</h2>
       <div className="grid gap-6">
         {reviews.map((review, index) => {
-          return (
-            <UserReview
-              key={index}
-              name={review.user.name}
-              rating={review.rating}
-              body={review.body}
-              avatarSrc={review.user.image}
-              reviewId={review.id}
-            />
-          );
+          return <UserReview key={index} {...review} />;
         })}
       </div>
     </div>

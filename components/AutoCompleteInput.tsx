@@ -2,7 +2,6 @@
 
 import React, { useState, ChangeEvent, useRef } from "react";
 import { AutoCompleteInputProps, Suggestion, Address } from "@/types";
-import getPlaces from "../app/api/mapbox/route";
 import { Tooltip } from "antd";
 import { Input } from "./ui/input";
 
@@ -34,8 +33,10 @@ function AutoCompleteInput({
       setSuggestions([]);
       return;
     }
-    const suggestions = await getPlaces(query);
-    setSuggestions(suggestions);
+    const response = await fetch(`/api/mapbox/route?query=${query}`);
+    const places = await response.json();
+
+    setSuggestions(places);
   };
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
@@ -53,11 +54,13 @@ function AutoCompleteInput({
     };
 
     suggestion.context.forEach((element) => {
-      const identifier = element.id.split(".")[0] as keyof Address;
-      address[identifier] = element.text;
-    });
+      const key = element.id.split(".")[0] as keyof Address;
 
-    console.log(address.longitude, address.latitude);
+      if (key in address) {
+        // Cast the property as a string to ensure TypeScript accepts it
+        (address[key] as string) = element.text;
+      }
+    });
 
     setAddress(address);
     setSuggestions([]);

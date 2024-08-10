@@ -1,12 +1,11 @@
-import PointerIcon from "@/public/svgs/pointer.svg";
 import ReactMapGL, { Marker, ViewStateChangeEvent } from "react-map-gl";
 import { useState, useEffect, FC } from "react";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 interface MapProps {
-  longitude?: number;
-  latitude?: number;
+  longitude: number;
+  latitude: number;
   updateCoordinates?: (latitude: number, longitude: number) => void;
 }
 
@@ -30,12 +29,16 @@ const Map: FC<MapProps> = ({ longitude, latitude, updateCoordinates }) => {
     }));
   }, [latitude, longitude]);
 
-  const handleMarkerDrag = (event: mapboxgl.MapboxEvent<MouseEvent>) => {
+  const handleMarkerDrag = (event: {
+    lngLat: { lat: number; lng: number };
+  }) => {
     const latitude = event.lngLat.lat;
     const longitude = event.lngLat.lng;
 
     setMarker({ latitude, longitude });
-    updateCoordinates(latitude, longitude);
+    if (updateCoordinates) {
+      updateCoordinates(latitude, longitude);
+    }
   };
 
   const handleMove = (event: ViewStateChangeEvent) => {

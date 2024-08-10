@@ -10,7 +10,6 @@ datasource db {
 enum UserRole {
   ADMIN
   USER
-  BLOCKED
 }
 
 model User {

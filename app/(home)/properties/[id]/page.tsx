@@ -36,6 +36,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
 
   const property = await getPropertyInfo({ id });
   const reviews = await getReviews({ propertyId: id });
+
   const { averageRating, numberOfReviews } = await getReviewsSummaryForProperty(
     {
       propertyId: id,
@@ -162,7 +163,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
               </div>
             </div>
             <div className="mx-6 mt-4 hidden grid-cols-2 gap-4 pb-4 md:grid md:grid-cols-4">
-              <ImagesSection property={property} />
+              <ImagesSection urls={property.urls} />
             </div>
           </div>
         </section>

@@ -38,21 +38,12 @@ const FloatingNav = ({
   className?: string;
 }) => {
   const { scrollYProgress } = useScroll();
-  const [visible, setVisible] = useState(true);
   const [shrink, setShrink] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number") {
       const direction = current! - scrollYProgress.getPrevious()!;
-      if (scrollYProgress.get() < -0.05) {
-        setVisible(false);
-      } else {
-        if (direction < 0 || direction === 1) {
-          setVisible(true);
-        } else {
-          setVisible(false);
-        }
-      }
+
       // Set shrink state based on the scroll position
       if (scrollYProgress.get() > 0.05 && direction !== 1) {
         setShrink(false);

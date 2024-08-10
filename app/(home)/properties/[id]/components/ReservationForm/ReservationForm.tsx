@@ -32,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { getPricesForPropertyCalendar } from "@/lib/actions/reservation/getPricesForPropertyCalendar";
 
 interface PropertyAdditionals extends Property {
-  prices: Array<{ price: number }>;
+  prices: { from: string; to: string; price: number }[];
 }
 
 const ReservationForm = ({
@@ -113,13 +113,17 @@ const ReservationForm = ({
       return { from, to };
     };
 
-    // Przekształcenie dat na obiekty Date
-
     async function fetchReservations() {
       const result = await getReservations(propertyId);
       if (result.success && result.reservations) {
-        setBlockedDates(result.reservations);
-        setDateRange(getNextAvailableDateRange(result.reservations));
+        // Filter out null values from reservations
+        const validReservations = result.reservations.filter(
+          (reservation): reservation is { from: string; to: string } =>
+            reservation !== null,
+        );
+
+        setBlockedDates(validReservations);
+        setDateRange(getNextAvailableDateRange(validReservations));
       } else {
         console.error(result.message);
       }
@@ -133,11 +137,15 @@ const ReservationForm = ({
         console.error(result.message);
       }
     }
+
     fetchPrices();
     fetchReservations();
   }, [propertyId]);
 
-  const calculateTotalDays = (from: Date, to: Date): number => {
+  const calculateTotalDays = (
+    from: Date | string,
+    to: Date | string,
+  ): number => {
     const dateFrom = new Date(from);
     const dateTo = new Date(to);
     // Subtract one day to exclude the end date
@@ -156,7 +164,6 @@ const ReservationForm = ({
     let totalPrice = 0;
     const dateFrom = new Date(from);
     const dateTo = new Date(to);
-    // Subtract one day to exclude the end date
     dateFrom.setDate(dateFrom.getDate() - 1);
     dateTo.setDate(dateTo.getDate() - 1);
 

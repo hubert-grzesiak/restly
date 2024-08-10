@@ -1,3 +1,4 @@
+import { PropertyInterface } from "@/components/sections/Main/components/MainMap";
 import { db } from "@/lib/db";
 
 export interface GetPropertiesParams {
@@ -8,15 +9,20 @@ export interface GetPropertiesParams {
     kids?: number;
     animals?: number;
   };
-  from?: Date;
-  to?: Date;
+  from?: Date | string;
+  to?: Date | string;
 }
 
-export default async function getAllProperties(params: GetPropertiesParams) {
+interface GetAllPropertiesResponse {
+  propertiesWithReviews: PropertyInterface[];
+  propertiesCount: number;
+}
+export default async function getAllProperties(
+  params: GetPropertiesParams,
+): Promise<GetAllPropertiesResponse> {
   const { searchQuery, numberOfGuests, from, to, currentPage } = params;
 
-  // Define the query object
-  const query: any = {};
+  const query: Record<string, any> = {};
 
   if (searchQuery) {
     query.OR = [
@@ -81,13 +87,16 @@ export default async function getAllProperties(params: GetPropertiesParams) {
         prices: true,
         geometry: true,
         facility: true,
-        Reservation: true, // Ensure reservations are included for further checks if needed
+        Reservation: true,
       },
     });
 
     if (!properties.length) {
       console.log("No properties found in the database.");
-      return [];
+      return {
+        propertiesWithReviews: [],
+        propertiesCount,
+      };
     }
 
     const propertiesWithReviews = await Promise.all(
@@ -96,6 +105,15 @@ export default async function getAllProperties(params: GetPropertiesParams) {
         return {
           ...property,
           urls: property.images.map((image) => image.urls).flat(),
+          geometry: property.geometry
+            ? {
+                ...property.geometry,
+                coordinates: [
+                  property.geometry.coordinates[0] || 0,
+                  property.geometry.coordinates[1] || 0,
+                ] as [number, number], // Ensuring the coordinates are a tuple
+              }
+            : null,
           ...reviewsSummary,
         };
       }),

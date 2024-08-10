@@ -64,18 +64,10 @@ export const deleteReportedReview = async ({
 
       if (reviewDeleted) {
         // Increase user's reputation by 1
-        const updatedUser = await db.user.update({
+        await db.user.update({
           where: { id: userId },
           data: { reputation: { increment: 1 } },
         });
-
-        // Check if the user should be blocked
-        if (updatedUser.reputation >= 5) {
-          await db.user.update({
-            where: { id: userId },
-            data: { role: UserRole.BLOCKED },
-          });
-        }
       } else {
         console.error(
           `Review with ID ${reviewId} could not be deleted or was not found.`,

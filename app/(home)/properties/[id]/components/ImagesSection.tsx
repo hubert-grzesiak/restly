@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { Image } from "antd";
 
-const ImagesSection = ({ property }) => {
+const ImagesSection = ({ urls }: { urls: string[] }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
-  const numberOfImages = property.urls.length;
+  const numberOfImages = urls.length;
 
   const handleOverlayClick = () => {
-    setCurrentPreviewIndex(3); // Indeks czwartego zdjęcia (indeksy zaczynają się od 0)
-    setPreviewVisible(true); // Wyświetlaj przeglądarkę zdjęć
+    setCurrentPreviewIndex(3);
+    setPreviewVisible(true);
   };
-  const handleImageClick = (index) => {
+  const handleImageClick = (index: number) => {
     setCurrentPreviewIndex(index);
     setPreviewVisible(true);
   };
@@ -29,7 +29,7 @@ const ImagesSection = ({ property }) => {
         onVisibleChange: (visible) => setPreviewVisible(visible),
       }}
     >
-      {property.urls.slice(1, 4).map((url: string, index: number) => (
+      {urls?.slice(1, 4).map((url: string, index: number) => (
         <Image
           key={index}
           alt={`Property Image ${index + 1}`}
@@ -55,23 +55,21 @@ const ImagesSection = ({ property }) => {
             </span>
           </div>
 
-          {property.urls
-            .slice(4, numberOfImages)
-            .map((url: string, index: number) => (
-              <Image
-                key={index + 5}
-                alt={`Property Image ${index + 5}`}
-                className="w-full rounded-lg object-cover"
-                height="150"
-                src={url || "/placeholder.svg"}
-                style={{
-                  aspectRatio: "250/150",
-                  objectFit: "cover",
-                }}
-                width="250"
-                onClick={() => handleImageClick(index + 4)}
-              />
-            ))}
+          {urls.slice(4, numberOfImages).map((url: string, index: number) => (
+            <Image
+              key={index + 5}
+              alt={`Property Image ${index + 5}`}
+              className="w-full rounded-lg object-cover"
+              height="150"
+              src={url || "/placeholder.svg"}
+              style={{
+                aspectRatio: "250/150",
+                objectFit: "cover",
+              }}
+              width="250"
+              onClick={() => handleImageClick(index + 4)}
+            />
+          ))}
         </div>
       )}
     </Image.PreviewGroup>

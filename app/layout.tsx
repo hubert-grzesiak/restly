@@ -6,12 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import FloatingNav from "@/components/navbar/floating-navbar";
-import {
-  IconComet,
-  IconHome,
-  IconMessage,
-  IconUser,
-} from "@tabler/icons-react";
+import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 import ActiveStatus from "@/components/ActiveStatus";
 import Footer from "@/components/footer/Footer";
 import { auth } from "@/lib/auth";

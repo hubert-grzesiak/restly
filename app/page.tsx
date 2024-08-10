@@ -1,16 +1,17 @@
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
-import { Property } from "@prisma/client";
 import MainSection from "@/components/sections/Main/MainSection";
+import { PropertyInterface } from "@/components/sections/Main/components/MainMap";
 export interface SearchParamsProps {
   searchParams: { [key: string]: string | undefined };
 }
-export interface PropertyCustom extends Property {
-  urls: string[];
-  properties: Property;
+export interface PropertyCustom {
+  id?: string;
+  urls?: string[];
+  properties: PropertyInterface[];
   propertiesCount: number;
   numberOfReviews?: number;
   averageRating?: number;
-  prices?: number;
+  prices?: { from: string; to: string; price: number }[];
 }
 
 export default async function Home({ searchParams }: SearchParamsProps) {

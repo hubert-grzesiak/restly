@@ -40,12 +40,12 @@ const EditReviewStatus = ({ review }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const userId = searchParams.get("userId") ?? "";
   console.log("userId", userId);
   const form = useForm<z.infer<typeof ReviewStatusSchema>>({
     resolver: zodResolver(ReviewStatusSchema),
     defaultValues: {
-      status: review.status || "Pending",
+      status: "Pending",
     },
   });
 

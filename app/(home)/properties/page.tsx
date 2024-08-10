@@ -10,7 +10,9 @@ interface PropertyWithUrls extends Property {
   urls: string[];
 }
 const Properties = async () => {
-  const result: PropertyWithUrls[] = await getPropertiesInfo();
+  const result: PropertyWithUrls[] = await getPropertiesInfo({
+    softDeleted: false,
+  });
   console.log(result);
   return (
     <main className="min-h-screen w-full bg-gray-100 pb-10">

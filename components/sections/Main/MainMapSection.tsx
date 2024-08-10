@@ -2,16 +2,7 @@
 import CloseMapButton from "@/components/landing-page/CloseMapButton";
 import React from "react";
 import { cn } from "@/lib/utils";
-import MainMap from "./components/MainMap";
-import { Property } from "@prisma/client";
-
-interface PropertyInterface extends Property {
-  geometry?: {
-    id: string;
-    type: string;
-    coordinates: [number, number];
-  } | null;
-}
+import MainMap, { PropertyInterface } from "./components/MainMap";
 
 const MainMapSection = ({
   isMapHidden,
@@ -20,7 +11,7 @@ const MainMapSection = ({
 }: {
   isMapHidden: boolean;
   setIsMapHidden: (value: boolean) => void;
-  properties: PropertyInterface;
+  properties: PropertyInterface[];
 }) => {
   return (
     <div className={cn("mainMap hidden md:block", isMapHidden && "!w-[30px]")}>

@@ -20,17 +20,13 @@ export const getReservations = cache(async (propertyId: string) => {
       .map((reservation) => {
         try {
           // Function to convert DD.MM.YYYY to YYYY-MM-DD
-          const parseDate = (dateString) => {
+          const parseDate = (dateString: any) => {
             const [day, month, year] = dateString.split(".");
             return `${year}-${month}-${day}`;
           };
 
           const dateFrom = new Date(parseDate(reservation.dateFrom));
           const dateTo = new Date(parseDate(reservation.dateTo));
-
-          if (isNaN(dateFrom) || isNaN(dateTo)) {
-            throw new Error("Invalid date");
-          }
 
           return {
             from: dateFrom

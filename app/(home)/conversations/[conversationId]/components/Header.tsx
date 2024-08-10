@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
 
   const statusText = useMemo(() => {
     return isActive ? "Active" : "Offline";
-  }, [conversation.isGroup, conversation.users.length, isActive]);
+  }, [isActive]);
 
   // Handle property images array safely
   const property = conversation.property || {};
