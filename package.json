@@ -9,7 +9,9 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "commit": "node commit.js",
-    "depcheck": "depcheck"
+    "depcheck": "depcheck",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
@@ -88,6 +90,9 @@
   },
   "devDependencies": {
     "@hookform/devtools": "^4.3.1",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/lodash": "^4.17.4",
@@ -101,11 +106,16 @@
     "cssnano": "^7.0.3",
     "depcheck": "^1.4.7",
     "eslint": "^8",
+    "eslint-plugin-jest-dom": "^5.4.0",
+    "eslint-plugin-testing-library": "^6.2.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "^5.14.0",
     "tailwindcss": "^3.3.0",
+    "ts-jest": "^29.2.4",
     "typescript": "^5"
   }
 }
