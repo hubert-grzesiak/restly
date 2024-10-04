@@ -60,7 +60,6 @@ const EditForm = ({
   );
 
   const form = useForm<FormSchemaType>({
-    resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
         country: property.country,
@@ -92,6 +91,7 @@ const EditForm = ({
         urls: property.urls.map((url) => url),
       },
     },
+    shouldUnregister: false,
   });
   const {
     control,
@@ -112,6 +112,7 @@ const EditForm = ({
   };
 
   const onSubmit = async (data: FormSchemaType) => {
+    console.log("DATA: ", data);
     setIsSubmitting(true);
     try {
       const formData = new FormData();
@@ -160,7 +161,7 @@ const EditForm = ({
       <div className="mt-12 w-full max-w-[600px] rounded-xl bg-white shadow-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div key={steps}>
+            <div>
               {steps === 0 && (
                 <div className="flex flex-col gap-2 p-8">
                   <h2 className="text-lg font-bold">Location</h2>
@@ -268,6 +269,7 @@ const EditForm = ({
                   />
                   <div className="flex w-full flex-row justify-end">
                     <Button
+                      type="button"
                       onClick={async () => {
                         const isValid = await form.trigger([
                           "object.country",
@@ -373,12 +375,14 @@ const EditForm = ({
 
                   <div className="flex w-full flex-row justify-between">
                     <Button
+                      type="button"
                       onClick={() => setSteps(steps - 1)}
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Prev step
                     </Button>
                     <Button
+                      type="button"
                       onClick={async () => {
                         const isValid = await form.trigger([
                           "object.name",
@@ -469,6 +473,7 @@ const EditForm = ({
                       Prev step
                     </Button>
                     <Button
+                      type="button"
                       onClick={async () => {
                         const isValid = await form.trigger([
                           "calendar.checkInTime",
@@ -520,12 +525,14 @@ const EditForm = ({
                   />
                   <div className="flex w-full flex-row justify-between">
                     <Button
+                      type="button"
                       onClick={() => setSteps(steps - 1)}
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Prev step
                     </Button>
                     <Button
+                      type="button"
                       onClick={async () => {
                         // const isValid = await form.trigger("facility");
                         // if (isValid) {
@@ -561,6 +568,7 @@ const EditForm = ({
 
                   <div className="flex w-full flex-row justify-between">
                     <Button
+                      type="button"
                       onClick={() => setSteps(steps - 1)}
                       className="mt-4 max-w-[320px] text-center"
                     >

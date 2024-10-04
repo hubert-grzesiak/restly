@@ -15,7 +15,7 @@ export default {
     }),
     Google({
       clientId: process.env.GOGGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     Credentials({
       async authorize(credentials) {
@@ -36,4 +36,5 @@ export default {
       },
     }),
   ],
+  trustHost: true,
 } satisfies NextAuthConfig;

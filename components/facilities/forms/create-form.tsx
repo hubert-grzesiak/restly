@@ -42,7 +42,6 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof FacilitySchema>) {
     setIsSubmitting(true);
     console.log(parsefacilityDetails);

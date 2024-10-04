@@ -22,10 +22,13 @@ export default async function getAllProperties(
 ): Promise<GetAllPropertiesResponse> {
   const { searchQuery, numberOfGuests, from, to, currentPage } = params;
 
-  const query: Record<string, any> = {};
+  const query: Record<string, any> = {
+    softDeleted: false,
+  };
 
   if (searchQuery) {
     query.OR = [
+      { name: { contains: searchQuery, mode: "insensitive" } },
       { city: { contains: searchQuery, mode: "insensitive" } },
       { country: { contains: searchQuery, mode: "insensitive" } },
       { description: { contains: searchQuery, mode: "insensitive" } },
@@ -41,7 +44,6 @@ export default async function getAllProperties(
     query.maxPeople = {
       gte: totalGuests,
     };
-    query.softDeleted = false;
 
     if (numberOfGuests.kids || numberOfGuests.animals) {
       query.facility = {
@@ -76,8 +78,9 @@ export default async function getAllProperties(
 
   try {
     const propertiesCount = await db.property.count({
-      where: { softDeleted: false },
+      where: query,
     });
+
     const properties = await db.property.findMany({
       where: query,
       take: ITEMS_PER_PAGE,
@@ -111,7 +114,7 @@ export default async function getAllProperties(
                 coordinates: [
                   property.geometry.coordinates[0] || 0,
                   property.geometry.coordinates[1] || 0,
-                ] as [number, number], // Ensuring the coordinates are a tuple
+                ] as [number, number],
               }
             : null,
           ...reviewsSummary,

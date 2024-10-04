@@ -13,7 +13,7 @@ const MainSection = ({ properties, propertiesCount }: PropertyCustom) => {
     to: new Date().toISOString().split("T")[0],
   });
   const totalPages = Math.ceil(propertiesCount / 24);
-
+  console.log("properties", properties);
   return (
     <>
       <Searchbar route="/" dateRange={dateRange} setDateRange={setDateRange} />
@@ -31,9 +31,11 @@ const MainSection = ({ properties, propertiesCount }: PropertyCustom) => {
           properties={properties}
         />
       </section>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
+      {properties.length > 0 && (
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={totalPages} />
+        </div>
+      )}
     </>
   );
 };
