@@ -7,7 +7,6 @@ const getUserReview = cache(async ({ propertyId }: { propertyId: string }) => {
     const session = await auth();
 
     if (!session?.user?.email) {
-      console.log("No user session found.");
       return [];
     }
 

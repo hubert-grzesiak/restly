@@ -60,6 +60,7 @@ const EditForm = ({
   );
 
   const form = useForm<FormSchemaType>({
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       object: {
         country: property.country,
@@ -442,6 +443,7 @@ const EditForm = ({
                             key={field.id}
                             remove={remove}
                             index={index}
+                            error={errors?.calendar?.prices?.[index]}
                           />
                         );
                       })}

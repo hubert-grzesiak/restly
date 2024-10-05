@@ -42,7 +42,7 @@ const Details: React.FC<PageProps> = async ({ params }) => {
 
   const property = await getPropertyInfo({ id });
   const reviews = await getReviews({ propertyId: id });
-
+  console.log("reviews", reviews);
   const { averageRating, numberOfReviews } = await getReviewsSummaryForProperty(
     {
       propertyId: id,

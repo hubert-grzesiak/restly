@@ -28,7 +28,7 @@ export const FormSchema = z.object({
         z.object({
           from: z.string().min(1, "Start date is required"),
           to: z.string().min(1, "End date is required"),
-          price: z.number().min(0, "Price must be at least 0"),
+          price: z.number().gt(0),
         }),
       )
       .min(1, "At least one price is required"),
@@ -36,7 +36,7 @@ export const FormSchema = z.object({
   image: z.object({
     description: z.string(),
     isMain: z.boolean(),
-    urls: z.array(z.string()),
+    urls: z.array(z.string()).min(1, "At least one image is required"),
   }),
 });
 

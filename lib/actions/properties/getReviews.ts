@@ -9,7 +9,6 @@ const getReviews = cache(async ({ propertyId }: { propertyId: string }) => {
     const session = await auth();
 
     if (!session?.user?.email) {
-      console.log("No user session found.");
       return [];
     }
 
@@ -18,7 +17,6 @@ const getReviews = cache(async ({ propertyId }: { propertyId: string }) => {
     });
 
     if (!currentUser) {
-      console.log("User not found.");
       return [];
     }
 
@@ -50,13 +48,11 @@ const getReviews = cache(async ({ propertyId }: { propertyId: string }) => {
     }
 
     if (!reviews.length) {
-      console.log("No reviews found in the database.");
       return [];
     }
 
     return reviews;
   } catch (error) {
-    console.error("Failed to fetch reviews:", error);
     return [];
   }
 });

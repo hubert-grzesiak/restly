@@ -6,14 +6,15 @@ interface LogoutButtonProps {
 }
 
 export const LogoutButton = ({ children }: LogoutButtonProps) => {
-
   const onClick = async () => {
     await logout();
-    // router.push("/auth/login");
   };
 
   return (
-    <span onClick={onClick} className="cursor-pointer flex items-center justify-center">
+    <span
+      onClick={onClick}
+      className="flex cursor-pointer items-center justify-center"
+    >
       {children}
     </span>
   );

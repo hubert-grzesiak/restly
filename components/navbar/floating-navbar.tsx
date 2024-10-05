@@ -13,7 +13,7 @@ import { LogoutButton } from "@/components/auth/logout-button";
 import LoginButton from "@/components/auth/login-button";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { IconExclamationMark, IconPlus } from "@tabler/icons-react";
+import { IconExclamationMark, IconPlus, IconUsers } from "@tabler/icons-react";
 
 const bounceTransition = {
   type: "spring",
@@ -82,6 +82,18 @@ const FloatingNav = ({
           <div className={cn("flex items-center space-x-4")}>
             {user?.role === "ADMIN" && (
               <>
+                <Link
+                  key={`link=banned-users`}
+                  href={"/admin/banned-users"}
+                  className={cn(
+                    "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300",
+                  )}
+                >
+                  <span className="block sm:hidden">
+                    <IconUsers />
+                  </span>
+                  <span className="hidden text-sm sm:block">Banned users</span>
+                </Link>
                 <Link
                   key={`link=admin`}
                   href={"/admin/reported-reviews"}

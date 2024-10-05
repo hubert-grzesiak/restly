@@ -33,6 +33,8 @@ import {
   banUser,
   deleteReportedReview,
 } from "@/lib/actions/admin/reportedReviews";
+import { unbanUser } from "@/lib/actions/admin/bannedUsers";
+import { IconCheck } from "@tabler/icons-react";
 export function CreateFacility() {
   return (
     <Link
@@ -314,6 +316,56 @@ export function BanUser({
                 }`}
               >
                 {isBanning ? "Banning..." : "Ban"}
+              </button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+export function UnbanUser({ userId }: { userId: string }) {
+  const [isUnbanning, setIsUnbanning] = useState(false);
+
+  const handleBan = async () => {
+    setIsUnbanning(true);
+    try {
+      await unbanUser({ userId });
+      toast.success("User unbanned successfully");
+    } catch (error) {
+      console.error("Failed to ban the user", error);
+    } finally {
+      setIsUnbanning(false);
+    }
+  };
+
+  return (
+    <div>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="rounded-md border bg-green-600 p-2 hover:bg-green-800">
+            <span className="sr-only">Unban</span>
+            <IconCheck className="w-5 text-white" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to unban this user?
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <button
+                onClick={handleBan}
+                disabled={isUnbanning}
+                className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
+                  isUnbanning ? "opacity-50" : ""
+                }`}
+              >
+                {isUnbanning ? "Unbanning..." : "Unban"}
               </button>
             </AlertDialogAction>
           </AlertDialogFooter>

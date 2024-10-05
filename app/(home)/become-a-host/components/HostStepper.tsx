@@ -36,7 +36,7 @@ import Stepper from "@/components/Stepper";
 type FormSchemaType = TypeOf<typeof FormSchema>;
 
 const HostStepper: React.FC = () => {
-  const [steps, setSteps] = useState<number>(0);
+  const [steps, setSteps] = useState<number>(3);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [facilities, setFacilities] = useState<
     { label: string; value: string }[]
@@ -63,8 +63,8 @@ const HostStepper: React.FC = () => {
       },
       facility: [],
       calendar: {
-        checkInTime: "",
-        checkOutTime: "",
+        checkInTime: "15:00",
+        checkOutTime: "11:00",
         prices: [
           {
             from: "",
@@ -147,7 +147,7 @@ const HostStepper: React.FC = () => {
       <div className="mt-12 w-full max-w-[600px] rounded-xl bg-white shadow-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div key={steps}>
+            <div>
               {steps === 0 && (
                 <div className="flex flex-col gap-2 p-8">
                   <h2 className="text-lg font-bold">Location</h2>
@@ -268,6 +268,7 @@ const HostStepper: React.FC = () => {
                           setSteps(steps + 1);
                         }
                       }}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Next step
@@ -361,6 +362,7 @@ const HostStepper: React.FC = () => {
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => setSteps(steps - 1)}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Prev step
@@ -378,6 +380,7 @@ const HostStepper: React.FC = () => {
                           setSteps(steps + 1);
                         }
                       }}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Next step
@@ -388,7 +391,6 @@ const HostStepper: React.FC = () => {
               {steps === 2 && (
                 <div className="rounded-xl p-4 shadow-lg md:p-8">
                   <h2 className="text-lg font-bold">Calendar</h2>
-
                   <Controller
                     control={control}
                     name="calendar.checkInTime"
@@ -402,6 +404,7 @@ const HostStepper: React.FC = () => {
                       </FormItem>
                     )}
                   />
+
                   <Controller
                     control={control}
                     name="calendar.checkOutTime"
@@ -425,6 +428,7 @@ const HostStepper: React.FC = () => {
                             key={field.id}
                             remove={remove}
                             index={index}
+                            error={errors?.calendar?.prices?.[index]}
                           />
                         );
                       })}
@@ -466,6 +470,7 @@ const HostStepper: React.FC = () => {
                           setSteps(steps + 1);
                         }
                       }}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Next step
@@ -507,6 +512,7 @@ const HostStepper: React.FC = () => {
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => setSteps(steps - 1)}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Prev step
@@ -518,6 +524,7 @@ const HostStepper: React.FC = () => {
                           setSteps(steps + 1);
                         }
                       }}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Next step
@@ -545,6 +552,7 @@ const HostStepper: React.FC = () => {
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => setSteps(steps - 1)}
+                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Prev step
