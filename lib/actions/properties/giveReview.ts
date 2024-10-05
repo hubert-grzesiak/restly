@@ -41,7 +41,6 @@ export const createReview = async ({
 
   if (session?.user?.email) {
     try {
-      console.log("Creating a review", { body, rating, propertyId });
       // Create the new review
       await db.review.create({
         data: {

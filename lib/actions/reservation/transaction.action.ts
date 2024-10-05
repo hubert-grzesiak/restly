@@ -40,8 +40,6 @@ export async function checkoutReservation(
     const fromDate = new Date(convertDate(formValues.dateRange.from));
     const toDate = new Date(convertDate(formValues.dateRange.to));
 
-    console.log("From date:", fromDate);
-
     let numberOfDays;
 
     if (fromDate === toDate) {
@@ -53,10 +51,7 @@ export async function checkoutReservation(
     }
     const newPrice = price * numberOfDays;
 
-    console.log("Price for all days:", newPrice);
-    console.log("Number of days:", numberOfDays);
     const totalPrice = newPrice + newPrice * 0.05;
-    console.log("Total price with tax:", totalPrice);
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -121,7 +116,6 @@ export async function createReservation(reservation: ReservationResponse) {
           ...reservation,
         },
       });
-      console.log(JSON.parse(JSON.stringify(newReservation)));
       return JSON.parse(JSON.stringify(newReservation));
     } else {
       throw new Error("Property is not available for reservation.");

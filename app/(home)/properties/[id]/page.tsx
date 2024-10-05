@@ -22,6 +22,7 @@ import {
   DeleteProperty,
   RestoreProperty,
 } from "@/components/facilities/buttons";
+import EditCalendar from "./components/EditCalendar";
 
 interface PageProps {
   params: { id?: string };
@@ -33,6 +34,11 @@ const Details: React.FC<PageProps> = async ({ params }) => {
   if (!id) {
     return <div>No property ID provided</div>;
   }
+
+  const capitalize = (s: string) => {
+    if (typeof s !== "string") return "";
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
 
   const property = await getPropertyInfo({ id });
   const reviews = await getReviews({ propertyId: id });
@@ -100,15 +106,19 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                   ) : (
                     <RestoreProperty id={property.id} />
                   ))}
+
                 {user?.id === property.ownerId && (
-                  <Button
-                    variant={"outline"}
-                    href={`
+                  <>
+                    <EditCalendar property={property} />
+                    <Button
+                      variant={"outline"}
+                      href={`
                   /properties/${property.id}/edit
                 `}
-                  >
-                    Edit
-                  </Button>
+                    >
+                      Edit
+                    </Button>
+                  </>
                 )}
                 <div className="hidden md:block">
                   <AddToFavourite propertyId={property.id} variant="withText" />
@@ -140,7 +150,8 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                   <span>({numberOfReviews})</span>
                 </div>
                 <p className="mb-4 text-gray-500 dark:text-gray-400">
-                  {property.city}, {property.country}
+                  {capitalize(property.country)}, {property.city},{" "}
+                  {property.street} {property.houseNumber} street
                 </p>
                 <div className="mb-6">
                   <p>{property.description}</p>

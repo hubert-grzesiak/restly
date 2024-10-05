@@ -33,7 +33,7 @@ const AddToFavourite = ({
       setIsFavourite(status!);
     };
     checkFavourite();
-  }, [propertyId]); // Only re-run this effect if propertyId changes
+  }, [propertyId]);
 
   const handleToggleFavourite = async () => {
     if (!session) {
@@ -42,9 +42,9 @@ const AddToFavourite = ({
 
     try {
       const newFavouriteStatus = await toggleFavouriteProperty(propertyId);
-      setIsFavourite(newFavouriteStatus); // Directly use the boolean value returned
+      setIsFavourite(newFavouriteStatus);
       setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 500); // Duration of animation
+      setTimeout(() => setIsAnimating(false), 500);
     } catch (error) {
       console.error("Error toggling favourite:", error);
     }

@@ -15,7 +15,7 @@ export type UserReviewProps = {
 };
 
 const UserReview: React.FC<UserReviewProps> = ({
-  name,
+  name = "John Doe",
   rating,
   body,
   avatarSrc,
@@ -29,10 +29,10 @@ const UserReview: React.FC<UserReviewProps> = ({
           src={avatarSrc || "/placeholder-user.jpg"}
         />
         <AvatarFallback>
-          {/* {name!
+          {name
             .split(" ")
             .map((n) => n[0])
-            .join("")} */}
+            .join("")}
         </AvatarFallback>
       </Avatar>
       <div className="grid gap-2">

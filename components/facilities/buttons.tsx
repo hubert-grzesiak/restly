@@ -188,7 +188,7 @@ export function DeleteProperty({ id }: { id: string }) {
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button className="rounded-md border bg-red-500 p-2 hover:bg-red-600">
+          <button className="h-9 rounded-md border bg-red-500 p-2 hover:bg-red-600">
             <span className="sr-only">Delete</span>
             <TrashIcon className="w-5 text-white" />
           </button>

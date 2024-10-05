@@ -2,7 +2,7 @@ import { cache } from "react";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
-const getUserReview = cache(async ({ propertyId }: {propertyId: string}) => {
+const getUserReview = cache(async ({ propertyId }: { propertyId: string }) => {
   try {
     const session = await auth();
 

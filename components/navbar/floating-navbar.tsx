@@ -13,6 +13,7 @@ import { LogoutButton } from "@/components/auth/logout-button";
 import LoginButton from "@/components/auth/login-button";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { IconExclamationMark, IconPlus } from "@tabler/icons-react";
 
 const bounceTransition = {
   type: "spring",
@@ -44,7 +45,6 @@ const FloatingNav = ({
     if (typeof current === "number") {
       const direction = current! - scrollYProgress.getPrevious()!;
 
-      // Set shrink state based on the scroll position
       if (scrollYProgress.get() > 0.05 && direction !== 1) {
         setShrink(false);
       } else {
@@ -53,6 +53,7 @@ const FloatingNav = ({
     }
   });
   const user = useCurrentUser();
+  console.log("user role", user?.role);
   return (
     <AnimatePresence mode="wait">
       <nav className={cn("fixed top-0 z-[999] h-[84.8px] w-full bg-white")}>
@@ -62,13 +63,6 @@ const FloatingNav = ({
             opacity: 1,
             y: 0,
           }}
-          // animate={{
-          //   y: visible ? 0 : -100,
-          //   opacity: visible ? 1 : 0,
-          //   paddingLeft: shrink ? "16px" : "0px",
-          //   paddingRight: shrink ? "16px" : "0px",
-          //   transition: { ...bounceTransition },
-          // }}
           transition={shrink ? { duration: 0.2 } : { ...bounceTransition }}
           className={cn(
             "fixed inset-x-0 z-[10] mx-auto flex border border-transparent bg-transparent px-2 py-2 dark:border-white/[0.2] dark:bg-black md:px-4",
@@ -86,6 +80,36 @@ const FloatingNav = ({
           )}
 
           <div className={cn("flex items-center space-x-4")}>
+            {user?.role === "ADMIN" && (
+              <>
+                <Link
+                  key={`link=admin`}
+                  href={"/admin/reported-reviews"}
+                  className={cn(
+                    "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300",
+                  )}
+                >
+                  <span className="block sm:hidden">
+                    <IconExclamationMark />
+                  </span>
+                  <span className="hidden text-sm sm:block">
+                    Reported reviews
+                  </span>
+                </Link>
+                <Link
+                  key={`link=facilities`}
+                  href={"/admin/facilities"}
+                  className={cn(
+                    "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300",
+                  )}
+                >
+                  <span className="block sm:hidden">
+                    <IconPlus />
+                  </span>
+                  <span className="hidden text-sm sm:block">Facilities</span>
+                </Link>
+              </>
+            )}
             {navItems.map((navItem: NavItem, idx: number) => (
               <Link
                 key={`link=${idx}`}

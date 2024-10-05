@@ -14,8 +14,6 @@ export const getReservations = cache(async (propertyId: string) => {
       },
     });
 
-    console.log("Reservations server:", reservations);
-
     const formattedReservations = reservations
       .map((reservation) => {
         try {

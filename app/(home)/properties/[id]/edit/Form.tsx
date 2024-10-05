@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 
 type FormSchemaType = TypeOf<typeof FormSchema>;
 
-interface Properties extends Property {
+export interface Properties extends Property {
   facility: { id: string; name: string }[];
   urls: string[];
   prices: { from: string; to: string; price: number }[];

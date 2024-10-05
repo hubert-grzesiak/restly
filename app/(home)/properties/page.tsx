@@ -10,16 +10,16 @@ interface PropertyWithUrls extends Property {
   urls: string[];
 }
 const Properties = async () => {
-  const result: PropertyWithUrls[] = await getPropertiesInfo({
+  const { propertiesWithUrls } = await getPropertiesInfo({
     softDeleted: false,
+    currentPage: 1,
   });
-  console.log(result);
   return (
     <main className="min-h-screen w-full bg-gray-100 pb-10">
       <div className="flex w-full items-center justify-center px-4 py-5">
         <h1 className="font-inter text-xl font-bold">Properties</h1>
       </div>
-      {result.length === 0 ? (
+      {propertiesWithUrls.length === 0 ? (
         <div className="flex flex-col items-center justify-center">
           <h1>No properties yet</h1>
           <Link href="/become-a-host" className="underline">
@@ -28,7 +28,7 @@ const Properties = async () => {
         </div>
       ) : (
         <div className="flex w-full flex-col [&>a]:border-collapse [&>a]:border [&>a]:border-black [&>a]:hover:cursor-pointer">
-          {result.map((property: PropertyWithUrls) => (
+          {propertiesWithUrls.map((property: PropertyWithUrls) => (
             <Link href={`/properties/${property.id}`} key={property.id}>
               <div className="relative w-full hover:opacity-90">
                 <div className="relative h-[200px] w-full">

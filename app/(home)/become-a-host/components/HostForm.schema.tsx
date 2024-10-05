@@ -40,6 +40,17 @@ export const FormSchema = z.object({
   }),
 });
 
+export const PricesSchema = z.object({
+  calendar: z.object({
+    prices: z.array(
+      z.object({
+        from: z.string().min(1, "Start date is required"),
+        to: z.string().min(1, "End date is required"),
+        price: z.number().min(0, "Price must be at least 0"),
+      }),
+    ),
+  }),
+});
 // geometry: z.object({
 //   type: z.literal("Point"), // Ensure the type is always "Point"
 //   coordinates: z.tuple([z.number(), z.number()]), // Longitude and latitude

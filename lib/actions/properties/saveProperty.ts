@@ -2,6 +2,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function toggleFavouriteProperty(propertyId: string) {
   try {
@@ -38,6 +39,8 @@ export async function toggleFavouriteProperty(propertyId: string) {
   } catch (error) {
     console.error("Error in toggleFavouriteProperty:", error);
     throw error; // Consider handling this more gracefully in production
+  } finally {
+    revalidatePath("/profile/favourites");
   }
 }
 
