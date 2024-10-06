@@ -32,7 +32,6 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
     return isActive ? "Active" : "Offline";
   }, [isActive]);
 
-  // Handle property images array safely
   const property = conversation.property || {};
   const images = property.images || [];
   const imageUrl =
@@ -59,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
       </div>
       <Link
         href={`/properties/${property.id}`}
-        className="flex flex-col-reverse items-center gap-2 justify-self-end border px-4 py-2 md:flex-row"
+        className="flex flex-col-reverse items-center gap-2 justify-self-end border-l px-4 py-2 md:flex-row"
       >
         <div>
           <p className="text-sm md:text-base">{property.name}</p>

@@ -36,7 +36,7 @@ import Stepper from "@/components/Stepper";
 type FormSchemaType = TypeOf<typeof FormSchema>;
 
 const HostStepper: React.FC = () => {
-  const [steps, setSteps] = useState<number>(3);
+  const [steps, setSteps] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [facilities, setFacilities] = useState<
     { label: string; value: string }[]
