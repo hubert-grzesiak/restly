@@ -12,7 +12,6 @@ export interface PropertyWithUrls extends Property {
   urls: string[];
 }
 async function YourPropertiesTab({ searchParams }: SearchParamsProps) {
-  console.log("searchParams", searchParams);
   const currentPage = Number(searchParams?.page) || 1;
 
   const { propertiesWithUrls, propertiesCount } = await getPropertiesInfo({

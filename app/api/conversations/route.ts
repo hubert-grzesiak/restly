@@ -61,6 +61,7 @@ export async function POST(request: Request) {
     // Check for existing conversation between the current user and the other user
     const existingConversations = await db.conversation.findMany({
       where: {
+        propertyId: propertyId,
         OR: [
           {
             userIds: {

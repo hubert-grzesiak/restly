@@ -27,6 +27,7 @@ import reportOpinion from "@/lib/actions/properties/reportOpinion";
 import { deleteProperty } from "@/lib/actions/properties/deleteProperty";
 import { useRouter } from "next/navigation";
 import { restoreProperty } from "@/lib/actions/properties/restoreProperty";
+import { cn } from "@/lib/utils";
 export function CreateFacility() {
   return (
     <Link
@@ -165,6 +166,41 @@ export function ReportReview({ reviewId }: { reviewId: string }) {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+export function PropertyOptions({
+  propertyId,
+  className,
+}: {
+  propertyId: string;
+  className?: string;
+}) {
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className={cn(
+            "flex h-9 w-5 items-center justify-center rounded-full border bg-white [&>svg]:h-4 [&>svg]:w-4 [&>svg]:md:h-5 [&>svg]:md:w-5",
+            className,
+          )}
+          size="icon"
+          variant="ghost"
+        >
+          <MoveHorizontalIcon />
+
+          <span className="sr-only">More options</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[150px]">
+        <DropdownMenuItem asChild>
+          <Link href={`/properties/${propertyId}/guests`}>Guests</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/properties/${propertyId}/edit`}>Edit</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

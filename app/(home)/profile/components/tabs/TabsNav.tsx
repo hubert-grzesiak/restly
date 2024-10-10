@@ -6,7 +6,7 @@ const TabsNav = () => {
   const pathname = usePathname();
   console.log(pathname);
   return (
-    <div className="flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
+    <div className="flex min-h-9 flex-wrap items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
       <Link
         href="/profile"
         className="tab-button"

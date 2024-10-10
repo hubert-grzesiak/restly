@@ -6,19 +6,30 @@ import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfRe
 import { PropertyWithUrls } from "./tabs/YourPropertiesTab";
 import Image from "next/image";
 import AddToFavourite from "../../properties/[id]/components/AddToFavourite";
+import { PropertyOptions } from "@/components/facilities/buttons";
+
+import { currentUser } from "@/lib/actualUserInfo";
+import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const PropertyCard = async ({ property }: { property: PropertyWithUrls }) => {
   const { averageRating } = await getReviewsSummaryForProperty({
     propertyId: property.id,
   });
-
+  const user = await currentUser();
   return (
     <Card key={property.id}>
       <div className="relative aspect-video overflow-hidden rounded-t-lg">
+        {property.ownerId === user?.id && (
+          <PropertyOptions
+            propertyId={property.id}
+            className="absolute right-2 top-1 z-[100]"
+          />
+        )}
         <AddToFavourite
           propertyId={property.id}
           variant={"iconOnly"}
-          className="absolute right-2 top-1 z-[100]"
+          className="absolute left-2 top-1 z-[100]"
           heartIconClassName=""
         />
         <Image
