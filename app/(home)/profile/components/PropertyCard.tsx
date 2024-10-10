@@ -5,6 +5,7 @@ import { StarIcon } from "@/components/icons";
 import getReviewsSummaryForProperty from "@/lib/actions/properties/getNumberOfReviewsForProperty";
 import { PropertyWithUrls } from "./tabs/YourPropertiesTab";
 import Image from "next/image";
+import AddToFavourite from "../../properties/[id]/components/AddToFavourite";
 
 const PropertyCard = async ({ property }: { property: PropertyWithUrls }) => {
   const { averageRating } = await getReviewsSummaryForProperty({
@@ -13,20 +14,26 @@ const PropertyCard = async ({ property }: { property: PropertyWithUrls }) => {
 
   return (
     <Card key={property.id}>
+      <div className="relative aspect-video overflow-hidden rounded-t-lg">
+        <AddToFavourite
+          propertyId={property.id}
+          variant={"iconOnly"}
+          className="absolute right-2 top-1 z-[100]"
+          heartIconClassName=""
+        />
+        <Image
+          src={property.urls[0] || "/images/placeholder.svg"}
+          alt={property.name}
+          width={312}
+          height={175}
+          className="h-full w-full object-cover transition-all group-hover:scale-105"
+        />
+      </div>
       <Link
         href={`/properties/${property.id}`}
         className="group"
         prefetch={false}
       >
-        <div className="relative aspect-video overflow-hidden rounded-t-lg">
-          <Image
-            src={property.urls[0] || "/images/placeholder.svg"}
-            alt={property.name}
-            width={312}
-            height={175}
-            className="h-full w-full object-cover transition-all group-hover:scale-105"
-          />
-        </div>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="grid gap-1">

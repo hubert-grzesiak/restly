@@ -16,11 +16,13 @@ interface AddToFavouriteProps extends ComponentPropsWithoutRef<"button"> {
   propertyId: string;
   className?: string;
   variant?: "withText" | "iconOnly" | "smallScreen";
+  heartIconClassName?: string;
 }
 
 const AddToFavourite = ({
   propertyId,
   variant = "withText",
+  heartIconClassName,
   className,
 }: AddToFavouriteProps) => {
   const { data: session } = useSession();
@@ -68,7 +70,8 @@ const AddToFavourite = ({
         >
           <HeartIcon
             className={cn(
-              "h-5 w-5 transition-all",
+              "h-5 w-5 fill-white transition-all",
+              heartIconClassName,
               isFavourite
                 ? "fill-red-600"
                 : variant === "iconOnly" && "h-6 w-6 fill-black/40 text-white",
