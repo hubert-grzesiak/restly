@@ -53,12 +53,12 @@ const HostStepper: React.FC = () => {
         street: "",
         name: "",
         description: "",
-        numberOfBedrooms: "",
+        numberOfBedrooms: 0,
         postalCode: "",
         houseNumber: "",
         apartmentNumber: "",
-        minimumStay: "",
-        maximumStay: "",
+        minimumStay: 0,
+        maximumStay: 0,
         maxPeople: 0,
       },
       facility: [],
@@ -74,7 +74,6 @@ const HostStepper: React.FC = () => {
         ],
       },
       image: {
-        description: "",
         isMain: false,
         urls: [],
       },
@@ -108,6 +107,21 @@ const HostStepper: React.FC = () => {
   const onFilesChange = (newFiles: UploadFile[]) => {
     setFiles(newFiles);
   };
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(fields.length / itemsPerPage);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+    }
+  }, [fields.length, totalPages, currentPage]);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFields = fields.slice(indexOfFirstItem, indexOfLastItem);
 
   const onSubmit = async (data: FormSchemaType) => {
     console.log("FORM DATA: ", data);
@@ -144,7 +158,7 @@ const HostStepper: React.FC = () => {
       <div className="w-full rounded-xl bg-white p-4">
         <Stepper steps={steps} />
       </div>
-      <div className="mt-12 w-full max-w-[600px] rounded-xl bg-white shadow-xl">
+      <div className="mt-12 w-full max-w-[700px] rounded-xl bg-white shadow-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div>
@@ -313,12 +327,22 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Number of Bedrooms</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="object.minimumStay"
@@ -326,12 +350,22 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Minimum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="object.maximumStay"
@@ -339,25 +373,44 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Maximum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <FormItem>
-                    <FormLabel>Maximum Number of People</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...register("object.maxPeople", {
-                          valueAsNumber: true,
-                        })}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="object.maxPeople"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Maximum Number of People</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <div className="flex w-full flex-row justify-between">
                     <Button
@@ -375,6 +428,7 @@ const HostStepper: React.FC = () => {
                           "object.numberOfBedrooms",
                           "object.minimumStay",
                           "object.maximumStay",
+                          "object.maxPeople",
                         ]);
                         if (isValid) {
                           setSteps(steps + 1);
@@ -389,51 +443,36 @@ const HostStepper: React.FC = () => {
                 </div>
               )}
               {steps === 2 && (
-                <div className="rounded-xl p-4 shadow-lg md:p-8">
+                <div className="rounded-xl p-8 shadow-lg">
                   <h2 className="text-lg font-bold">Calendar</h2>
-                  <Controller
-                    control={control}
-                    name="calendar.checkInTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Check-in Time</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
-                  <Controller
-                    control={control}
-                    name="calendar.checkOutTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Check-out Time</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="mt-[10px]">
-                    <FormLabel className="mb-2">Prices by Month</FormLabel>
+                  <div className="mt-[10px] rounded-md border p-4">
+                    <FormLabel>Prices by Month</FormLabel>
                     <div className="flex flex-col gap-2">
-                      {fields.map((field, index) => {
+                      {currentFields.map((field, index) => {
+                        const globalIndex = indexOfFirstItem + index;
+                        const itemError =
+                          errors?.calendar?.prices?.[globalIndex];
+                        const isLast = globalIndex === fields.length - 1;
+                        const prevToDate =
+                          globalIndex > 0 ? fields[globalIndex - 1].to : null;
                         return (
                           <PriceItem
                             key={field.id}
                             remove={remove}
-                            index={index}
-                            error={errors?.calendar?.prices?.[index]}
+                            index={globalIndex}
+                            error={itemError}
+                            isLast={isLast}
+                            prevToDate={prevToDate}
                           />
                         );
                       })}
                     </div>
-                    <p>{errors?.calendar?.prices?.root?.message}</p>
+                    {errors?.calendar?.prices?.root?.message && (
+                      <p className="text-xs text-red-500">
+                        {errors.calendar.prices.root.message}
+                      </p>
+                    )}
                     <Button
                       className="mt-4 self-end text-center"
                       type="button"
@@ -443,11 +482,37 @@ const HostStepper: React.FC = () => {
                           to: "",
                           price: 0,
                         });
+                        setCurrentPage(totalPages + 1);
                       }}
                     >
                       +
                     </Button>
                   </div>
+
+                  <div className="mb-4 mt-2 flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span>
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => {
@@ -460,6 +525,7 @@ const HostStepper: React.FC = () => {
                       Prev step
                     </Button>
                     <Button
+                      type="button"
                       onClick={async () => {
                         const isValid = await form.trigger([
                           "calendar.checkInTime",
@@ -470,7 +536,6 @@ const HostStepper: React.FC = () => {
                           setSteps(steps + 1);
                         }
                       }}
-                      type="button"
                       className="mt-4 max-w-[320px] text-center"
                     >
                       Next step

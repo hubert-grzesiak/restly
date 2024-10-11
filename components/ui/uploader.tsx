@@ -1,17 +1,16 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload, Button } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 
 type FileType = Blob | File;
 
-// Helper function to convert URLs to UploadFile objects
 const urlToUploadFile = (url: string, index: number): UploadFile => ({
-  uid: String(index), // unique identifier for each file
-  name: `image${index}`, // name for display
-  status: "done", // status for antd Upload
-  url: url, // the URL of the image
+  uid: String(index),
+  name: `image${index}`,
+  status: "done",
+  url: url,
 });
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -22,11 +21,19 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
+// Helper function to compare arrays
+function arraysAreEqual(a: string[], b: string[]) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
 const Uploader: React.FC<{
   onFilesChange?: (files: UploadFile[]) => void;
-  defaultFiles?: string[]; // array of URLs
+  defaultFiles?: string[];
 }> = ({ onFilesChange, defaultFiles = [] }) => {
-  // Convert URLs to UploadFile objects
   const initialFiles = defaultFiles.map((url, index) =>
     urlToUploadFile(url, index),
   );
@@ -35,9 +42,14 @@ const Uploader: React.FC<{
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>(initialFiles);
 
+  const prevDefaultFilesRef = useRef<string[]>(defaultFiles);
+
   useEffect(() => {
-    setFileList(initialFiles);
-  }, [defaultFiles]);
+    if (!arraysAreEqual(prevDefaultFilesRef.current, defaultFiles)) {
+      setFileList(initialFiles);
+      prevDefaultFilesRef.current = defaultFiles;
+    }
+  }, [defaultFiles, initialFiles]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -50,6 +62,13 @@ const Uploader: React.FC<{
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+
+    newFileList.forEach((file) => {
+      if (file.response && file.response.url) {
+        file.url = file.response.url;
+      }
+    });
+
     if (onFilesChange) {
       onFilesChange(newFileList);
     }

@@ -148,12 +148,9 @@ const ReservationForm = ({
   ): number => {
     const dateFrom = new Date(from);
     const dateTo = new Date(to);
-    // Subtract one day to exclude the end date
-    dateTo.setDate(dateTo.getDate() - 1);
     const timeDifference = dateTo.getTime() - dateFrom.getTime();
-    const totalDays = timeDifference / (1000 * 3600 * 24) + 1;
-
-    return totalDays;
+    const totalDays = timeDifference / (1000 * 3600 * 24);
+    return Math.ceil(totalDays);
   };
 
   const calculateTotalPrice = (
@@ -164,21 +161,15 @@ const ReservationForm = ({
     let totalPrice = 0;
     const dateFrom = new Date(from);
     const dateTo = new Date(to);
-    dateFrom.setDate(dateFrom.getDate() - 1);
-    dateTo.setDate(dateTo.getDate() - 1);
 
-    prices.forEach(({ from, to, price }) => {
-      const priceFrom = new Date(from.split(".").reverse().join("-"));
-      const priceTo = new Date(to.split(".").reverse().join("-"));
+    prices.forEach(({ from: priceFromStr, to: priceToStr, price }) => {
+      const priceFrom = new Date(priceFromStr);
+      const priceTo = new Date(priceToStr);
 
       if (dateFrom <= priceTo && dateTo >= priceFrom) {
         const effectiveFrom = dateFrom >= priceFrom ? dateFrom : priceFrom;
-        const effectiveTo = dateTo < priceTo ? dateTo : priceTo;
-        const days = calculateTotalDays(
-          effectiveFrom.toISOString().split("T")[0],
-          effectiveTo.toISOString().split("T")[0],
-        );
-
+        const effectiveTo = dateTo <= priceTo ? dateTo : priceTo;
+        const days = calculateTotalDays(effectiveFrom, effectiveTo);
         totalPrice += days * price;
       }
     });

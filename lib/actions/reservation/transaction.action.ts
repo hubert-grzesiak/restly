@@ -56,7 +56,7 @@ export async function checkoutReservation(
       line_items: [
         {
           price_data: {
-            currency: "pln",
+            currency: "usd",
             unit_amount: totalPrice * 100,
             product_data: {
               name: property.name, // Nazwa nieruchomości

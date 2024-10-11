@@ -32,7 +32,6 @@ function Calendar({
     return null;
   };
 
-  // Custom component to render each day with price information
   const CustomDayContent = ({ date }: DayContentProps): JSX.Element => {
     const price = findPriceForDate(date);
     return (
@@ -40,7 +39,7 @@ function Calendar({
         <div>{date.getDate()}</div>
         {price !== null && (
           <div className="text-[8px] aria-selected:text-accent-foreground">
-            {price}
+            ${price.toFixed(2)}
           </div>
         )}
       </div>

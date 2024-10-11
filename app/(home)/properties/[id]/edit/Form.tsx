@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -71,9 +71,9 @@ const EditForm = ({
         apartmentNumber: property.apartmentNumber,
         name: property.name,
         description: property.description,
-        numberOfBedrooms: property.numberOfBedrooms,
-        minimumStay: property.minimumStay,
-        maximumStay: property.maximumStay,
+        numberOfBedrooms: Number(property.numberOfBedrooms),
+        minimumStay: Number(property.minimumStay),
+        maximumStay: Number(property.maximumStay),
         maxPeople: property.maxPeople,
       },
       calendar: {
@@ -107,11 +107,32 @@ const EditForm = ({
     },
   });
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(fields.length / itemsPerPage);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+    }
+  }, [fields.length, totalPages, currentPage]);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFields = fields.slice(indexOfFirstItem, indexOfLastItem);
+
   const onFilesChange = (newFiles: UploadFile[]) => {
     setFiles(newFiles);
-    console.log("FILES: ", newFiles);
-  };
+    const urls = newFiles
+      .map((file) => file.url || file.response?.url)
+      .filter((url): url is string => !!url);
 
+    form.setValue("image.urls", urls);
+  };
+  const onError = (errors: any) => {
+    console.log("FORM ERRORS: ", errors);
+  };
   const onSubmit = async (data: FormSchemaType) => {
     console.log("DATA: ", data);
     setIsSubmitting(true);
@@ -159,9 +180,9 @@ const EditForm = ({
       <div className="w-full rounded-xl bg-white p-4">
         <Stepper steps={steps} />
       </div>
-      <div className="mt-12 w-full max-w-[600px] rounded-xl bg-white shadow-xl">
+      <div className="mt-12 w-full max-w-[700px] rounded-xl bg-white shadow-xl">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit, onError)}>
             <div>
               {steps === 0 && (
                 <div className="flex flex-col gap-2 p-8">
@@ -328,12 +349,22 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Number of Bedrooms</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="object.minimumStay"
@@ -341,12 +372,22 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Minimum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="object.maximumStay"
@@ -354,25 +395,44 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Maximum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <FormItem>
-                    <FormLabel>Maximum Number of People</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...register("object.maxPeople", {
-                          valueAsNumber: true,
-                        })}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="object.maxPeople"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Maximum Number of People</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                value === "" ? undefined : Number(value),
+                              );
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <div className="flex w-full flex-row justify-between">
                     <Button
@@ -407,48 +467,33 @@ const EditForm = ({
                 <div className="rounded-xl p-8 shadow-lg">
                   <h2 className="text-lg font-bold">Calendar</h2>
 
-                  <Controller
-                    control={control}
-                    name="calendar.checkInTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Check-in Time</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Controller
-                    control={control}
-                    name="calendar.checkOutTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Check-out Time</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
                   <div className="mt-[10px] rounded-md border p-4">
                     <FormLabel>Prices by Month</FormLabel>
                     <div className="flex flex-col gap-2">
-                      {fields.map((field, index) => {
+                      {currentFields.map((field, index) => {
+                        const globalIndex = indexOfFirstItem + index;
+                        const itemError =
+                          errors?.calendar?.prices?.[globalIndex];
+                        const isLast = globalIndex === fields.length - 1;
+                        const prevToDate =
+                          globalIndex > 0 ? fields[globalIndex - 1].to : null;
                         return (
                           <PriceItem
                             key={field.id}
                             remove={remove}
-                            index={index}
-                            error={errors?.calendar?.prices?.[index]}
+                            index={globalIndex}
+                            error={itemError}
+                            isLast={isLast}
+                            prevToDate={prevToDate}
                           />
                         );
                       })}
                     </div>
-                    <p>{errors?.calendar?.prices?.root?.message}</p>
+                    {errors?.calendar?.prices?.root?.message && (
+                      <p className="text-xs text-red-500">
+                        {errors.calendar.prices.root.message}
+                      </p>
+                    )}
                     <Button
                       className="mt-4 self-end text-center"
                       type="button"
@@ -458,11 +503,37 @@ const EditForm = ({
                           to: "",
                           price: 0,
                         });
+                        setCurrentPage(totalPages + 1);
                       }}
                     >
                       +
                     </Button>
                   </div>
+
+                  <div className="mb-4 mt-2 flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span>
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+
                   <div className="flex w-full flex-row justify-between">
                     <Button
                       onClick={() => {
@@ -555,11 +626,14 @@ const EditForm = ({
                   <FormField
                     control={form.control}
                     name="image.urls"
-                    render={() => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormControl>
                           <Uploader
-                            onFilesChange={onFilesChange}
+                            onFilesChange={(files) => {
+                              field.onChange(files);
+                              onFilesChange(files);
+                            }}
                             defaultFiles={property.urls}
                           />
                         </FormControl>
