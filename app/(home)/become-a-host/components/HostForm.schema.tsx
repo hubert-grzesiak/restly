@@ -17,11 +17,11 @@ export const FormSchema = z.object({
     minimumStay: z
       .number()
       .min(1, "Minimum stay must be at least 1 day")
-      .max(14, "Minimum stay must be less than 365 days"),
+      .max(14, "Minimum stay must be less than 14 days"),
     maximumStay: z
       .number()
       .min(1, "Maximum stay must be at least 1 day")
-      .max(14, "Maximum stay must be less than 365 days"),
+      .max(14, "Maximum stay must be less than 14 days"),
     maxPeople: z
       .number()
       .min(1, "Maximum number of people must be at least 1")

@@ -164,12 +164,12 @@ model Property {
   geometry         Geometry? @relation(fields: [geometryId], references: [id])
   name             String
   description      String
-  numberOfBedrooms String
+  numberOfBedrooms Int
   postalCode       String
   houseNumber      String
   apartmentNumber  String
-  minimumStay      String
-  maximumStay      String
+  minimumStay      Int
+  maximumStay      Int
   maxPeople        Int
   ownerId          String
   checkInTime      String?
