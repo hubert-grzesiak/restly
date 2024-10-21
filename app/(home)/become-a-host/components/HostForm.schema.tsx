@@ -1,4 +1,11 @@
+import { parseISO } from "date-fns";
 import { z } from "zod";
+
+const PriceItemSchema = z.object({
+  from: z.string().nonempty({ message: "Date from is required" }),
+  to: z.string().nonempty({ message: "Date to is required" }),
+  price: z.number().positive({ message: "Price must be greater than zero" }),
+});
 
 export const FormSchema = z.object({
   object: z.object({
@@ -36,14 +43,30 @@ export const FormSchema = z.object({
     checkInTime: z.string().min(1, "Check-in Time is required"),
     checkOutTime: z.string().min(1, "Check-out Time is required"),
     prices: z
-      .array(
-        z.object({
-          from: z.string().min(1, "Start date is required"),
-          to: z.string().min(1, "End date is required"),
-          price: z.number().gt(0),
-        }),
-      )
-      .min(1, "At least one price is required"),
+      .array(PriceItemSchema)
+      .min(1, "At least one price is required")
+      .refine(
+        (prices) => {
+          for (let i = 0; i < prices.length; i++) {
+            const currentFrom = parseISO(prices[i].from);
+            const currentTo = parseISO(prices[i].to);
+
+            for (let j = 0; j < prices.length; j++) {
+              if (i === j) continue;
+
+              const compareFrom = parseISO(prices[j].from);
+              const compareTo = parseISO(prices[j].to);
+
+              // Overlap condition: currentFrom < compareTo and currentTo > compareFrom
+              if (currentFrom < compareTo && currentTo > compareFrom) {
+                return false;
+              }
+            }
+          }
+          return true;
+        },
+        { message: "Date ranges cannot overlap.", path: ["prices"] },
+      ),
   }),
   image: z.object({
     isMain: z.boolean().optional(),
@@ -51,27 +74,34 @@ export const FormSchema = z.object({
   }),
 });
 
-const PriceItemSchema = z
-  .object({
-    from: z.string().nonempty({ message: "Date from is required" }),
-    to: z.string().nonempty({ message: "Date to is required" }),
-    price: z.number().positive({ message: "Price must be greater than zero" }),
-  })
-  .refine(
-    (data) => {
-      const fromDate = new Date(data.from);
-      const toDate = new Date(data.to);
-      return toDate > fromDate;
-    },
-    {
-      message: "Date to must be at least one day after date from",
-      path: ["to"],
-    },
-  );
-
+// Define the main PricesSchema with overlap refinement
 export const PricesSchema = z.object({
   calendar: z.object({
-    prices: z.array(PriceItemSchema),
+    prices: z
+      .array(PriceItemSchema)
+      .min(1, "At least one price is required")
+      .refine(
+        (prices) => {
+          for (let i = 0; i < prices.length; i++) {
+            const currentFrom = parseISO(prices[i].from);
+            const currentTo = parseISO(prices[i].to);
+
+            for (let j = 0; j < prices.length; j++) {
+              if (i === j) continue;
+
+              const compareFrom = parseISO(prices[j].from);
+              const compareTo = parseISO(prices[j].to);
+
+              // Overlap condition: currentFrom < compareTo and currentTo > compareFrom
+              if (currentFrom < compareTo && currentTo > compareFrom) {
+                return false;
+              }
+            }
+          }
+          return true;
+        },
+        { message: "Date ranges cannot overlap.", path: ["prices"] },
+      ),
   }),
 });
 // geometry: z.object({

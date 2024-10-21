@@ -86,7 +86,7 @@ const EditCalendar = ({ property }: { property: Properties }) => {
   if (lastItemFrom && lastItemTo) {
     const fromDate = parseISO(lastItemFrom);
     const toDate = parseISO(lastItemTo);
-    isDateValid = toDate > fromDate;
+    isDateValid = toDate >= fromDate;
   }
 
   const isPriceValid = lastItemPrice > 0;
@@ -115,7 +115,6 @@ const EditCalendar = ({ property }: { property: Properties }) => {
     }
   };
 
-  console.log("errors: ", errors);
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -140,6 +139,13 @@ const EditCalendar = ({ property }: { property: Properties }) => {
                     const isLast = globalIndex === fields.length - 1;
                     const prevToDate =
                       globalIndex > 0 ? fields[globalIndex - 1].to : null;
+
+                    const existingPeriods = fields
+                      .filter((_, i) => i !== globalIndex)
+                      .map((item) => ({
+                        from: item.from,
+                        to: item.to,
+                      }));
                     return (
                       <PriceItem
                         key={field.id}
@@ -148,13 +154,14 @@ const EditCalendar = ({ property }: { property: Properties }) => {
                         error={itemError}
                         isLast={isLast}
                         prevToDate={prevToDate}
+                        existingPeriods={existingPeriods}
                       />
                     );
                   })}
                 </div>
-                {errors?.calendar?.prices?.root?.message && (
+                {errors?.calendar?.prices?.prices?.message && (
                   <p className="text-xs text-red-500">
-                    {errors.calendar.prices.root.message}
+                    {errors?.calendar?.prices?.prices?.message}
                   </p>
                 )}
                 <Button

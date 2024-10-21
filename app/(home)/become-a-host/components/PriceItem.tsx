@@ -8,6 +8,15 @@ import {
   ControllerRenderProps,
 } from "react-hook-form";
 import {
+  isEqual,
+  isAfter,
+  isBefore,
+  parseISO,
+  format,
+  isWithinInterval,
+} from "date-fns";
+
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -15,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { format, parseISO, isAfter } from "date-fns";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { Input } from "@/components/ui/input";
 import { IconTrash } from "@tabler/icons-react";
@@ -26,6 +34,7 @@ interface PriceItemProps {
   error: any;
   isLast: boolean;
   prevToDate: string | null;
+  existingPeriods: Array<{ from: string; to: string }>;
 }
 
 type FieldType = ControllerRenderProps<FieldValues, FieldPath<FieldValues>>;
@@ -36,16 +45,29 @@ const PriceItem: React.FC<PriceItemProps> = ({
   error,
   isLast,
   prevToDate,
+  existingPeriods,
 }) => {
   const { register, control, watch } = useFormContext();
   const toDate = watch(`calendar.prices.${index}.to`);
   const fromDate = watch(`calendar.prices.${index}.from`);
   const parsedToDate = toDate ? parseISO(toDate) : null;
   const parsedFromDate = fromDate ? parseISO(fromDate) : null;
-
+  console.log("existingPeriods", existingPeriods);
   const disablePrice =
     !parsedFromDate || !parsedToDate || isAfter(parsedFromDate, parsedToDate);
 
+  const isDateInExistingPeriods = (date: Date) => {
+    return existingPeriods.some((period) => {
+      const periodFrom = parseISO(period.from);
+      const periodTo = parseISO(period.to);
+
+      return (
+        isWithinInterval(date, { start: periodFrom, end: periodTo }) ||
+        isEqual(date, periodFrom) ||
+        isEqual(date, periodTo)
+      );
+    });
+  };
   const handleDateChange = (date: Date | null, field: FieldType) => {
     if (date) {
       field.onChange(format(date, "yyyy-MM-dd"));
@@ -94,7 +116,14 @@ const PriceItem: React.FC<PriceItemProps> = ({
                 if (date < today) {
                   return true;
                 }
-                if (minDate && date < minDate) {
+                // if (minDate && date < minDate) {
+                //   return true;
+                // }
+                console.log(
+                  `isDateInExistingPeriods, date: ${date} -->`,
+                  isDateInExistingPeriods(date),
+                );
+                if (isDateInExistingPeriods(date)) {
                   return true;
                 }
                 return false;

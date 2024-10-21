@@ -477,6 +477,12 @@ const EditForm = ({
                         const isLast = globalIndex === fields.length - 1;
                         const prevToDate =
                           globalIndex > 0 ? fields[globalIndex - 1].to : null;
+                        const existingPeriods = fields
+                          .filter((_, i) => i !== globalIndex)
+                          .map((item) => ({
+                            from: item.from,
+                            to: item.to,
+                          }));
                         return (
                           <PriceItem
                             key={field.id}
@@ -485,13 +491,14 @@ const EditForm = ({
                             error={itemError}
                             isLast={isLast}
                             prevToDate={prevToDate}
+                            existingPeriods={existingPeriods}
                           />
                         );
                       })}
                     </div>
-                    {errors?.calendar?.prices?.root?.message && (
+                    {errors?.calendar?.prices?.prices?.message && (
                       <p className="text-xs text-red-500">
-                        {errors.calendar.prices.root.message}
+                        {errors?.calendar?.prices?.prices?.message}
                       </p>
                     )}
                     <Button
