@@ -8,123 +8,61 @@ import { DateInput } from "./date-input";
 import { Label } from "./label";
 import { Switch } from "./switch";
 import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { format, eachDayOfInterval, parse } from "date-fns";
 
 export interface DateRangePickerProps {
-  /** Click handler for applying the updates from DateRangePicker. */
   onUpdate?: (values: {
     range: { from: string; to: string };
     rangeCompare?: { from: string; to: string };
   }) => void;
-  /** Initial value for start date */
   initialDateFrom?: Date | string;
-  /** Initial value for end date */
   initialDateTo?: Date | string;
-  /** Initial value for start date for compare */
   initialCompareFrom?: Date | string;
-  /** Initial value for end date for compare */
   initialCompareTo?: Date | string;
-  /** Alignment of popover */
   align?: "start" | "center" | "end";
-  /** Option for locale */
-  /** Option for showing compare feature */
   showCompare?: boolean;
-  /** Array of blocked dates */
-  blockedDates?: Array<{ from: string; to: string }>;
-  /** Styles for button */
   buttonStyles?: string;
   prices?: { from: string; to: string; price: number }[];
+  blockedDates?: Array<{ from: string; to: string }>;
 }
 
-const formatDate = (date: Date): string => {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString();
-  return `${day}.${month}.${year}`;
-};
-
-const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
-  if (typeof dateInput === "string") {
-    // Split the date string to get year, month, and day parts
-    const parts = dateInput.split("-").map((part) => parseInt(part, 10));
-    // Create a new Date object using the local timezone
-    // Note: Month is 0-indexed, so subtract 1 from the month part
-    const date = new Date(parts[0], parts[1] - 1, parts[2]);
-    return date;
-  } else {
-    // If dateInput is already a Date object, return it directly
-    return dateInput;
-  }
-};
-
-const getBlockedDates = (
-  blockedDates: Array<{ from: string; to: string }>,
-): Date[] => {
-  const blocked = [];
-
-  for (const { from, to } of blockedDates) {
-    const current = new Date(from.split(".").reverse().join("-"));
-
-    const end = new Date(to.split(".").reverse().join("-"));
-
-    while (current <= end) {
-      blocked.push(new Date(current));
-
-      current.setDate(current.getDate() + 1);
-    }
-  }
-
-  return blocked;
+const formatDateDisplay = (date: Date): string => {
+  return format(date, "dd.MM.yyyy");
 };
 
 interface DateRange {
-  from: Date;
-  to: Date | undefined;
+  from: string;
+  to: string;
 }
 
-/** The DateRangePicker component allows a user to select a range of dates */
-export const DateRangePicker: FC<DateRangePickerProps> & {
-  filePath: string;
-} = ({
-  initialDateFrom = new Date(
-    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 1),
-  ),
-  initialDateTo = new Date(
-    new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + 2),
-  ),
+export const DateRangePicker: FC<DateRangePickerProps> = ({
+  initialDateFrom = new Date(),
+  initialDateTo,
   initialCompareFrom,
   initialCompareTo,
   onUpdate,
   align = "center",
   showCompare = false,
-  blockedDates = [],
   buttonStyles,
   prices = [],
+  blockedDates = [],
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const blockedDatesArray = getBlockedDates(blockedDates);
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   const [range, setRange] = useState<DateRange>({
-    from: getDateAdjustedForTimezone(initialDateFrom),
-    to: initialDateTo
-      ? getDateAdjustedForTimezone(initialDateTo)
-      : getDateAdjustedForTimezone(initialDateFrom),
+    from: initialDateFrom,
+    to: initialDateTo ? initialDateTo : initialDateFrom,
   });
+  console.log("blocked dates", blockedDates);
   const [rangeCompare, setRangeCompare] = useState<DateRange | undefined>(
     initialCompareFrom
       ? {
-          from: new Date(new Date(initialCompareFrom).setHours(0, 0, 0, 0)),
-          to: initialCompareTo
-            ? new Date(new Date(initialCompareTo).setHours(0, 0, 0, 0))
-            : new Date(new Date(initialCompareFrom).setHours(0, 0, 0, 0)),
+          from: initialCompareFrom,
+          to: initialCompareTo ? initialCompareTo : initialCompareFrom,
         }
       : undefined,
   );
 
-  // Refs to store the values of range and rangeCompare when the date picker is opened
   const openedRangeRef = useRef<DateRange | undefined>();
   const openedRangeCompareRef = useRef<DateRange | undefined>();
 
@@ -139,7 +77,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 
     window.addEventListener("resize", handleResize);
 
-    // Clean up event listener on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -147,40 +84,21 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 
   const resetValues = (): void => {
     setRange({
-      from:
-        typeof initialDateFrom === "string"
-          ? getDateAdjustedForTimezone(initialDateFrom)
-          : initialDateFrom,
-      to: initialDateTo
-        ? typeof initialDateTo === "string"
-          ? getDateAdjustedForTimezone(initialDateTo)
-          : initialDateTo
-        : typeof initialDateFrom === "string"
-          ? getDateAdjustedForTimezone(initialDateFrom)
-          : initialDateFrom,
+      from: initialDateFrom,
+      to: initialDateTo ? initialDateTo : initialDateFrom,
     });
     setRangeCompare(
       initialCompareFrom
         ? {
-            from:
-              typeof initialCompareFrom === "string"
-                ? getDateAdjustedForTimezone(initialCompareFrom)
-                : initialCompareFrom,
-            to: initialCompareTo
-              ? typeof initialCompareTo === "string"
-                ? getDateAdjustedForTimezone(initialCompareTo)
-                : initialCompareTo
-              : typeof initialCompareFrom === "string"
-                ? getDateAdjustedForTimezone(initialCompareFrom)
-                : initialCompareFrom,
+            from: initialCompareFrom,
+            to: initialCompareTo ? initialCompareTo : initialCompareFrom,
           }
         : undefined,
     );
   };
 
-  // Helper function to check if two date ranges are equal
   const areRangesEqual = (a?: DateRange, b?: DateRange): boolean => {
-    if (!a || !b) return a === b; // If either is undefined, return true if both are undefined
+    if (!a || !b) return a === b;
     return (
       a.from.getTime() === b.from.getTime() &&
       (!a.to || !b.to || a.to.getTime() === b.to.getTime())
@@ -192,7 +110,110 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       openedRangeRef.current = range;
       openedRangeCompareRef.current = rangeCompare;
     }
-  }, []);
+  }, [isOpen, range, rangeCompare]);
+
+  const getAvailableDatesSet = (
+    prices: Array<{ from: string; to: string; price: number }>,
+  ): Set<number> => {
+    const availableDatesSet = new Set<number>();
+    prices.forEach(({ from, to }) => {
+      const dates = eachDayOfInterval({ start: from, end: to });
+      dates.forEach((date) => {
+        availableDatesSet.add(date.getTime());
+      });
+    });
+    return availableDatesSet;
+  };
+  const availableDatesSet = getAvailableDatesSet(prices);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const oneYearFromNow = new Date(today);
+  oneYearFromNow.setFullYear(today.getFullYear() + 1);
+
+  const getAllDatesBetween = (startDate: Date, endDate: Date): Date[] => {
+    const dates = [];
+    const current = new Date(startDate);
+    while (current <= endDate) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    return dates;
+  };
+
+  const allDates = getAllDatesBetween(today, oneYearFromNow);
+
+  const parseDate = (dateString: string): Date => {
+    return parse(dateString, "dd.MM.yyyy", new Date());
+  };
+
+  const getDatesFromBlockedRanges = (
+    blockedRanges: Array<{ from: string; to: string }>,
+  ): Date[] => {
+    const dates: Date[] = [];
+    blockedRanges.forEach(({ from, to }) => {
+      const start = parseDate(from);
+      const end = parseDate(to);
+      const intervalDates = eachDayOfInterval({ start, end });
+      dates.push(...intervalDates);
+    });
+    return dates;
+  };
+
+  const blockedDatesArray = getDatesFromBlockedRanges(blockedDates);
+
+  // Existing code to get disabled dates
+  const disabledDatesArray = allDates.filter((date) => {
+    const dateTime = date.getTime();
+    const isAvailable = availableDatesSet.has(dateTime);
+    return !isAvailable;
+  });
+
+  // Combine blocked dates with disabled dates
+  const allDisabledDatesArray = [...disabledDatesArray, ...blockedDatesArray];
+
+  // Create a Set for faster lookup
+  const disabledDatesSet = new Set(
+    allDisabledDatesArray.map((date) => date.getTime()),
+  );
+
+  // Final disabled dates array
+  const finalDisabledDatesArray = allDates.filter((date) => {
+    return disabledDatesSet.has(date.getTime());
+  });
+  console.log("disabledDatesArray", disabledDatesArray);
+
+  // Handle date selection with max range of 14 days
+  const handleSelect = (value: { from?: Date; to?: Date } | undefined) => {
+    if (value?.from != null) {
+      let from = value.from;
+      let to = value.to || value.from;
+      const diffInDays =
+        Math.ceil((to.getTime() - from.getTime()) / (1000 * 3600 * 24)) + 1;
+      if (diffInDays > 14) {
+        to = new Date(from);
+        to.setDate(from.getDate() + 13); // 14 days total
+        // Optionally, show a message to the user
+      }
+      setRange({ from, to });
+
+      // Call onUpdate here
+      if (onUpdate) {
+        onUpdate({
+          range: {
+            from: formatDateDisplay(from),
+            to: formatDateDisplay(to),
+          },
+          rangeCompare: rangeCompare
+            ? {
+                from: formatDateDisplay(rangeCompare.from),
+                to: formatDateDisplay(rangeCompare.to!),
+              }
+            : undefined,
+        });
+      }
+    }
+  };
 
   return (
     <Popover
@@ -205,16 +226,16 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         <Button size={"lg"} variant={"outline"} className={buttonStyles}>
           <div className="w-full">
             <div className="py-1 text-xs md:text-sm">
-              <div>{`${formatDate(range.from)}${
-                range.to != null ? " - " + formatDate(range.to) : ""
+              <div>{`${formatDateDisplay(range.from)}${
+                range.to != null ? " - " + formatDateDisplay(range.to) : ""
               }`}</div>
             </div>
             {rangeCompare != null && (
               <div className="-mt-1 text-xs opacity-60">
                 <>
-                  vs. {formatDate(rangeCompare.from)}
+                  vs. {formatDateDisplay(rangeCompare.from)}
                   {rangeCompare.to != null
-                    ? ` - ${formatDate(rangeCompare.to)}`
+                    ? ` - ${formatDateDisplay(rangeCompare.to)}`
                     : ""}
                 </>
               </div>
@@ -348,21 +369,12 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               <div>
                 <Calendar
                   mode="range"
-                  onSelect={(value: { from?: Date; to?: Date } | undefined) => {
-                    if (value?.from != null) {
-                      setRange({ from: value.from, to: value?.to });
-                    }
-                  }}
+                  onSelect={handleSelect}
                   selected={range}
                   numberOfMonths={isSmallScreen ? 1 : 2}
                   defaultMonth={new Date()}
                   prices={prices}
-                  disabledDates={[
-                    ...blockedDatesArray,
-                    ...getBlockedDates([
-                      { from: "01.01.2024", to: formatDate(today) },
-                    ]),
-                  ]}
+                  disabledDates={finalDisabledDatesArray}
                 />
               </div>
             </div>
@@ -387,13 +399,13 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               ) {
                 onUpdate?.({
                   range: {
-                    from: formatDate(range.from),
-                    to: formatDate(range.to!),
+                    from: formatDateDisplay(range.from),
+                    to: formatDateDisplay(range.to!),
                   },
                   rangeCompare: rangeCompare
                     ? {
-                        from: formatDate(rangeCompare.from),
-                        to: formatDate(rangeCompare.to!),
+                        from: formatDateDisplay(rangeCompare.from),
+                        to: formatDateDisplay(rangeCompare.to!),
                       }
                     : undefined,
                 });
@@ -409,5 +421,3 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 };
 
 DateRangePicker.displayName = "DateRangePicker";
-DateRangePicker.filePath =
-  "libs/shared/ui-kit/src/lib/date-range-picker/date-range-picker.tsx";

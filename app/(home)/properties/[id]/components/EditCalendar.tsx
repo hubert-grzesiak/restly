@@ -84,14 +84,14 @@ const EditCalendar = ({ property }: { property: Properties }) => {
 
   let isDateValid = false;
   if (lastItemFrom && lastItemTo) {
-    const fromDate = parseISO(lastItemFrom);
-    const toDate = parseISO(lastItemTo);
-    isDateValid = toDate >= fromDate;
+    isDateValid = lastItemTo >= lastItemFrom;
   }
+  console.log("fields", fields);
 
   const isPriceValid = lastItemPrice > 0;
 
-  const canAddNewItem = isLastItemFilled && isDateValid && isPriceValid;
+  const canAddNewItem =
+    (isLastItemFilled && isDateValid && isPriceValid) || fields.length === 0;
 
   const onSubmit = async (data: Prices) => {
     console.log("DATA: ", data);

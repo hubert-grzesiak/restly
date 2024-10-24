@@ -14,6 +14,7 @@ import {
   parseISO,
   format,
   isWithinInterval,
+  parse,
 } from "date-fns";
 
 import {
@@ -58,19 +59,16 @@ const PriceItem: React.FC<PriceItemProps> = ({
 
   const isDateInExistingPeriods = (date: Date) => {
     return existingPeriods.some((period) => {
-      const periodFrom = parseISO(period.from);
-      const periodTo = parseISO(period.to);
-
       return (
-        isWithinInterval(date, { start: periodFrom, end: periodTo }) ||
-        isEqual(date, periodFrom) ||
-        isEqual(date, periodTo)
+        isWithinInterval(date, { start: period.from, end: period.to }) ||
+        isEqual(date, period.from) ||
+        isEqual(date, period.to)
       );
     });
   };
   const handleDateChange = (date: Date | null, field: FieldType) => {
     if (date) {
-      field.onChange(format(date, "yyyy-MM-dd"));
+      field.onChange(format(date, "yyyy.MM.dd"));
     } else {
       field.onChange("");
     }
@@ -81,8 +79,11 @@ const PriceItem: React.FC<PriceItemProps> = ({
     label: string,
     fieldError: any,
     disabled: boolean,
-    minDate?: Date,
   ) => {
+    const selectedDate = field.value
+      ? parse(field.value, "yyyy.MM.dd", new Date())
+      : null;
+
     return (
       <div className="flex flex-col gap-1.5">
         <label className="text-xs">{label}</label>
@@ -97,18 +98,14 @@ const PriceItem: React.FC<PriceItemProps> = ({
               )}
               disabled={disabled}
             >
-              {field.value ? (
-                format(parseISO(field.value), "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
+              {field.value ? <p>{field.value}</p> : <span>Pick a date</span>}
               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={field.value ? parseISO(field.value) : undefined}
+              selected={selectedDate}
               onSelect={(date) => handleDateChange(date, field)}
               disabled={(date) => {
                 const today = new Date();
@@ -116,13 +113,6 @@ const PriceItem: React.FC<PriceItemProps> = ({
                 if (date < today) {
                   return true;
                 }
-                // if (minDate && date < minDate) {
-                //   return true;
-                // }
-                console.log(
-                  `isDateInExistingPeriods, date: ${date} -->`,
-                  isDateInExistingPeriods(date),
-                );
                 if (isDateInExistingPeriods(date)) {
                   return true;
                 }
@@ -152,13 +142,7 @@ const PriceItem: React.FC<PriceItemProps> = ({
                 const prevToDateParsed = parseISO(prevToDate);
                 minDate = new Date(prevToDateParsed.getTime() + 86400000);
               }
-              return renderDateButton(
-                field,
-                "Date from",
-                error?.from,
-                false,
-                minDate,
-              );
+              return renderDateButton(field, "Date from", error?.from, false);
             } else {
               return renderDateButton(field, "Date from", error?.from, true);
             }

@@ -19,7 +19,7 @@ function Calendar({
 }: CalendarProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Ensure we are working with the start of the day
-
+  console.log(prices);
   // Helper function to find the price for a specific date
   const findPriceForDate = (date: Date) => {
     for (const priceRange of prices) {
@@ -94,7 +94,7 @@ function Calendar({
       components={{
         IconLeft: () => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: () => <ChevronRightIcon className="h-4 w-4" />,
-        DayContent: CustomDayContent, // Use the custom day rendering component here
+        DayContent: CustomDayContent,
       }}
       disabled={[
         {

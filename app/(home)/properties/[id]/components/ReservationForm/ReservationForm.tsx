@@ -30,6 +30,7 @@ import { Property } from "@prisma/client";
 import { checkoutReservation } from "@/lib/actions/reservation/transaction.action";
 import { Button } from "@/components/ui/button";
 import { getPricesForPropertyCalendar } from "@/lib/actions/reservation/getPricesForPropertyCalendar";
+import { differenceInCalendarDays } from "date-fns";
 
 interface PropertyAdditionals extends Property {
   prices: { from: string; to: string; price: number }[];
@@ -52,7 +53,6 @@ const ReservationForm = ({
   const [blockedDates, setBlockedDates] = useState<
     Array<{ from: string; to: string }>
   >([]);
-
   const form = useForm<z.infer<typeof ReservationSchema>>({
     // resolver: zodResolver(ReservationSchema),
     defaultValues: {
@@ -85,16 +85,6 @@ const ReservationForm = ({
     }
   }, []);
 
-  const isDateBlocked = (
-    date: Date,
-    blockedDates: Array<{ from: string; to: string }>,
-  ): boolean => {
-    return blockedDates.some(({ from, to }) => {
-      const fromDate = new Date(from.split(".").reverse().join("-"));
-      const toDate = new Date(to.split(".").reverse().join("-"));
-      return date >= fromDate && date <= toDate;
-    });
-  };
   const convertDate = (dateString: string) => {
     const [day, month, year] = dateString.split(".");
     return `${year}-${month}-${day}`;
@@ -104,9 +94,7 @@ const ReservationForm = ({
       blockedDates: Array<{ from: string; to: string }>,
     ) => {
       const date = new Date();
-      while (isDateBlocked(date, blockedDates)) {
-        date.setDate(date.getDate() + 1);
-      }
+
       const from = date.toISOString().split("T")[0];
       date.setDate(date.getDate() + 1);
       const to = date.toISOString().split("T")[0];
@@ -121,7 +109,6 @@ const ReservationForm = ({
           (reservation): reservation is { from: string; to: string } =>
             reservation !== null,
         );
-
         setBlockedDates(validReservations);
         setDateRange(getNextAvailableDateRange(validReservations));
       } else {
@@ -142,15 +129,9 @@ const ReservationForm = ({
     fetchReservations();
   }, [propertyId]);
 
-  const calculateTotalDays = (
-    from: Date | string,
-    to: Date | string,
-  ): number => {
-    const dateFrom = new Date(from);
-    const dateTo = new Date(to);
-    const timeDifference = dateTo.getTime() - dateFrom.getTime();
-    const totalDays = timeDifference / (1000 * 3600 * 24);
-    return Math.ceil(totalDays);
+  const calculateTotalDays = (from: Date, to: Date): number => {
+    const totalDays = differenceInCalendarDays(to, from);
+    return totalDays;
   };
 
   const calculateTotalPrice = (
@@ -219,7 +200,10 @@ const ReservationForm = ({
                     <FormLabel htmlFor="dateRange">Date Range</FormLabel>
                     <FormControl>
                       <DateRangePicker
-                        onUpdate={(values) => setDateRange(values.range)}
+                        onUpdate={(values) => {
+                          setDateRange(values.range);
+                          console.log(values.range);
+                        }}
                         blockedDates={blockedDates}
                         prices={prices}
                         buttonStyles="h-[36px] text-left pl-3 pr-4"
