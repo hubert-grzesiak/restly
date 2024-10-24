@@ -1,5 +1,6 @@
 import { PropertyInterface } from "@/components/sections/Main/components/MainMap";
 import { db } from "@/lib/db";
+import { parse, isValid, format } from "date-fns";
 
 export interface GetPropertiesParams {
   currentPage?: number;
@@ -17,6 +18,7 @@ interface GetAllPropertiesResponse {
   propertiesWithReviews: PropertyInterface[];
   propertiesCount: number;
 }
+
 export default async function getAllProperties(
   params: GetPropertiesParams,
 ): Promise<GetAllPropertiesResponse> {
@@ -58,15 +60,44 @@ export default async function getAllProperties(
   }
 
   if (from && to) {
+    // Parse the dates using `parse` with the "dd.MM.yyyy" format
+    let parsedFrom: Date;
+    let parsedTo: Date;
+
+    if (typeof from === "string") {
+      parsedFrom = parse(from, "dd.MM.yyyy", new Date());
+      if (!isValid(parsedFrom)) {
+        throw new Error(`Invalid 'from' date format: ${from}`);
+      }
+    } else {
+      parsedFrom = from;
+    }
+
+    if (typeof to === "string") {
+      parsedTo = parse(to, "dd.MM.yyyy", new Date());
+      if (!isValid(parsedTo)) {
+        throw new Error(`Invalid 'to' date format: ${to}`);
+      }
+    } else {
+      parsedTo = to;
+    }
+
+    // Ensure that 'from' is before 'to'
+    if (parsedFrom > parsedTo) {
+      throw new Error(
+        `'from' date (${parsedFrom}) cannot be after 'to' date (${parsedTo})`,
+      );
+    }
+
+    // Format the dates as strings matching the expected format in the database
+    const fromStr = format(parsedFrom, "yyyy-MM-dd"); // Adjust format as needed
+    const toStr = format(parsedTo, "yyyy-MM-dd"); // Adjust format as needed
+
     query.NOT = {
       Reservation: {
         some: {
-          OR: [
-            {
-              dateFrom: { lte: to },
-              dateTo: { gte: from },
-            },
-          ],
+          dateFrom: { lte: toStr },
+          dateTo: { gte: fromStr },
         },
       },
     };

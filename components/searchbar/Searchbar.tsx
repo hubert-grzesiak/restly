@@ -7,7 +7,7 @@ import AutoCompleteInput from "../AutoCompleteInput";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import Buttons from "./Buttons";
 import { useRouter } from "next/navigation";
-import { DateRangePicker } from "../ui/date-range-picker";
+import { DateRangePicker } from "../ui/filter-date-range-picker";
 
 const Searchbar = ({
   route,
