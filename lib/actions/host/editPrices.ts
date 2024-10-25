@@ -9,7 +9,11 @@ import { revalidatePath } from "next/cache";
 
 type FormSchemaType = TypeOf<typeof PricesSchema>;
 
-export const editPrices = async (id: string, formData: FormData) => {
+export const editPrices = async (
+  id: string,
+  formData: FormData,
+  ownerId: string,
+) => {
   try {
     const session = await auth();
 
@@ -19,7 +23,7 @@ export const editPrices = async (id: string, formData: FormData) => {
     const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
 
     const updatedObject = await db.property.update({
-      where: { id },
+      where: { id, ownerId },
       data: {
         prices: {
           deleteMany: {},

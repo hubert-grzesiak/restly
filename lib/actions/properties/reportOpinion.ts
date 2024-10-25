@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { toast } from "sonner";
 
-// Funkcja do zgłaszania opinii
 export default async function reportReview({ reviewId }: { reviewId: string }) {
   const session = await auth();
 

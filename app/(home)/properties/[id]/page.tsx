@@ -102,9 +102,15 @@ const Details: React.FC<PageProps> = async ({ params }) => {
                 )}
                 {user?.id === property.ownerId &&
                   (!property.softDeleted ? (
-                    <DeleteProperty id={property.id} />
+                    <DeleteProperty
+                      id={property.id}
+                      ownerId={property.ownerId}
+                    />
                   ) : (
-                    <RestoreProperty id={property.id} />
+                    <RestoreProperty
+                      id={property.id}
+                      ownerId={property.ownerId}
+                    />
                   ))}
 
                 {user?.id === property.ownerId && (

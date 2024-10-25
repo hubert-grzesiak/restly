@@ -36,7 +36,6 @@ export async function checkoutReservation(
       return `${year}-${month}-${day}`;
     };
 
-    // Przekształcenie dat na obiekty Date
     const fromDate = new Date(convertDate(formValues.dateRange.from));
     const toDate = new Date(convertDate(formValues.dateRange.to));
 
@@ -59,14 +58,14 @@ export async function checkoutReservation(
             currency: "usd",
             unit_amount: totalPrice * 100,
             product_data: {
-              name: property.name, // Nazwa nieruchomości
+              name: property.name,
               description: `
               Reservation for: ${property.name}
               Location: ${property.city}, ${property.country}
               Stay Duration: ${formValues?.dateRange.from} to ${formValues?.dateRange.to} (${numberOfDays} days)
               Total Price: ${totalPrice} PLN
               For ${formValues?.guests} guests.
-            `, // Szczegółowy opis rezerwacji
+            `,
             },
           },
           quantity: 1,

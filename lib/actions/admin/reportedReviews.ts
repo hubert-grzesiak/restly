@@ -57,13 +57,11 @@ export const deleteReportedReview = async ({
         where: { id: String(reportedReviewId) },
       });
 
-      // Attempt to delete the review from the review table
       const reviewDeleted = await db.review.delete({
         where: { id: String(reviewId) },
       });
 
       if (reviewDeleted) {
-        // Increase user's reputation by 1
         await db.user.update({
           where: { id: userId },
           data: { reputation: { increment: 1 } },
@@ -93,59 +91,70 @@ export async function fetchFilteredReportedReviews(
 ) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const reportedReviews = await db.reportedReview.findMany({
-      where: {
-        OR: [{ status: { contains: query } }],
-      },
-      include: {
-        review: {
-          include: {
-            user: true,
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const reportedReviews = await db.reportedReview.findMany({
+        where: {
+          OR: [{ status: { contains: query } }],
+        },
+        include: {
+          review: {
+            include: {
+              user: true,
+            },
           },
         },
-      },
-      take: ITEMS_PER_PAGE,
-      skip: offset,
-    });
-    return reportedReviews;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch reported reviews.");
+        take: ITEMS_PER_PAGE,
+        skip: offset,
+      });
+      return reportedReviews;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch reported reviews.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchReportedReviewsPages(query: string) {
   noStore();
-  try {
-    const count = await db.reportedReview.count({
-      where: {
-        OR: [{ status: { contains: query } }],
-      },
-    });
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const count = await db.reportedReview.count({
+        where: {
+          OR: [{ status: { contains: query } }],
+        },
+      });
 
-    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of reported reviews.");
+      return totalPages;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch total number of reported reviews.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchReportedReviewById(id: string) {
   noStore();
-  try {
-    const reportedReview = await db.reportedReview.findUnique({
-      where: { id },
-    });
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const reportedReview = await db.reportedReview.findUnique({
+        where: { id },
+      });
 
-    return reportedReview;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch reported review.");
+      return reportedReview;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch reported review.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function updateStatusOfReview({

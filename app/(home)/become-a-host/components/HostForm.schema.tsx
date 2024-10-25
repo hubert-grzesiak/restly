@@ -1,5 +1,5 @@
 import { parseISO } from "date-fns";
-import { z } from "zod";
+import { coerce, z } from "zod";
 
 const PriceItemSchema = z.object({
   from: z.string().nonempty({ message: "Date from is required" }),
@@ -17,19 +17,19 @@ export const FormSchema = z.object({
     postalCode: z.string().min(1, "Postal Code is required"),
     houseNumber: z.string().min(1, "House Number is required"),
     apartmentNumber: z.string(),
-    numberOfBedrooms: z
+    numberOfBedrooms: z.coerce
       .number()
       .min(1, "Number of bedrooms must be at least 1")
       .max(20, "Number of bedrooms must be less than 100"),
-    minimumStay: z
+    minimumStay: z.coerce
       .number()
       .min(1, "Minimum stay must be at least 1 day")
       .max(14, "Minimum stay must be less than 14 days"),
-    maximumStay: z
+    maximumStay: z.coerce
       .number()
       .min(1, "Maximum stay must be at least 1 day")
       .max(14, "Maximum stay must be less than 14 days"),
-    maxPeople: z
+    maxPeople: z.coerce
       .number()
       .min(1, "Maximum number of people must be at least 1")
       .max(100, "Maximum number of people must be less than 100"),

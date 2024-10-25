@@ -27,16 +27,15 @@ const getPropertyInfo = async ({ id }: { id: string }) => {
     const coordinates: [number, number] =
       property.geometry.coordinates.length >= 2
         ? [property.geometry.coordinates[0], property.geometry.coordinates[1]]
-        : [0, 0]; // Default values if coordinates are insufficient
+        : [0, 0];
 
-    // Wyciąganie URLs z powiązanych obrazów
     const propertyWithUrls = {
       ...property,
       geometry: {
         ...property.geometry,
-        coordinates: coordinates, // Ensure correct type
+        coordinates: coordinates,
       },
-      urls: property.images.map((image) => image.urls).flat(), // Pobieranie wszystkich URLs
+      urls: property.images.map((image) => image.urls).flat(),
     };
 
     return propertyWithUrls;

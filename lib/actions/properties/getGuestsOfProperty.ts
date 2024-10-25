@@ -11,24 +11,32 @@ const getGuestsOfProperty = cache(
         console.log("No user session found.");
         return { users: [], usersCount: 0 };
       }
-
-      const usersCount = await db.reservation.count({
-        where: { propertyId: propertyId },
+      const property = await db.property.findUnique({
+        where: { id: propertyId },
       });
 
-      const users = await db.reservation.findMany({
-        where: { propertyId: propertyId },
-        include: {
-          user: true,
-        },
-      });
+      if (ownerId === property?.ownerId) {
+        const usersCount = await db.reservation.count({
+          where: { propertyId: propertyId },
+        });
 
-      if (!users.length) {
-        console.log("No properties found in the database.");
-        return { users: [], usersCount };
+        const users = await db.reservation.findMany({
+          where: { propertyId: propertyId },
+          include: {
+            user: true,
+          },
+        });
+
+        if (!users.length) {
+          console.log("No properties found in the database.");
+          return { users: [], usersCount };
+        }
+
+        return { users, usersCount };
+      } else {
+        console.log("User is not the owner of the property.");
+        return { users: [], usersCount: 0 };
       }
-
-      return { users, usersCount };
     } catch (error) {
       console.error("Failed to fetch properties:", error);
       return { users: [], usersCount: 0 };

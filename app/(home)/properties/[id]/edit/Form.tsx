@@ -98,6 +98,7 @@ const EditForm = ({
     control,
     formState: { errors },
     register,
+    watch,
   } = form;
   const { fields, append, remove } = useFieldArray({
     name: "calendar.prices",
@@ -120,7 +121,29 @@ const EditForm = ({
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
   const currentFields = fields.slice(indexOfFirstItem, indexOfLastItem);
+  const lastItemIndex = fields.length - 1;
+  const lastItemFrom = watch(`calendar.prices.${lastItemIndex}.from`);
+  const lastItemTo = watch(`calendar.prices.${lastItemIndex}.to`);
+  const lastItemPrice = watch(`calendar.prices.${lastItemIndex}.price`);
+
+  const isLastItemFilled =
+    lastItemFrom &&
+    lastItemTo &&
+    lastItemPrice !== undefined &&
+    lastItemPrice !== null;
+
+  let isDateValid = false;
+  if (lastItemFrom && lastItemTo) {
+    isDateValid = lastItemTo >= lastItemFrom;
+  }
+  console.log("fields", fields);
+
+  const isPriceValid = lastItemPrice > 0;
+
+  const canAddNewItem =
+    (isLastItemFilled && isDateValid && isPriceValid) || fields.length === 0;
 
   const onFilesChange = (newFiles: UploadFile[]) => {
     setFiles(newFiles);
@@ -157,7 +180,7 @@ const EditForm = ({
             .filter((url): url is string => url !== undefined)) ??
         [];
       console.log("FILES URLS: ", filesUrls);
-      await editObject(property.id, formData, filesUrls);
+      await editObject(property.id, formData, filesUrls, property.ownerId);
 
       router.push(`/properties/${property.id}`);
       toast.success("Object edited successfully");
@@ -349,16 +372,7 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Number of Bedrooms</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -372,16 +386,7 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Minimum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -395,16 +400,7 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Maximum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -418,16 +414,7 @@ const EditForm = ({
                       <FormItem>
                         <FormLabel>Maximum Number of People</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -512,6 +499,7 @@ const EditForm = ({
                         });
                         setCurrentPage(totalPages + 1);
                       }}
+                      disabled={currentPage === totalPages}
                     >
                       +
                     </Button>

@@ -100,7 +100,7 @@ const EditCalendar = ({ property }: { property: Properties }) => {
     console.log("formData: ", formData.get("data"));
 
     try {
-      await editPrices(property.id, formData);
+      await editPrices(property.id, formData, property.ownerId);
 
       router.push(`/properties/${property.id}`);
       toast.success("Obiekt został pomyślnie zaktualizowany");
@@ -139,7 +139,6 @@ const EditCalendar = ({ property }: { property: Properties }) => {
                     const isLast = globalIndex === fields.length - 1;
                     const prevToDate =
                       globalIndex > 0 ? fields[globalIndex - 1].to : null;
-
                     const existingPeriods = fields
                       .filter((_, i) => i !== globalIndex)
                       .map((item) => ({

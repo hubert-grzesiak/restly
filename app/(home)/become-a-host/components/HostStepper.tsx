@@ -84,6 +84,7 @@ const HostStepper: React.FC = () => {
     control,
     formState: { errors },
     register,
+    watch,
   } = form;
   const { fields, append, remove } = useFieldArray({
     name: "calendar.prices",
@@ -122,6 +123,28 @@ const HostStepper: React.FC = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentFields = fields.slice(indexOfFirstItem, indexOfLastItem);
+
+  const lastItemIndex = fields.length - 1;
+  const lastItemFrom = watch(`calendar.prices.${lastItemIndex}.from`);
+  const lastItemTo = watch(`calendar.prices.${lastItemIndex}.to`);
+  const lastItemPrice = watch(`calendar.prices.${lastItemIndex}.price`);
+
+  const isLastItemFilled =
+    lastItemFrom &&
+    lastItemTo &&
+    lastItemPrice !== undefined &&
+    lastItemPrice !== null;
+
+  let isDateValid = false;
+  if (lastItemFrom && lastItemTo) {
+    isDateValid = lastItemTo >= lastItemFrom;
+  }
+  console.log("fields", fields);
+
+  const isPriceValid = lastItemPrice > 0;
+
+  const canAddNewItem =
+    (isLastItemFilled && isDateValid && isPriceValid) || fields.length === 0;
 
   const onSubmit = async (data: FormSchemaType) => {
     console.log("FORM DATA: ", data);
@@ -217,19 +240,6 @@ const HostStepper: React.FC = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="object.street"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Street</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="object.postalCode"
                     render={({ field }) => (
                       <FormItem>
@@ -241,6 +251,20 @@ const HostStepper: React.FC = () => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="object.street"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Street</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="object.houseNumber"
@@ -327,16 +351,7 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Number of Bedrooms</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -350,16 +365,7 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Minimum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -373,16 +379,7 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Maximum Stay Duration</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -396,16 +393,7 @@ const HostStepper: React.FC = () => {
                       <FormItem>
                         <FormLabel>Maximum Number of People</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                value === "" ? undefined : Number(value),
-                              );
-                            }}
-                          />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -491,6 +479,7 @@ const HostStepper: React.FC = () => {
                         });
                         setCurrentPage(totalPages + 1);
                       }}
+                      disabled={!canAddNewItem}
                     >
                       +
                     </Button>

@@ -204,13 +204,19 @@ export function PropertyOptions({
   );
 }
 
-export function DeleteProperty({ id }: { id: string }) {
+export function DeleteProperty({
+  id,
+  ownerId,
+}: {
+  id: string;
+  ownerId: string;
+}) {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await deleteProperty(id);
+      await deleteProperty(id, ownerId);
       router.push("/profile");
       toast.success("Property deleted successfully");
     } catch (error) {
@@ -257,12 +263,18 @@ export function DeleteProperty({ id }: { id: string }) {
     </div>
   );
 }
-export function RestoreProperty({ id }: { id: string }) {
+export function RestoreProperty({
+  id,
+  ownerId,
+}: {
+  id: string;
+  ownerId: string;
+}) {
   const [isRestoring, setIsRestoring] = useState(false);
   const handleRestore = async () => {
     setIsRestoring(true);
     try {
-      await restoreProperty(id);
+      await restoreProperty(id, ownerId);
       toast.success("Property restored successfully");
     } catch (error) {
       console.error("Failed to restore property", error);

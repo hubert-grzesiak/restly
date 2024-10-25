@@ -42,7 +42,6 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-
 export default function GuestsTable({
   guests,
   usersCount,
@@ -59,12 +58,12 @@ export default function GuestsTable({
     const currentDate = new Date();
     let status = "";
 
-    if (currentDate >= dateFrom && currentDate <= dateTo) {
-      status = "ongoing"; // Orange
-    } else if (currentDate > dateTo) {
+    if (currentDate > dateTo) {
       status = "expired"; // Red
     } else if (currentDate < dateFrom) {
       status = "upcoming"; // Green
+    } else {
+      status = "ongoing";
     }
 
     return {

@@ -34,6 +34,7 @@ export const editObject = async (
   id: string,
   formData: FormData,
   urls: string[],
+  ownerId: string,
 ) => {
   try {
     const session = await auth();
@@ -45,7 +46,6 @@ export const editObject = async (
     const data = JSON.parse(formData.get("data") as string) as FormSchemaType;
     const files = formData.getAll("files") as FileWithType[];
 
-    // Process new files if any
     let newPhotos: string[] = [];
     if (files.length > 0) {
       const newFiles = await savePhotosLocal(files);
@@ -53,16 +53,10 @@ export const editObject = async (
       await Promise.all(newFiles.map((file) => fs.unlink(file.filepath)));
       newPhotos = photos.map((photo) => photo.secure_url);
     }
-    // Filter out undefined values from the URLs array
     const validUrls = urls.filter(Boolean);
 
-    // Combine existing and new photo URLs
     const combinedPhotos = [...validUrls, ...newPhotos];
 
-    // Log the combined photos for debugging
-    console.log("Server action combinedPhotos: ", combinedPhotos);
-
-    // Geocoding
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
     const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
@@ -78,19 +72,20 @@ export const editObject = async (
       throw new Error("Geocoding failed, no geometry found.");
     }
 
-    // Ensure facilities are unique
     const uniqueFacilities = Array.from(
       new Set(data.facility.map((f) => f.name)),
     ).map((name) => ({ name }));
 
-    await db.image.deleteMany({
-      where: {
-        propertyId: id,
-      },
-    });
-    // Update object in the database
+    if (ownerId === session?.user?.id) {
+      await db.image.deleteMany({
+        where: {
+          propertyId: id,
+        },
+      });
+    }
+
     const updatedObject = await db.property.update({
-      where: { id },
+      where: { id, ownerId },
       data: {
         country: data.object.country,
         city: data.object.city,

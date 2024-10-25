@@ -4,12 +4,15 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export const deleteProperty = async (id: string) => {
+export const deleteProperty = async (id: string, ownerId: string) => {
   const session = await auth();
   if (session?.user?.email) {
     try {
       await db.property.update({
-        where: { id: String(id) },
+        where: {
+          id: String(id),
+          ownerId: ownerId,
+        },
         data: {
           softDeleted: true,
         },

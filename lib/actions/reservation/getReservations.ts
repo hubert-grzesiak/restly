@@ -1,12 +1,16 @@
 "use server";
 import { cache } from "react";
 import { db } from "@/lib/db";
+import getCurrentUser from "../getCurrentUser";
+import { currentUser } from "@/lib/actualUserInfo";
 
 export const getReservations = cache(async (propertyId: string) => {
+  const currentUser = await getCurrentUser();
   try {
     const reservations = await db.reservation.findMany({
       where: {
         propertyId,
+        userId: currentUser?.id,
       },
       select: {
         dateFrom: true,
@@ -42,10 +46,10 @@ export const getReservations = cache(async (propertyId: string) => {
           };
         } catch (error) {
           console.error("Error parsing reservation dates:", error, reservation);
-          return null; // Or handle the error as needed
+          return null;
         }
       })
-      .filter(Boolean); // Remove any null entries if date parsing failed
+      .filter(Boolean);
 
     return { success: true, reservations: formattedReservations };
   } catch (error) {

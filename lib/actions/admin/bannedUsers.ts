@@ -60,13 +60,11 @@ export const deleteBannedUser = async ({
         data: { shadowbanned: false },
       });
 
-      // Attempt to delete the review from the review table
       const reviewDeleted = await db.review.delete({
         where: { id: String(reviewId) },
       });
 
       if (reviewDeleted) {
-        // Increase user's reputation by 1
         await db.user.update({
           where: { id: userId },
           data: { reputation: { increment: 1 } },
@@ -97,51 +95,64 @@ export async function fetchFilteredBannedUsers(
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  try {
-    const bannedUsers = await db.user.findMany({
-      where: {
-        shadowbanned: true,
-      },
-      take: ITEMS_PER_PAGE,
-      skip: offset,
-    });
-    return bannedUsers;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch banned users.");
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const bannedUsers = await db.user.findMany({
+        where: {
+          shadowbanned: true,
+        },
+        take: ITEMS_PER_PAGE,
+        skip: offset,
+      });
+      return bannedUsers;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch banned users.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchBannedUsersPages(query: string) {
   noStore();
-  try {
-    const count = await db.user.count({
-      where: {
-        shadowbanned: true,
-      },
-    });
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const count = await db.user.count({
+        where: {
+          shadowbanned: true,
+        },
+      });
 
-    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of banned users.");
+      return totalPages;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch total number of banned users.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchBannedUserById(id: string) {
   noStore();
-  try {
-    const bannedUser = await db.user.findUnique({
-      where: { id: id, shadowbanned: true },
-    });
+  const role = await currentRole();
 
-    return bannedUser;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch banned user.");
+  if (role === UserRole.ADMIN) {
+    try {
+      const bannedUser = await db.user.findUnique({
+        where: { id: id, shadowbanned: true },
+      });
+
+      return bannedUser;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch banned user.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function updateStatusOfReview({

@@ -22,7 +22,7 @@ export default async function Page({
   }
 
   return (
-    <main>
+    <main className="mx-4 rounded-xl px-6 shadow-lg">
       <Breadcrumbs
         breadcrumbs={[
           { label: "Reported reviews", href: "/admin/reported-reviews" },

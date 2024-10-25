@@ -102,6 +102,7 @@ export default async function VisitedTab({
                 objectId={property.property.id}
                 userId={userId}
                 userReview={userReview}
+                dateTo={property.dateTo}
               />
             </div>
           </div>

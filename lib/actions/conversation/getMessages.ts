@@ -1,11 +1,17 @@
 import { db } from "@/lib/db";
-import {cache} from 'react';
+import { cache } from "react";
+import getCurrentUser from "../getCurrentUser";
 
 const getMessages = cache(async (conversationId: string) => {
+  const currentUser = await getCurrentUser();
+
   try {
     const messages = await db.message.findMany({
       where: {
         conversationId: conversationId,
+        senderId: {
+          contains: currentUser?.id,
+        },
       },
       include: {
         sender: true,

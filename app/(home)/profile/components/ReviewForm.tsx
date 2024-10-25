@@ -10,6 +10,7 @@ import { Rate } from "antd";
 import { Textarea } from "@/components/ui/textarea";
 import { createReview, editReview } from "@/lib/actions/properties/giveReview";
 import { Review } from "@prisma/client";
+import { Tooltip } from "antd";
 
 const ReviewSchema = z.object({
   review: z.string().min(1, "Review is required"),
@@ -32,11 +33,13 @@ interface Props {
   };
   userReview: Review | null;
   objectId?: string;
+  dateTo?: string;
 }
 
-const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
+const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formKey, setFormKey] = useState(Date.now()); // key to force re-render
+  const [formKey, setFormKey] = useState(Date.now());
+  const [isDateValid, setIsDateValid] = useState(true);
 
   const form = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
@@ -48,7 +51,7 @@ const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
   const { register, setValue, reset } = form;
 
   const handleRatingChange = (value: number) => {
-    setValue("rating", value); // Update the form value for rating
+    setValue("rating", value);
   };
 
   async function onSubmit(values: z.infer<typeof ReviewSchema>) {
@@ -70,7 +73,7 @@ const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
         });
         toast.success("Review created successfully");
       }
-      setFormKey(Date.now()); // Update key to force re-render
+      setFormKey(Date.now());
     } catch (error) {
       console.error("Failed to create review", error);
       toast.error("Failed to create review");
@@ -84,7 +87,19 @@ const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
       review: userReview?.body || "",
       rating: userReview?.rating || 0,
     });
-  }, [formKey, userReview, reset]);
+
+    const today = new Date();
+
+    const dateToCheck = dateTo
+      ? new Date(
+          parseInt(dateTo.split(".")[2], 10),
+          parseInt(dateTo.split(".")[1], 10) - 1,
+          parseInt(dateTo.split(".")[0], 10),
+        )
+      : null;
+
+    setIsDateValid(!dateToCheck || today >= dateToCheck);
+  }, [formKey, userReview, reset, dateTo]);
 
   return (
     <div className="mt-4">
@@ -102,17 +117,24 @@ const ReviewForm = ({ type, objectId, userId, userReview }: Props) => {
               className="text-orange-400"
             />
           </div>
-          <Textarea
-            placeholder="Share your experience..."
-            className="max-h-[100px] w-full rounded-md border border-muted-foreground/20 p-2 focus:border-primary focus:ring-primary"
-            {...register("review", { required: true })}
-          />
+          <Tooltip
+            title={
+              !isDateValid ? "You can only leave a review after your stay" : ""
+            }
+          >
+            <Textarea
+              placeholder="Share your experience..."
+              className="max-h-[100px] w-full rounded-md border border-muted-foreground/20 p-2 focus:border-primary focus:ring-primary"
+              disabled={!isDateValid}
+              {...register("review", { required: true })}
+            />
+          </Tooltip>
           <input type="hidden" {...register("rating")} />
 
           <Button
             type="submit"
             className="primary-gradient !text-light-900 mt-5 w-fit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isDateValid}
           >
             {isSubmitting ? (
               <>{type === "Edit" ? "Editing..." : "Posting..."}</>

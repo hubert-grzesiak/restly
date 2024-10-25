@@ -55,19 +55,16 @@ export const createFacility = async ({ name }: { name: string }) => {
   });
 
   if (!validatedFields.success) {
-    // Flatten and return errors if validation fails
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missing Fields. Failed to Create Facility.",
     };
   }
 
-  // Data has been validated at this point
   const { name: validatedName } = validatedFields.data;
 
   if (role === UserRole.ADMIN) {
     try {
-      // Check if a facility with the same name already exists
       const existingFacility = await db.facilities.findUnique({
         where: { name: validatedName },
       });
@@ -78,7 +75,6 @@ export const createFacility = async ({ name }: { name: string }) => {
         };
       }
 
-      // Create the new facility
       await db.facilities.create({
         data: {
           name: validatedName,
@@ -150,64 +146,79 @@ export async function fetchFilteredFacilities(
 ) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const facilities = await db.facilities.findMany({
-      where: {
-        OR: [{ name: { contains: query } }],
-      },
-      take: ITEMS_PER_PAGE,
-      skip: offset,
-    });
-    return facilities;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch facilities.");
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const facilities = await db.facilities.findMany({
+        where: {
+          OR: [{ name: { contains: query } }],
+        },
+        take: ITEMS_PER_PAGE,
+        skip: offset,
+      });
+      return facilities;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch facilities.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchFacilitysPages(query: string) {
   noStore();
-  try {
-    const count = await db.facilities.count({
-      where: {
-        OR: [{ name: { contains: query } }],
-      },
-    });
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const count = await db.facilities.count({
+        where: {
+          OR: [{ name: { contains: query } }],
+        },
+      });
 
-    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of facilities.");
+      return totalPages;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch total number of facilities.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export async function fetchFacilityById(id: string) {
   noStore();
-  try {
-    const facility = await db.facilities.findUnique({
-      where: { id },
-    });
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    try {
+      const facility = await db.facilities.findUnique({
+        where: { id },
+      });
 
-    return facility;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch facility.");
+      return facility;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch facility.");
+    }
   }
+  return { error: "Forbidden Server Action!" };
 }
 
 export const seedFacilities = async () => {
-  for (const amenity of amenities) {
-    const facility = { name: amenity } as Facilities;
-    const result = await createFacility(facility);
+  const role = await currentRole();
+  if (role === UserRole.ADMIN) {
+    for (const amenity of amenities) {
+      const facility = { name: amenity } as Facilities;
+      const result = await createFacility(facility);
 
-    if (result.error) {
-      console.error(`Error creating facility: ${amenity}`, result.error);
-    } else {
-      console.log(`Facility created: ${amenity}`);
+      if (result.error) {
+        console.error(`Error creating facility: ${amenity}`, result.error);
+      } else {
+        console.log(`Facility created: ${amenity}`);
+      }
     }
   }
+  return { error: "Forbidden Server Power!" };
 };
 // seedFacilities().catch(console.error);

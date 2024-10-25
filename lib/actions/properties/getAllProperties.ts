@@ -180,6 +180,6 @@ const getReviewsSummaryForProperty = async (propertyId: string) => {
     return { numberOfReviews, averageRating };
   } catch (error) {
     console.error("Failed to fetch reviews summary:", error);
-    return { numberOfReviews: 0, averageRating: 0 }; // Return default values in case of an error
+    return { numberOfReviews: 0, averageRating: 0 };
   }
 };
