@@ -56,7 +56,7 @@ export async function checkoutReservation(
         {
           price_data: {
             currency: "usd",
-            unit_amount: totalPrice * 100,
+            unit_amount: parseInt((totalPrice * 100).toString()),
             product_data: {
               name: property.name,
               description: `
