@@ -35,7 +35,7 @@ export default async function page({ searchParams }: SearchParamsProps) {
         </div>
       ) : (
         <div className="px-4 pb-6">
-          <SimpleSearchbar route="/profile/visited" className="px-[8px]" />
+          <SimpleSearchbar route="/profile/visited" className="px-2" />
 
           {visitedProperties?.map((property) => (
             <VisitedTab key={property.id} property={property} userId={userId} />

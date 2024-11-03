@@ -220,26 +220,31 @@ model Reservation {
   price      Float
   createdAt  DateTime? @default(now())
 
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review     Review?   @relation("ReservationReview") 
 
   @@index([propertyId, dateFrom, dateTo], name: "reservation_date_range_index")
 }
+
 model Review {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  propertyId String   @db.ObjectId
-  userId     String   @db.ObjectId
-  rating     Int
-  body       String
-  createdAt  DateTime @default(now())
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  propertyId       String             @db.ObjectId
+  userId           String             @db.ObjectId
+  reservationId    String             @db.ObjectId
+  rating           Int
+  body             String
+  createdAt        DateTime           @default(now())
 
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property         Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reservation      Reservation        @relation("ReservationReview", fields: [reservationId], references: [id])
+  reportedReviews  ReportedReview[]   @relation("ReviewReportedReviews")
 
-  reportedReviews ReportedReview[] @relation("ReviewReportedReviews")
-
-  @@index([propertyId, userId], name: "unique_review")
+  @@unique([propertyId, userId], name: "unique_review")
+  @@unique([reservationId], name: "unique_reservation_review")
 }
+
 
 model ReportedReview {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId

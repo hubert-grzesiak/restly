@@ -64,7 +64,7 @@ const PropertyMainCard = ({
         </p>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold">
-            ${property?.prices[0]?.price || 0}
+            from ${property?.prices[0]?.price || 0}
           </span>
           <Button size="sm" variant="default">
             <Link href={`/properties/${property.id}`}>Book Now</Link>

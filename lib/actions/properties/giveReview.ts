@@ -18,11 +18,13 @@ export const createReview = async ({
   rating,
   propertyId,
   userId,
+  reservationId,
 }: {
   body: string;
   rating: number;
   propertyId: string;
   userId: string;
+  reservationId: string;
 }) => {
   const session = await auth();
   const validatedFields = CreateReview.safeParse({
@@ -48,6 +50,7 @@ export const createReview = async ({
           rating: validatedRating,
           userId: userId ?? "",
           propertyId: propertyId ?? "",
+          reservationId: reservationId,
         },
       });
       return { success: "Review created" };

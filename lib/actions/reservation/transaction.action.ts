@@ -48,22 +48,19 @@ export async function checkoutReservation(
         (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
       );
     }
-    const newPrice = price * numberOfDays;
 
-    const totalPrice = newPrice + newPrice * 0.05;
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency: "usd",
-            unit_amount: parseInt((totalPrice * 100).toString()),
+            unit_amount: price * 100,
             product_data: {
               name: property.name,
               description: `
               Reservation for: ${property.name}
               Location: ${property.city}, ${property.country}
               Stay Duration: ${formValues?.dateRange.from} to ${formValues?.dateRange.to} (${numberOfDays} days)
-              Total Price: ${totalPrice} PLN
               For ${formValues?.guests} guests.
             `,
             },
@@ -78,7 +75,7 @@ export async function checkoutReservation(
         country: property.country,
         dateFrom: formValues?.dateRange.from,
         dateTo: formValues?.dateRange.to,
-        price: totalPrice,
+        price: price,
       },
       mode: "payment",
       custom_fields: [],

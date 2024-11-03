@@ -21,6 +21,7 @@ export interface Place {
   rating?: number;
   reviewCount?: number;
   location?: string;
+  id: string;
   property: {
     id: string;
     name: string;
@@ -45,10 +46,9 @@ export default async function VisitedTab({
   });
 
   let userReview = await getUserReview({
-    propertyId: property.property.id,
+    reservationId: property.id,
   });
 
-  // ensure userReview is either null or a single object, not an array
   if (Array.isArray(userReview)) {
     userReview = userReview.length > 0 ? userReview[0] : null;
   }
@@ -103,6 +103,7 @@ export default async function VisitedTab({
                 userId={userId}
                 userReview={userReview}
                 dateTo={property.dateTo}
+                reservationId={property.id}
               />
             </div>
           </div>

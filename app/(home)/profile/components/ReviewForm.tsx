@@ -34,9 +34,17 @@ interface Props {
   userReview: Review | null;
   objectId?: string;
   dateTo?: string;
+  reservationId?: string;
 }
 
-const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
+const ReviewForm = ({
+  type,
+  objectId,
+  userId,
+  userReview,
+  dateTo,
+  reservationId,
+}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formKey, setFormKey] = useState(Date.now());
   const [isDateValid, setIsDateValid] = useState(true);
@@ -54,7 +62,8 @@ const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
     setValue("rating", value);
   };
 
-  async function onSubmit(values: z.infer<typeof ReviewSchema>) {
+  const onSubmit = form.handleSubmit(async (values) => {
+    console.log("submitting review", values);
     setIsSubmitting(true);
     try {
       if (type === "Edit") {
@@ -70,6 +79,7 @@ const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
           body: values.review,
           rating: values.rating,
           userId: userId ?? "",
+          reservationId: reservationId ?? "",
         });
         toast.success("Review created successfully");
       }
@@ -80,13 +90,13 @@ const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  });
 
   useEffect(() => {
-    reset({
-      review: userReview?.body || "",
-      rating: userReview?.rating || 0,
-    });
+    // reset({
+    //   review: userReview?.body || "",
+    //   rating: userReview?.rating || 0,
+    // });
 
     const today = new Date();
 
@@ -107,7 +117,7 @@ const ReviewForm = ({ type, objectId, userId, userReview, dateTo }: Props) => {
       <Form {...form}>
         <form
           key={formKey}
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={onSubmit}
           className="flex w-full flex-col gap-2"
         >
           <div className="mb-4 flex items-center">

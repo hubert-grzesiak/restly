@@ -169,7 +169,7 @@ const ReservationForm = ({
     setIsSubmitting(true);
     try {
       await checkoutReservation(
-        property.prices[0].price || 0,
+        totalPrice || 0,
         session?.data?.user.id || "",
         property,
         values,
