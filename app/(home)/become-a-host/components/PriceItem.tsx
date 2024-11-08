@@ -90,6 +90,7 @@ const PriceItem: React.FC<PriceItemProps> = ({
         <Popover>
           <PopoverTrigger asChild>
             <Button
+              data-cy={label}
               variant={"outline"}
               className={cn(
                 "pl-3 text-left font-normal md:w-[200px]",
@@ -104,6 +105,7 @@ const PriceItem: React.FC<PriceItemProps> = ({
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
+              data-cy={`${label}-calendar`}
               mode="single"
               selected={selectedDate}
               onSelect={(date) => handleDateChange(date, field)}
@@ -150,6 +152,7 @@ const PriceItem: React.FC<PriceItemProps> = ({
         />
         <Controller
           name={`calendar.prices.${index}.to`}
+          data-cy={`calendar.prices.${index}.to`}
           control={control}
           render={({ field }) => {
             if (isLast) {
@@ -169,6 +172,7 @@ const PriceItem: React.FC<PriceItemProps> = ({
         <div className="flex flex-col justify-center gap-1.5">
           <label className="text-xs">Price ($USD)</label>
           <Input
+            data-cy={"price"}
             type="number"
             placeholder="Price"
             disabled={disablePrice}
