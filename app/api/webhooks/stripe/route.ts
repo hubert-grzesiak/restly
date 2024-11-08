@@ -32,7 +32,6 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-
   // Get the ID and type
   const eventType = event.type;
 

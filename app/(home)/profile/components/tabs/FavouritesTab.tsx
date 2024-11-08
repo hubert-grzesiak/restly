@@ -19,7 +19,7 @@ async function FavouritesTab({ searchParams }: SearchParamsProps) {
   const currentPage = Number(searchParams?.page) || 1;
 
   const { propertiesWithUrls, favouritesCount } = await getFavouritesInfo({
-    currentPage: currentPage,
+    currentPage,
     searchQuery: searchParams?.q,
   });
   const totalPages = Math.ceil(favouritesCount / 9);
