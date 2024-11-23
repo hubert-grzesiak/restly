@@ -86,8 +86,9 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
               <FormLabel className="paragraph-semibold text-dark400_light800">
                 Name <span className="text-primary-500">*</span>
               </FormLabel>
-              <FormControl className="mt-3.5">
+              <FormControl className="name mt-3.5">
                 <Input
+                  data-cy="name"
                   className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                   {...field}
                 />
@@ -102,6 +103,7 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
         />
 
         <Button
+          data-cy="submit facility"
           type="submit"
           className="primary-gradient !text-light-900 w-fit"
           disabled={isSubmitting}

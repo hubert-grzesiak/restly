@@ -43,6 +43,7 @@ export function CreateFacility() {
 export function UpdateFacility({ id }: { id: string }) {
   return (
     <Link
+      data-cy="update-facility"
       href={`/admin/facilities/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
@@ -71,7 +72,10 @@ export function DeleteFacility({ id }: { id: string }) {
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button className="rounded-md border bg-red-500 p-2 hover:bg-red-600">
+          <button
+            data-cy="delete-facility"
+            className="rounded-md border bg-red-500 p-2 hover:bg-red-600"
+          >
             <span className="sr-only">Delete</span>
             <TrashIcon className="w-5 text-white" />
           </button>

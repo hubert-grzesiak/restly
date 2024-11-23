@@ -2,48 +2,46 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { pusherEvents, pusherServer } from "@/lib/pusher";
-import { User } from "@prisma/client";
 
 export async function POST(request: Request) {
+  // **Autentykacja użytkownika**
   const session = await auth();
-  if (!session?.user?.email) {
-    return new NextResponse("Unauthorized", { status: 401 });
+  const currentUser = session?.user;
+
+  if (!currentUser?.id || !currentUser?.email) {
+    return new NextResponse("Brak autoryzacji", { status: 401 });
   }
 
   try {
-    const currentUser = session?.user;
+    // **Pobranie danych z żądania**
     const body = await request.json();
     const { userId, propertyId } = body;
 
-    if (!currentUser?.id || !currentUser?.email) {
-      return new NextResponse("Unauthorized", { status: 400 });
+    // **Walidacja danych wejściowych**
+    if (!userId || !propertyId) {
+      return new NextResponse("Brak wymaganych danych", { status: 400 });
     }
 
-    const existingConversations = await db.conversation.findMany({
+    // **Sprawdzenie, czy konwersacja już istnieje**
+    const existingConversation = await db.conversation.findFirst({
       where: {
-        propertyId: propertyId,
-        OR: [
-          {
-            userIds: {
-              equals: [currentUser.id, userId],
-            },
-          },
-          {
-            userIds: {
-              equals: [userId, currentUser.id],
-            },
-          },
-        ],
+        propertyId,
+        userIds: {
+          hasEvery: [currentUser.id, userId],
+        },
       },
     });
 
-    if (existingConversations.length > 0) {
-      return NextResponse.json(existingConversations[0]);
+    // **Jeśli konwersacja istnieje, zwróć ją**
+    if (existingConversation) {
+      return NextResponse.json(existingConversation);
     }
 
+    // **Tworzenie nowej konwersacji**
     const newConversation = await db.conversation.create({
       data: {
         propertyId,
+        userIds: [currentUser.id, userId],
         users: {
           connect: [{ id: currentUser.id }, { id: userId }],
         },
@@ -53,20 +51,21 @@ export async function POST(request: Request) {
       },
     });
 
-    // Notify users about the new conversation
-    newConversation.users.forEach((user: User) => {
+    // **Powiadamianie użytkowników poprzez Pushera**
+    for (const user of newConversation.users) {
       if (user.email) {
-        pusherServer.trigger(
+        await pusherServer.trigger(
           user.email,
           pusherEvents.NEW_CONVERSATION,
           newConversation,
         );
       }
-    });
+    }
 
+    // **Zwrócenie nowo utworzonej konwersacji**
     return NextResponse.json(newConversation);
   } catch (error) {
-    console.error("Error creating conversation:", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error("Błąd podczas tworzenia konwersacji:", error);
+    return new NextResponse("Błąd wewnętrzny serwera", { status: 500 });
   }
 }
