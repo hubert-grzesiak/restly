@@ -76,8 +76,8 @@ const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
+      headerLabel=""
+      backButtonLabel="Register"
       backButtonHref="/auth/register"
       showSocial
     >
@@ -119,7 +119,7 @@ const LoginForm = () => {
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="john.doe@example.com"
+                          placeholder="hubert.grzesiak@example.com"
                           type="email"
                         />
                       </FormControl>

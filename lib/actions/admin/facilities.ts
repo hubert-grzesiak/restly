@@ -221,4 +221,4 @@ export const seedFacilities = async () => {
   }
   return { error: "Forbidden Server Power!" };
 };
-// seedFacilities().catch(console.error);
+// seedFacilities();

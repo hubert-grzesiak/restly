@@ -1,6 +1,7 @@
 import getAllProperties from "@/lib/actions/properties/getAllProperties";
 import MainSection from "@/components/sections/Main/MainSection";
 import { PropertyInterface } from "@/components/sections/Main/components/MainMap";
+import { seedFacilities } from "@/lib/actions/admin/facilities";
 export interface SearchParamsProps {
   searchParams: { [key: string]: string | undefined };
 }
