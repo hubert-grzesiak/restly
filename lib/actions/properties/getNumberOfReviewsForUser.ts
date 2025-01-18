@@ -12,7 +12,6 @@ const getReviewsSummaryForUser = cache(
         return { numberOfReviews: 0, averageRating: 0 }; 
       }
 
-      // Pobierz wszystkie właściwości należące do użytkownika
       const userProperties = await db.property.findMany({
         where: {
           ownerId: userId,
@@ -26,7 +25,6 @@ const getReviewsSummaryForUser = cache(
         return { numberOfReviews: 0, averageRating: 0 };
       }
 
-      // Pobierz wszystkie recenzje dla wszystkich właściwości użytkownika
       const propertyIds = userProperties.map(property => property.id);
       const reviews = await db.review.findMany({
         where: {
@@ -48,7 +46,7 @@ const getReviewsSummaryForUser = cache(
 
     } catch (error) {
       console.error("Failed to fetch reviews summary:", error);
-      return { numberOfReviews: 0, averageRating: 0 }; // Return default values in case of an error
+      return { numberOfReviews: 0, averageRating: 0 }; 
     }
   }
 );

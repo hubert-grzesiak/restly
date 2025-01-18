@@ -15,7 +15,6 @@ const useActiveChannel = () => {
   useEffect(() => {
     let channel = activeChannel;
 
-    // Only subscribe to channel after user logs in so the user's active status gets updated real time
     if (session?.status !== "authenticated") {
       return;
     }

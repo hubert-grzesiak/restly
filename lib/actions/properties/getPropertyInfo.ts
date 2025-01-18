@@ -1,22 +1,51 @@
-import { cache } from "react";
 import { db } from "@/lib/db";
+import { User } from "@prisma/client";
+import { cache } from "react";
 
-const getPropertyInfo = async ({ id }: { id: string }) => {
+type GetPropertyInfoParams = {
+  id: string;
+  user: User;
+};
+
+const getPropertyInfo = async ({ id, user }: GetPropertyInfoParams) => {
   try {
+    const accessConditions =
+      user?.role === "ADMIN"
+        ? { id }
+        : {
+            id,
+            softDeleted: false,
+            OR: [
+              { ownerId: user?.id },
+              {
+                Reservation: {
+                  some: {
+                    userId: user?.id,
+                  },
+                },
+              },
+            ],
+          };
+
+    console.log("Fetching property with access conditions:", accessConditions);
+
     const property = await db.property.findFirst({
-      where: {
-        id: id,
-      },
+      where: accessConditions,
       include: {
         images: true,
         facility: true,
         prices: true,
         geometry: true,
+        Reservation: true,
       },
     });
 
+    console.log("Fetched Property:", property);
+
     if (!property) {
-      console.log("No property found with the given id.");
+      console.log(
+        "No property found with the given id or you do not have access.",
+      );
       return null;
     }
 

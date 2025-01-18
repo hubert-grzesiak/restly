@@ -9,9 +9,6 @@ const getMessages = cache(async (conversationId: string) => {
     const messages = await db.message.findMany({
       where: {
         conversationId: conversationId,
-        senderId: {
-          contains: currentUser?.id,
-        },
       },
       include: {
         sender: true,

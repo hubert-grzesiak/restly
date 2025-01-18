@@ -4,7 +4,6 @@ import { User, UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
 import { FullConversationType } from "@/types";
 
-// Define a common type that includes all necessary properties
 interface ExtendedUser extends User {
   role: UserRole;
   isTwoFactorEnabled: boolean;
@@ -46,7 +45,6 @@ const getConversations = cache(async (): Promise<FullConversationType[]> => {
       },
     });
 
-    // Type assertion to ensure the return type matches FullConversationType[]
     return conversations as FullConversationType[];
   } catch (error: unknown) {
     if (error instanceof Error) {

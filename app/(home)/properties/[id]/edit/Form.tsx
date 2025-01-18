@@ -499,7 +499,7 @@ const EditForm = ({
                         });
                         setCurrentPage(totalPages + 1);
                       }}
-                      disabled={currentPage === totalPages}
+                      disabled={!canAddNewItem}
                     >
                       +
                     </Button>
@@ -601,11 +601,8 @@ const EditForm = ({
                     </Button>
                     <Button
                       type="button"
-                      onClick={async () => {
-                        // const isValid = await form.trigger("facility");
-                        // if (isValid) {
+                      onClick={async () => {      
                         setSteps(steps + 1);
-                        // }
                       }}
                       className="mt-4 max-w-[320px] text-center"
                     >

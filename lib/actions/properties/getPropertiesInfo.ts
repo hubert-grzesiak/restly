@@ -27,13 +27,11 @@ const getPropertiesInfo = cache(
         return { propertiesWithUrls: [], propertiesCount: 0 };
       }
 
-      // Tworzymy obiekt query z podstawowymi warunkami
       const query: Record<string, any> = {
         ownerId: session.user.id,
         softDeleted: softDeleted,
       };
 
-      // Dodajemy warunki wyszukiwania, jeśli podano searchQuery
       if (searchQuery) {
         query.OR = [
           { name: { contains: searchQuery, mode: "insensitive" } },
@@ -46,12 +44,10 @@ const getPropertiesInfo = cache(
       const ITEMS_PER_PAGE = 9;
       const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-      // Pobierz łączną liczbę obiektów dla paginacji
       const propertiesCount = await db.property.count({
         where: query,
       });
 
-      // Pobierz obiekty z uwzględnieniem paginacji
       const properties = await db.property.findMany({
         where: query,
         include: {
@@ -68,7 +64,6 @@ const getPropertiesInfo = cache(
         return { propertiesWithUrls: [], propertiesCount };
       }
 
-      // Dodaj URL-e obrazów do każdego obiektu
       const propertiesWithUrls = properties.map((property) => ({
         ...property,
         urls: property.images.map((image) => image.urls).flat(),

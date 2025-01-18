@@ -25,7 +25,7 @@ function AutoCompleteInput({
     }
     debounceTimeout.current = setTimeout(() => {
       handleInputChange(query);
-    }, 300); // Adjust the debounce delay as needed
+    }, 300);
   };
 
   const handleInputChange = async (query: string) => {
@@ -57,7 +57,6 @@ function AutoCompleteInput({
       const key = element.id.split(".")[0] as keyof Address;
 
       if (key in address) {
-        // Cast the property as a string to ensure TypeScript accepts it
         (address[key] as string) = element.text;
       }
     });

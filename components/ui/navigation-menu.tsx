@@ -75,7 +75,7 @@ const NavigationMenuContent = React.forwardRef<
     onPointerDownOutside={(event) => event.preventDefault()}
     onFocusOutside={(event) => event.preventDefault()}
     onInteractOutside={(event) => event.preventDefault()}
-    onBlur={(event) => event.preventDefault()} // Dodane
+    onBlur={(event) => event.preventDefault()} 
     {...props}
   />
 ));

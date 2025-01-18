@@ -25,11 +25,7 @@ interface SettingsModalProps {
     isOAuth: boolean;
   };
 }
-// interface CloudinaryResult {
-//   info: {
-//     secure_url: string;
-//   };
-// }
+
 const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
@@ -41,7 +37,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const {
     register,
     handleSubmit,
-    // setValue,
     watch,
     formState: { errors },
   } = useForm<FieldValues>({
@@ -52,12 +47,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   });
 
   const image = watch("image");
-
-  // const handleUpload = (result: CloudinaryResult) => {
-  //   setValue("image", result.info.secure_url, {
-  //     shouldValidate: true,
-  //   });
-  // };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);

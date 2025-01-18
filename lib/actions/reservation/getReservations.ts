@@ -21,7 +21,6 @@ export const getReservations = cache(async (propertyId: string) => {
     const formattedReservations = reservations
       .map((reservation) => {
         try {
-          // Function to convert DD.MM.YYYY to YYYY-MM-DD
           const parseDate = (dateString: any) => {
             const [day, month, year] = dateString.split(".");
             return `${year}-${month}-${day}`;

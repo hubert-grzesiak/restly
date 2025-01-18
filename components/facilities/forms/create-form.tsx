@@ -55,13 +55,10 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
 
         router.push(`/admin/facilities`);
       } else {
-        // make an async to your API -> create a facility
-        // contain all form data
         await createFacility({
           name: values.name,
         });
         toast.success("Facility created successfully");
-        // navigate to home page
         router.push("/admin/facilities");
       }
     } catch (error) {
@@ -93,10 +90,6 @@ const FacilityForm = ({ type, facilityDetails }: Props) => {
                   {...field}
                 />
               </FormControl>
-              <FormDescription className="body-regular text-light-500 mt-2.5">
-                Be specific and imagine you`&apos;re asking a facility to
-                another person.
-              </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
           )}

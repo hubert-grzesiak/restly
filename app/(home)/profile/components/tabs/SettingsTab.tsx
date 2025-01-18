@@ -84,7 +84,7 @@ const Settings = () => {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="John Doe"
+                          placeholder="Hubert Grzesiak"
                           disabled={isPending}
                         />
                       </FormControl>

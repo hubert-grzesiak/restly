@@ -57,7 +57,6 @@ export const FormSchema = z.object({
               const compareFrom = parseISO(prices[j].from);
               const compareTo = parseISO(prices[j].to);
 
-              // Overlap condition: currentFrom < compareTo and currentTo > compareFrom
               if (currentFrom < compareTo && currentTo > compareFrom) {
                 return false;
               }
@@ -74,7 +73,6 @@ export const FormSchema = z.object({
   }),
 });
 
-// Define the main PricesSchema with overlap refinement
 export const PricesSchema = z.object({
   calendar: z.object({
     prices: z
@@ -92,7 +90,6 @@ export const PricesSchema = z.object({
               const compareFrom = parseISO(prices[j].from);
               const compareTo = parseISO(prices[j].to);
 
-              // Overlap condition: currentFrom < compareTo and currentTo > compareFrom
               if (currentFrom < compareTo && currentTo > compareFrom) {
                 return false;
               }
@@ -104,7 +101,3 @@ export const PricesSchema = z.object({
       ),
   }),
 });
-// geometry: z.object({
-//   type: z.literal("Point"), // Ensure the type is always "Point"
-//   coordinates: z.tuple([z.number(), z.number()]), // Longitude and latitude
-// }),

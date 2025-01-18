@@ -44,14 +44,11 @@ const formatDate = (date: Date): string => {
 
 const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
   if (typeof dateInput === "string") {
-    // Split the date string to get year, month, and day parts
     const parts = dateInput.split("-").map((part) => parseInt(part, 10));
-    // Create a new Date object using the local timezone
-    // Note: Month is 0-indexed, so subtract 1 from the month part
+  
     const date = new Date(parts[0], parts[1] - 1, parts[2]);
     return date;
   } else {
-    // If dateInput is already a Date object, return it directly
     return dateInput;
   }
 };
@@ -124,7 +121,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       : undefined,
   );
 
-  // Refs to store the values of range and rangeCompare when the date picker is opened
   const openedRangeRef = useRef<DateRange | undefined>();
   const openedRangeCompareRef = useRef<DateRange | undefined>();
 
@@ -139,7 +135,6 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 
     window.addEventListener("resize", handleResize);
 
-    // Clean up event listener on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -178,9 +173,8 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
     );
   };
 
-  // Helper function to check if two date ranges are equal
   const areRangesEqual = (a?: DateRange, b?: DateRange): boolean => {
-    if (!a || !b) return a === b; // If either is undefined, return true if both are undefined
+    if (!a || !b) return a === b; 
     return (
       a.from.getTime() === b.from.getTime() &&
       (!a.to || !b.to || a.to.getTime() === b.to.getTime())

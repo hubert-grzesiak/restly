@@ -1,6 +1,5 @@
 "use server";
 import { db } from "@/lib/db";
-// import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { Property } from "@prisma/client";
@@ -8,7 +7,6 @@ import { Property } from "@prisma/client";
 import { ReservationSchema } from "@/app/(home)/properties/[id]/components/ReservationForm/ReservationFormSchema";
 import * as z from "zod";
 import { auth } from "@/lib/auth";
-// import { auth } from "@/lib/auth";
 
 /**
  * Tworzy sesję Stripe dla rezerwacji nieruchomości.
@@ -30,7 +28,6 @@ export async function checkoutReservation(
   if (sessionAuth?.user?.email) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-    // Funkcja do konwersji daty w formacie dd.mm.yyyy na yyyy-mm-dd
     const convertDate = (dateString: string) => {
       const [day, month, year] = dateString.split(".");
       return `${year}-${month}-${day}`;

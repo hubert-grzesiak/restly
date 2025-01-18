@@ -162,28 +162,23 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 
   const blockedDatesArray = getDatesFromBlockedRanges(blockedDates);
 
-  // Existing code to get disabled dates
   const disabledDatesArray = allDates.filter((date) => {
     const dateTime = date.getTime();
     const isAvailable = availableDatesSet.has(dateTime);
     return !isAvailable;
   });
 
-  // Combine blocked dates with disabled dates
   const allDisabledDatesArray = [...disabledDatesArray, ...blockedDatesArray];
 
-  // Create a Set for faster lookup
   const disabledDatesSet = new Set(
     allDisabledDatesArray.map((date) => date.getTime()),
   );
 
-  // Final disabled dates array
   const finalDisabledDatesArray = allDates.filter((date) => {
     return disabledDatesSet.has(date.getTime());
   });
   console.log("disabledDatesArray", disabledDatesArray);
 
-  // Handle date selection with max range of 14 days
   const handleSelect = (value: { from?: Date; to?: Date } | undefined) => {
     if (value?.from != null) {
       let from = value.from;
@@ -193,11 +188,9 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
       if (diffInDays > 14) {
         to = new Date(from);
         to.setDate(from.getDate() + 13); // 14 days total
-        // Optionally, show a message to the user
       }
       setRange({ from, to });
 
-      // Call onUpdate here
       if (onUpdate) {
         onUpdate({
           range: {

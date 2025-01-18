@@ -31,17 +31,18 @@ const Form = () => {
     });
   };
 
-  // const handleUpload = (result: UploadResult) => {
-  //   axios.post("/api/messages", {
-  //     image: result.info.secure_url,
-  //     conversationId: conversationId,
-  //   });
-  // };
+  const handleUpload = (result) => {
+    axios.post("/api/messages", {
+      image: result.info.secure_url,
+      conversationId: conversationId,
+    });
+  };
 
   return (
     <div className="dark:bg-dusk dark:border-lightgray flex w-full items-center gap-2 rounded-b-xl border-t bg-white px-4 py-4 lg:gap-4">
       <CldUploadButton
         options={{ maxFiles: 1 }}
+        onSuccess={handleUpload}
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME}
       >
         <HiPhoto size={30} className="text-sky-500" />

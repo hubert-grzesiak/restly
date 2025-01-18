@@ -22,7 +22,6 @@ const Map = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Ensure the token is set correctly
   if (!process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
     console.error("Mapbox token is not defined in environment variables.");
   } else {
@@ -35,10 +34,10 @@ const Map = ({
     }
 
     const map = new mapboxgl.Map({
-      container: "map", // container ID
-      style: "mapbox://styles/mapbox/streets-v12", // style URL, using a night mode style for nicer look
-      center: property.geometry.coordinates, // starting position [lng, lat]
-      zoom: 13, // starting zoom
+      container: "map", 
+      style: "mapbox://styles/mapbox/streets-v12", 
+      center: property.geometry.coordinates, 
+      zoom: 13,
     });
 
     map.on("load", () => {
@@ -58,7 +57,7 @@ const Map = ({
       .setPopup(popup)
       .addTo(map);
 
-    return () => map.remove(); // Clean up on unmount
+    return () => map.remove(); 
   }, [property.geometry, property]);
 
   return (

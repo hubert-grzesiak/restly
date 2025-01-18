@@ -43,7 +43,6 @@ export const createReview = async ({
 
   if (session?.user?.email) {
     try {
-      // Create the new review
       await db.review.create({
         data: {
           body: validatedBody,

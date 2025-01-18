@@ -25,7 +25,6 @@ export default async function Page({
   const totalPagesResult = await getFacilitiesAmount();
 
   if (typeof totalPagesResult === "object" && "error" in totalPagesResult) {
-    // Handle error case
     console.error(totalPagesResult.error);
     return (
       <div className="mx-auto w-full max-w-[1000px]">

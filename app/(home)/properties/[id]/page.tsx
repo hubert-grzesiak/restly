@@ -40,9 +40,8 @@ const Details: React.FC<PageProps> = async ({ params }) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
-  const property = await getPropertyInfo({ id });
+  const property = await getPropertyInfo({ id, user });
   const reviews = await getReviews({ propertyId: id });
-  console.log("reviews", reviews);
   const { averageRating, numberOfReviews } = await getReviewsSummaryForProperty(
     {
       propertyId: id,

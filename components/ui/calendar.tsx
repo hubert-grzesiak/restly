@@ -14,13 +14,12 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   disabledDates = [],
-  prices = [], // Accept prices as a prop
+  prices = [], 
   ...props
 }: CalendarProps) {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Ensure we are working with the start of the day
+  today.setHours(0, 0, 0, 0); 
   console.log(prices);
-  // Helper function to find the price for a specific date
   const findPriceForDate = (date: Date) => {
     for (const priceRange of prices) {
       const fromDate = new Date(priceRange.from);

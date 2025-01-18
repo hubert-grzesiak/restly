@@ -17,7 +17,6 @@ export default async function reportReview({ reviewId }: { reviewId: string }) {
         return { error: "Review not found" };
       }
 
-      // Sprawdzenie, czy opinia nie została już zgłoszona
       const reportedReview = await db.reportedReview.findFirst({
         where: {
           reviewId: reviewId,

@@ -70,7 +70,7 @@ const RegisterForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="John Doe"
+                      placeholder="Hubert Grzesiak"
                     />
                   </FormControl>
                   <FormMessage />

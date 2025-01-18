@@ -76,7 +76,7 @@ const Searchbar = ({
     numberOfGuests.adults + numberOfGuests.kids + numberOfGuests.animals;
 
   return (
-    <div className="searchBar border border-black">
+    <div className="searchBar border">
       <div>
         <div className="searchBarInner">
           <div className="flex justify-center">

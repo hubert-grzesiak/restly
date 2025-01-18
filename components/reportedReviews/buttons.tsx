@@ -64,7 +64,6 @@ export function DeleteFacility({ id }: { id: string }) {
     try {
       await deleteFacility(id);
       toast.success("Facility deleted successfully");
-      // Możesz dodać tutaj dowolną logikę, np. przekierowanie po pomyślnym usunięciu
     } catch (error) {
       console.error("Failed to delete facility", error);
     } finally {

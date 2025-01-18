@@ -1,5 +1,4 @@
 "use client";
-// import Image from "next/image";
 import { StarIcon } from "./icons/StarIcon";
 import { Button } from "./ui/button";
 import Link from "next/link";

@@ -26,15 +26,13 @@ const getFavouritesInfo = cache(
         return { propertiesWithUrls: [], favouritesCount: 0 };
       }
 
-      const ITEMS_PER_PAGE = 9; // Możesz dostosować tę wartość
+      const ITEMS_PER_PAGE = 9; 
       const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-      // Tworzenie obiektu query z podstawowymi warunkami
       const query: Record<string, any> = {
         userId: session.user.id,
       };
 
-      // Dodawanie warunków wyszukiwania, jeśli podano searchQuery
       if (searchQuery) {
         query.property = {
           OR: [
@@ -46,12 +44,10 @@ const getFavouritesInfo = cache(
         };
       }
 
-      // Pobierz łączną liczbę ulubionych obiektów dla paginacji
       const favouritesCount = await db.favourite.count({
         where: query,
       });
 
-      // Pobierz ulubione obiekty z uwzględnieniem paginacji i wyszukiwania
       const favourites = await db.favourite.findMany({
         where: query,
         include: {
@@ -70,7 +66,6 @@ const getFavouritesInfo = cache(
         return { propertiesWithUrls: [], favouritesCount };
       }
 
-      // Wyciąganie URL-i z powiązanych obrazów
       const propertiesWithUrls = favourites.map((favourite) => ({
         ...favourite.property,
         urls: favourite.property.images.map((image) => image.urls).flat(),

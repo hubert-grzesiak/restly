@@ -1,10 +1,12 @@
 import getFacilities from "@/lib/actions/host/getFacilities";
 import EditForm from "./Form";
 import getPropertyInfo from "@/lib/actions/properties/getPropertyInfo";
+import { currentUser } from "@/lib/actualUserInfo";
 
 async function Page({ params }: { params: { id: string } }) {
+  const user = await currentUser();
   const facilitiesData = await getFacilities();
-  const property = await getPropertyInfo({ id: params.id });
+  const property = await getPropertyInfo({ id: params.id, user: user });
 
   console.log("searchParams.id", params);
 

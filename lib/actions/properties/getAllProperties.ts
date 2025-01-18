@@ -60,7 +60,6 @@ export default async function getAllProperties(
   }
 
   if (from && to) {
-    // Parse the dates using `parse` with the "dd.MM.yyyy" format
     let parsedFrom: Date;
     let parsedTo: Date;
 
@@ -82,16 +81,14 @@ export default async function getAllProperties(
       parsedTo = to;
     }
 
-    // Ensure that 'from' is before 'to'
     if (parsedFrom > parsedTo) {
       throw new Error(
         `'from' date (${parsedFrom}) cannot be after 'to' date (${parsedTo})`,
       );
     }
 
-    // Format the dates as strings matching the expected format in the database
-    const fromStr = format(parsedFrom, "yyyy-MM-dd"); // Adjust format as needed
-    const toStr = format(parsedTo, "yyyy-MM-dd"); // Adjust format as needed
+    const fromStr = format(parsedFrom, "yyyy-MM-dd"); 
+    const toStr = format(parsedTo, "yyyy-MM-dd"); 
 
     query.NOT = {
       Reservation: {

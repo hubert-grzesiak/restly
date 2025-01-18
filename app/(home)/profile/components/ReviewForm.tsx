@@ -93,11 +93,6 @@ const ReviewForm = ({
   });
 
   useEffect(() => {
-    // reset({
-    //   review: userReview?.body || "",
-    //   rating: userReview?.rating || 0,
-    // });
-
     const today = new Date();
 
     const dateToCheck = dateTo

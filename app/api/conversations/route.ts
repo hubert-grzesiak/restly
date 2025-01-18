@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { pusherEvents, pusherServer } from "@/lib/pusher";
 
 export async function POST(request: Request) {
-  // **Autentykacja użytkownika**
   const session = await auth();
   const currentUser = session?.user;
 
@@ -13,16 +12,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    // **Pobranie danych z żądania**
     const body = await request.json();
     const { userId, propertyId } = body;
 
-    // **Walidacja danych wejściowych**
     if (!userId || !propertyId) {
       return new NextResponse("Brak wymaganych danych", { status: 400 });
     }
 
-    // **Sprawdzenie, czy konwersacja już istnieje**
     const existingConversation = await db.conversation.findFirst({
       where: {
         propertyId,
@@ -32,12 +28,10 @@ export async function POST(request: Request) {
       },
     });
 
-    // **Jeśli konwersacja istnieje, zwróć ją**
     if (existingConversation) {
       return NextResponse.json(existingConversation);
     }
 
-    // **Tworzenie nowej konwersacji**
     const newConversation = await db.conversation.create({
       data: {
         propertyId,
@@ -51,7 +45,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // **Powiadamianie użytkowników poprzez Pushera**
     for (const user of newConversation.users) {
       if (user.email) {
         await pusherServer.trigger(
@@ -62,7 +55,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // **Zwrócenie nowo utworzonej konwersacji**
     return NextResponse.json(newConversation);
   } catch (error) {
     console.error("Błąd podczas tworzenia konwersacji:", error);

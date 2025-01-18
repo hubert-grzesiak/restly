@@ -26,7 +26,7 @@ export async function toggleFavouriteProperty(propertyId: string) {
           id: favourite.id,
         },
       });
-      return false; // Return false as the item is no longer a favourite
+      return false; 
     } else {
       await db.favourite.create({
         data: {
@@ -34,11 +34,11 @@ export async function toggleFavouriteProperty(propertyId: string) {
           propertyId: propertyId,
         },
       });
-      return true; // Return true as the item is now a favourite
+      return true; 
     }
   } catch (error) {
     console.error("Error in toggleFavouriteProperty:", error);
-    throw error; // Consider handling this more gracefully in production
+    throw error;
   } finally {
     revalidatePath("/profile/favourites");
   }
@@ -49,13 +49,11 @@ export const isPropertyFavourite = async (propertyId: string) => {
     const session = await auth();
 
     if (!session?.user?.id) {
-      // If no user is logged in, return null
       return null;
     }
 
     const userId = session.user.id;
 
-    // Check if the object is already in the user's favourites
     const favourite = await db.favourite.findFirst({
       where: {
         userId,

@@ -31,7 +31,6 @@ const MainMap = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Ensure the token is set correctly
   if (!process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
     console.error("Mapbox token is not defined in environment variables.");
   } else {
@@ -45,10 +44,10 @@ const MainMap = ({
     const defaultCenter = properties[0]?.geometry?.coordinates || [0, 0];
 
     const map = new mapboxgl.Map({
-      container: "map", // container ID
-      style: "mapbox://styles/mapbox/streets-v12", // style URL
-      center: defaultCenter, // default starting position [lng, lat]
-      zoom: 13, // starting zoom
+      container: "map", 
+      style: "mapbox://styles/mapbox/streets-v12", 
+      center: defaultCenter,
+      zoom: 13, 
     });
 
     map.on("load", () => {

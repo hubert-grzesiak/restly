@@ -41,7 +41,10 @@ const INITIAL_VISIBLE_COLUMNS = [
   "status",
   "actions",
 ];
-
+function parseDate(dateStr: string) {
+  const [day, month, year] = dateStr.split('.');
+  return new Date(`${year}-${month}-${day}T00:00:00`);
+}
 export default function GuestsTable({
   guests,
   usersCount,
@@ -53,11 +56,11 @@ export default function GuestsTable({
 }) {
   const [filterValue, setFilterValue] = React.useState("");
   const users = guests.map((guest) => {
-    const dateFrom = new Date(guest.dateFrom);
-    const dateTo = new Date(guest.dateTo);
+    const dateFrom = parseDate(guest.dateFrom);
+    const dateTo =  parseDate(guest.dateTo);
     const currentDate = new Date();
     let status = "";
-
+    console.log("dateTo", dateTo);
     if (currentDate > dateTo) {
       status = "expired"; // Red
     } else if (currentDate < dateFrom) {

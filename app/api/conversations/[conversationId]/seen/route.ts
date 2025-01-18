@@ -20,7 +20,6 @@ export async function POST(request: Request, { params }: { params: IParams }) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Find existing conversation
     const conversation = await db.conversation.findUnique({
       where: {
         id: conversationId,

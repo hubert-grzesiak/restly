@@ -73,7 +73,6 @@ const UserReview: React.FC<UserReviewProps> = ({
 };
 
 export default function Opinions({ reviews }: { reviews: UserReviewProps[] }) {
-  console.log("reviews", reviews);
   return (
     <div className="mx-auto mt-20">
       <h2 className="mb-4 text-lg font-bold md:text-2xl">User Reviews</h2>

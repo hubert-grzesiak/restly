@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
   SelectTrigger,
@@ -54,7 +53,6 @@ const ReservationForm = ({
     Array<{ from: string; to: string }>
   >([]);
   const form = useForm<z.infer<typeof ReservationSchema>>({
-    // resolver: zodResolver(ReservationSchema),
     defaultValues: {
       objectId: propertyId,
       userId: session.data?.user.id as string,
@@ -104,7 +102,6 @@ const ReservationForm = ({
     async function fetchReservations() {
       const result = await getReservations(propertyId);
       if (result.success && result.reservations) {
-        // Filter out null values from reservations
         const validReservations = result.reservations.filter(
           (reservation): reservation is { from: string; to: string } =>
             reservation !== null,
