@@ -1,0 +1,448 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  padding-top: 122px;
+  padding-bottom: 64px;
+}
+
+@media screen and (min-width: 1024px) {
+  .custom-height {
+    min-height: calc(100vh - 262px);
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground;
+  }
+}
+
+/* LOADING */
+.pl {
+  display: block;
+  width: 9.375em;
+  height: 9.375em;
+}
+
+.pl__arrows,
+.pl__ring-rotate,
+.pl__ring-stroke,
+.pl__tick {
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.pl__arrows {
+  animation-name: arrows42;
+  transform: rotate(45deg);
+  transform-origin: 16px 52px;
+}
+
+.pl__ring-rotate,
+.pl__ring-stroke {
+  transform-origin: 80px 80px;
+}
+
+.pl__ring-rotate {
+  animation-name: ringRotate42;
+}
+
+.pl__ring-stroke {
+  animation-name: ringStroke42;
+  transform: rotate(-45deg);
+}
+
+.pl__tick {
+  animation-name: tick42;
+}
+
+.pl__tick:nth-child(2) {
+  animation-delay: -1.75s;
+}
+
+.pl__tick:nth-child(3) {
+  animation-delay: -1.5s;
+}
+
+.pl__tick:nth-child(4) {
+  animation-delay: -1.25s;
+}
+
+.pl__tick:nth-child(5) {
+  animation-delay: -1s;
+}
+
+.pl__tick:nth-child(6) {
+  animation-delay: -0.75s;
+}
+
+.pl__tick:nth-child(7) {
+  animation-delay: -0.5s;
+}
+
+.pl__tick:nth-child(8) {
+  animation-delay: -0.25s;
+}
+
+/* Animations */
+@keyframes arrows42 {
+  from {
+    transform: rotate(45deg);
+  }
+
+  to {
+    transform: rotate(405deg);
+  }
+}
+
+@keyframes ringRotate42 {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(720deg);
+  }
+}
+
+@keyframes ringStroke42 {
+  from,
+  to {
+    strokedashoffset: 452;
+    transform: rotate(-45deg);
+  }
+
+  50% {
+    strokedashoffset: 169.5;
+    transform: rotate(-180deg);
+  }
+}
+
+@keyframes tick42 {
+  from,
+  3%,
+  47%,
+  to {
+    strokedashoffset: -12;
+  }
+
+  14%,
+  36% {
+    strokedashoffset: 0;
+  }
+}
+
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  font:
+    400 15px/22px "Inter",
+    sans-serif;
+  padding: 0;
+  border-radius: 12px !important;
+  display: flex;
+  min-width: 100px;
+  justify-content: center;
+  align-items: center;
+}
+
+.mapboxgl-popup-content-wrapper {
+  padding: 1%;
+}
+
+.background-gradient {
+  background: url("https://res.cloudinary.com/dev6yhoh3/image/upload/v1719056892/backgrounds/gradient1_fsy8hj.png");
+  background-size: cover;
+}
+
+.background-login {
+  background: url("https://res.cloudinary.com/dev6yhoh3/image/upload/v1720640221/backgrounds/Iridescent_Kiss_MagicPattern_Wallpaper_sstcfi.jpg");
+  background-size: cover;
+}
+
+@layer components {
+  .tab-button {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow;
+  }
+}
+
+/* =========SEARCHBAR START ========= */
+
+.searchBar {
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 5rem;
+  height: 7rem;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: content-box;
+  z-index: 90;
+}
+
+.searchBarInner {
+  display: flex;
+  border-radius: 2.5rem;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.searchBarItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBarButton {
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: 0px;
+  border-radius: 2.5rem;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  font-family: Visuelt, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  font-size: 0.875rem;
+  position: relative;
+  text-align: center;
+  max-width: 140px;
+}
+
+.searchBarItem::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0px;
+}
+
+.searchBarItem:first-child::before,
+.searchBarItem:last-child::before {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .searchBarInner {
+    margin-bottom: 0.5rem;
+  }
+  .searchBarButton {
+    padding: 0.5rem 0.75rem;
+    letter-spacing: 0.01em;
+    line-height: 0.75;
+    font-size: 0.6rem;
+    position: relative;
+    text-align: center;
+    max-width: 80px;
+  }
+}
+
+/* =========SEARCHBAR END ========= */
+
+.mainMap {
+  height: calc(-12rem + 100vh);
+  position: sticky;
+  top: 12rem;
+  border: 1px solid rgba(94, 58, 14, 0.42);
+  width: 50%;
+}
+
+.mainMapButton {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0px;
+  padding: 1rem 0px 1rem 0px;
+  overflow: hidden;
+}
+
+.mainMapButtonInner {
+  padding: 0px;
+  width: 1rem;
+  height: 8rem;
+  background: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-image: initial;
+  border-left: none;
+  border-radius: 0px 0.25rem 0.25rem 0px;
+}
+
+.mapSvg {
+  width: 100%;
+}
+
+.customOverflow {
+  overflow: unset;
+}
+
+.customFlex {
+  flex: 1 1 50%;
+}
+
+.listOfItems {
+  display: grid;
+  gap: 1.25rem;
+  grid-auto-flow: row;
+  grid-template-rows: auto;
+}
+@media screen and (min-width: 768) {
+  .listOfItems {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* AUTOCOMPLETE COMPONENT*/
+.autoCompleteInputContainer {
+  position: relative;
+}
+
+.addressSuggestions {
+  position: absolute;
+  top: 1.75em;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  border-radius: 4px;
+  color: black;
+  z-index: 999;
+  padding: 0;
+}
+
+.autoCompleteInputContainer .addressSuggestions li {
+  list-style: none;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.5em 1em;
+}
+
+.autoCompleteInputContainer .addressSuggestions li:hover {
+  background-color: rgb(132, 182, 243);
+  color: white;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  margin-right: 3em;
+  z-index: 99999 !important;
+}
+
+.form label {
+  margin-bottom: 4px;
+  width: 100%;
+  text-align: left;
+}
+
+.map {
+  width: 500px;
+  height: 300px;
+  margin: auto 0;
+}
+.marker {
+  width: 50px;
+  height: 50px;
+}
+
+.rdp-button {
+  height: 100%;
+  width: 40px;
+}
